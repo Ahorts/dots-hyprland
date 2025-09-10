@@ -11,44 +11,9 @@ ContentPage {
     forceWidth: true
 
     ContentSection {
-        title: Translation.tr("Audio")
-
-        ConfigSwitch {
-            text: Translation.tr("Earbang protection")
-            checked: Config.options.audio.protection.enable
-            onCheckedChanged: {
-                Config.options.audio.protection.enable = checked;
-            }
-            StyledToolTip {
-                content: Translation.tr("Prevents abrupt increments and restricts volume limit")
-            }
-        }
-        ConfigRow {
-            // uniform: true
-            ConfigSpinBox {
-                text: Translation.tr("Max allowed increase")
-                value: Config.options.audio.protection.maxAllowedIncrease
-                from: 0
-                to: 100
-                stepSize: 2
-                onValueChanged: {
-                    Config.options.audio.protection.maxAllowedIncrease = value;
-                }
-            }
-            ConfigSpinBox {
-                text: Translation.tr("Volume limit")
-                value: Config.options.audio.protection.maxAllowed
-                from: 0
-                to: 154 // pavucontrol allows up to 153%
-                stepSize: 2
-                onValueChanged: {
-                    Config.options.audio.protection.maxAllowed = value;
-                }
-            }
-        }
-    }
-    ContentSection {
+        icon: "neurology"
         title: Translation.tr("AI")
+
         MaterialTextArea {
             Layout.fillWidth: true
             placeholderText: Translation.tr("System prompt")
@@ -63,58 +28,9 @@ ContentPage {
     }
 
     ContentSection {
-        title: Translation.tr("Battery")
-
-        ConfigRow {
-            uniform: true
-            ConfigSpinBox {
-                text: Translation.tr("Low warning")
-                value: Config.options.battery.low
-                from: 0
-                to: 100
-                stepSize: 5
-                onValueChanged: {
-                    Config.options.battery.low = value;
-                }
-            }
-            ConfigSpinBox {
-                text: Translation.tr("Critical warning")
-                value: Config.options.battery.critical
-                from: 0
-                to: 100
-                stepSize: 5
-                onValueChanged: {
-                    Config.options.battery.critical = value;
-                }
-            }
-        }
-        ConfigRow {
-            uniform: true
-            ConfigSwitch {
-                text: Translation.tr("Automatic suspend")
-                checked: Config.options.battery.automaticSuspend
-                onCheckedChanged: {
-                    Config.options.battery.automaticSuspend = checked;
-                }
-                StyledToolTip {
-                    content: Translation.tr("Automatically suspends the system when battery is low")
-                }
-            }
-            ConfigSpinBox {
-                text: Translation.tr("Suspend at")
-                value: Config.options.battery.suspend
-                from: 0
-                to: 100
-                stepSize: 5
-                onValueChanged: {
-                    Config.options.battery.suspend = value;
-                }
-            }
-        }
-    }
-
-    ContentSection {
+        icon: "cell_tower"
         title: Translation.tr("Networking")
+
         MaterialTextArea {
             Layout.fillWidth: true
             placeholderText: Translation.tr("User agent (for services that require it)")
@@ -127,7 +43,9 @@ ContentPage {
     }
 
     ContentSection {
+        icon: "memory"
         title: Translation.tr("Resources")
+
         ConfigSpinBox {
             text: Translation.tr("Polling interval (ms)")
             value: Config.options.resources.updateInterval
@@ -141,6 +59,7 @@ ContentPage {
     }
 
     ContentSection {
+        icon: "search"
         title: Translation.tr("Search")
 
         ConfigSwitch {
@@ -158,7 +77,6 @@ ContentPage {
             title: Translation.tr("Prefixes")
             ConfigRow {
                 uniform: true
-
                 MaterialTextArea {
                     Layout.fillWidth: true
                     placeholderText: Translation.tr("Action")
@@ -187,6 +105,37 @@ ContentPage {
                     }
                 }
             }
+
+            ConfigRow {
+                uniform: true
+                MaterialTextArea {
+                    Layout.fillWidth: true
+                    placeholderText: Translation.tr("Math")
+                    text: Config.options.search.prefix.math
+                    wrapMode: TextEdit.Wrap
+                    onTextChanged: {
+                        Config.options.search.prefix.math = text;
+                    }
+                }
+                MaterialTextArea {
+                    Layout.fillWidth: true
+                    placeholderText: Translation.tr("Shell command")
+                    text: Config.options.search.prefix.shellCommand
+                    wrapMode: TextEdit.Wrap
+                    onTextChanged: {
+                        Config.options.search.prefix.shellCommand = text;
+                    }
+                }
+                MaterialTextArea {
+                    Layout.fillWidth: true
+                    placeholderText: Translation.tr("Web search")
+                    text: Config.options.search.prefix.webSearch
+                    wrapMode: TextEdit.Wrap
+                    onTextChanged: {
+                        Config.options.search.prefix.webSearch = text;
+                    }
+                }
+            }
         }
         ContentSubsection {
             title: Translation.tr("Web search")
@@ -198,44 +147,6 @@ ContentPage {
                 onTextChanged: {
                     Config.options.search.engineBaseUrl = text;
                 }
-            }
-        }
-    }
-
-    ContentSection {
-        title: Translation.tr("Time")
-
-        ContentSubsection {
-            title: Translation.tr("Format")
-            tooltip: ""
-
-            ConfigSelectionArray {
-                currentValue: Config.options.time.format
-                configOptionName: "time.format"
-                onSelected: newValue => {
-                    if (newValue === "hh:mm") {
-                        Quickshell.execDetached(["bash", "-c", `sed -i 's/\\TIME12\\b/TIME/' '${FileUtils.trimFileProtocol(Directories.config)}/hypr/hyprlock.conf'`]);
-                    } else {
-                        Quickshell.execDetached(["bash", "-c", `sed -i 's/\\TIME\\b/TIME12/' '${FileUtils.trimFileProtocol(Directories.config)}/hypr/hyprlock.conf'`]);
-                    }
-
-                    Config.options.time.format = newValue;
-                    
-                }
-                options: [
-                    {
-                        displayName: Translation.tr("24h"),
-                        value: "hh:mm"
-                    },
-                    {
-                        displayName: Translation.tr("12h am/pm"),
-                        value: "h:mm ap"
-                    },
-                    {
-                        displayName: Translation.tr("12h AM/PM"),
-                        value: "h:mm AP"
-                    },
-                ]
             }
         }
     }

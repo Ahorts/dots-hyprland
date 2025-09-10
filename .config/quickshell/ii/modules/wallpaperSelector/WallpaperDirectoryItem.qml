@@ -67,6 +67,7 @@ MouseArea {
                         generateThumbnail: false
                         sourcePath: fileModelData.filePath
 
+                        cache: false
                         fillMode: Image.PreserveAspectCrop
                         clip: true
                         sourceSize.width: wallpaperItemColumnLayout.width
@@ -77,6 +78,12 @@ MouseArea {
                             function onThumbnailGenerated(directory) {
                                 if (thumbnailImage.status !== Image.Error) return;
                                 if (FileUtils.parentDirectory(thumbnailImage.sourcePath) !== directory) return;
+                                thumbnailImage.source = "";
+                                thumbnailImage.source = thumbnailImage.thumbnailPath;
+                            }
+                            function onThumbnailGeneratedFile(filePath) {
+                                if (thumbnailImage.status !== Image.Error) return;
+                                if (Qt.resolvedUrl(thumbnailImage.sourcePath) !== Qt.resolvedUrl(filePath)) return;
                                 thumbnailImage.source = "";
                                 thumbnailImage.source = thumbnailImage.thumbnailPath;
                             }

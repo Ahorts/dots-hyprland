@@ -264,7 +264,15 @@ switch() {
         fi
     fi
 
-    [[ -n "$mode_flag" ]] && matugen_args+=(--mode "$mode_flag") && generate_colors_material_args+=(--mode "$mode_flag")
+    # enforce dark mode for terminal
+    if [[ -n "$mode_flag" ]]; then
+        matugen_args+=(--mode "$mode_flag")
+        if [[ $(jq -r '.appearance.wallpaperTheming.terminalGenerationProps.forceDarkMode' "$SHELL_CONFIG_FILE") == "true" ]]; then
+            generate_colors_material_args+=(--mode "dark")
+        else
+            generate_colors_material_args+=(--mode "$mode_flag")
+        fi
+    fi
     [[ -n "$type_flag" ]] && matugen_args+=(--type "$type_flag") && generate_colors_material_args+=(--scheme "$type_flag")
     generate_colors_material_args+=(--termscheme "$terminalscheme" --blend_bg_fg)
     generate_colors_material_args+=(--cache "$STATE_DIR/user/generated/color.txt")
@@ -278,6 +286,16 @@ switch() {
             echo "App and shell theming disabled, skipping matugen and color generation"
             return
         fi
+    fi
+
+    # Set harmony and related properties
+    if [ -f "$SHELL_CONFIG_FILE" ]; then
+        harmony=$(jq -r '.appearance.wallpaperTheming.terminalGenerationProps.harmony' "$SHELL_CONFIG_FILE")
+        harmonize_threshold=$(jq -r '.appearance.wallpaperTheming.terminalGenerationProps.harmonizeThreshold' "$SHELL_CONFIG_FILE")
+        term_fg_boost=$(jq -r '.appearance.wallpaperTheming.terminalGenerationProps.termFgBoost' "$SHELL_CONFIG_FILE")
+        [[ "$harmony" != "null" && -n "$harmony" ]] && generate_colors_material_args+=(--harmony "$harmony")
+        [[ "$harmonize_threshold" != "null" && -n "$harmonize_threshold" ]] && generate_colors_material_args+=(--harmonize_threshold "$harmonize_threshold")
+        [[ "$term_fg_boost" != "null" && -n "$term_fg_boost" ]] && generate_colors_material_args+=(--term_fg_boost "$term_fg_boost")
     fi
 
     matugen "${matugen_args[@]}"

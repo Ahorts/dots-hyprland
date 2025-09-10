@@ -6,8 +6,9 @@ function fish_prompt -d "Write out the prompt"
         (set_color $fish_color_cwd) (prompt_pwd) (set_color normal)
 end
 
-if status is-interactive
-    # Commands to run in interactive sessions can go here
+if status is-interactive # Commands to run in interactive sessions can go here
+
+    # No greeting
     set fish_greeting
 
 end

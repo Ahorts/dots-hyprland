@@ -15,6 +15,7 @@ Singleton {
     id: root
 
     property string thumbgenScriptPath: `${FileUtils.trimFileProtocol(Directories.scriptPath)}/thumbnails/thumbgen.py`
+    property string generateThumbnailsMagicScriptPath: `${FileUtils.trimFileProtocol(Directories.scriptPath)}/thumbnails/generate-thumbnails-magick.sh`
     property string directory: FileUtils.trimFileProtocol(`${Directories.pictures}/Wallpapers`)
     property alias folderModel: folderModel // Expose for direct binding when needed
     property string searchQuery: ""
@@ -22,9 +23,12 @@ Singleton {
         "jpg", "jpeg", "png", "webp", "avif", "bmp", "svg"
     ]
     property list<string> wallpapers: [] // List of absolute file paths (without file://)
+    readonly property bool thumbnailGenerationRunning: thumbgenProc.running
+    property real thumbnailGenerationProgress: 0
 
     signal changed()
     signal thumbnailGenerated(directory: string)
+    signal thumbnailGeneratedFile(filePath: string)
 
     // Executions
     Process {
@@ -76,11 +80,21 @@ Singleton {
         function setDirectoryIfValid(path) {
             validateDirProc.nicePath = FileUtils.trimFileProtocol(path).replace(/\/+$/, "")
             if (/^\/*$/.test(validateDirProc.nicePath)) validateDirProc.nicePath = "/";
-            validateDirProc.exec(["test", "-d", nicePath])
+            validateDirProc.exec([
+                "bash", "-c",
+                `if [ -d "${validateDirProc.nicePath}" ]; then echo dir; elif [ -f "${validateDirProc.nicePath}" ]; then echo file; else echo invalid; fi`
+            ])
         }
-        onExited: (exitCode, exitStatus) => {
-            if (exitCode === 0) {
-                root.directory = validateDirProc.nicePath
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const result = text.trim()
+                if (result === "dir") {
+                    root.directory = validateDirProc.nicePath
+                } else if (result === "file") {
+                    root.directory = FileUtils.parentDirectory(validateDirProc.nicePath)
+                } else {
+                    // Ignore
+                }
             }
         }
     }
@@ -114,15 +128,31 @@ Singleton {
         thumbgenProc.directory = root.directory
         thumbgenProc.running = false
         thumbgenProc.command = [
-            thumbgenScriptPath,
-            "--size", size,
-            "-d", `${root.directory}`
+            "bash", "-c",
+            `${thumbgenScriptPath} --size ${size} --machine_progress -d ${root.directory} || ${generateThumbnailsMagicScriptPath} --size ${size} -d ${root.directory}`,
         ]
+        root.thumbnailGenerationProgress = 0
         thumbgenProc.running = true
     }
     Process {
         id: thumbgenProc
         property string directory
+        stdout: SplitParser {
+            onRead: data => {
+                // print("thumb gen proc:", data)
+                let match = data.match(/PROGRESS (\d+)\/(\d+)/)
+                if (match) {
+                    const completed = parseInt(match[1])
+                    const total = parseInt(match[2])
+                    root.thumbnailGenerationProgress = completed / total
+                }
+                match = data.match(/FILE (.+)/)
+                if (match) {
+                    const filePath = match[1]
+                    root.thumbnailGeneratedFile(filePath)
+                }
+            }
+        }
         onExited: (exitCode, exitStatus) => {
             root.thumbnailGenerated(thumbgenProc.directory)
         }

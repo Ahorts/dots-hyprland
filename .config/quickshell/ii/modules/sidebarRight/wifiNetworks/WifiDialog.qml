@@ -3,17 +3,9 @@ import qs.services
 import qs.services.network
 import qs.modules.common
 import qs.modules.common.widgets
-import qs.modules.common.functions
-import "./quickToggles/"
-import "./wifiNetworks/"
 import QtQuick
-import QtQuick.Controls
 import QtQuick.Layouts
-import Qt5Compat.GraphicalEffects
-import Quickshell.Io
 import Quickshell
-import Quickshell.Wayland
-import Quickshell.Hyprland
 
 WindowDialog {
     id: root
@@ -21,9 +13,18 @@ WindowDialog {
     WindowDialogTitle {
         text: Translation.tr("Connect to Wi-Fi")
     }
-    // TODO: add indeterminate progress bar when scanning
-    WindowDialogSeparator {}
-    StyledListView {
+    WindowDialogSeparator {
+        visible: !Network.wifiScanning
+    }
+    StyledIndeterminateProgressBar {
+        visible: Network.wifiScanning
+        Layout.fillWidth: true
+        Layout.topMargin: -8
+        Layout.bottomMargin: -8
+        Layout.leftMargin: -Appearance.rounding.large
+        Layout.rightMargin: -Appearance.rounding.large
+    }
+    ListView {
         Layout.fillHeight: true
         Layout.fillWidth: true
         Layout.topMargin: -15
@@ -33,7 +34,6 @@ WindowDialog {
 
         clip: true
         spacing: 0
-        animateAppearance: false
 
         model: ScriptModel {
             values: [...Network.wifiNetworks].sort((a, b) => {
@@ -44,7 +44,6 @@ WindowDialog {
                 return b.strength - a.strength;
             })
         }
-        // model: Network.wifiNetworks
         delegate: WifiNetworkItem {
             required property WifiAccessPoint modelData
             wifiNetwork: modelData
