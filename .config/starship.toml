@@ -4,29 +4,26 @@ add_newline = false
 # Powerline symbols                                     
 # Wedges 🭧🭒 🭣🭧🭓
 # Random noise 🬖🬥🬔🬗
-# Cool stuff 󰜥   
 
 # format = """
 # $cmd_duration$username$hostname $directory $git_branch
 # $character
 # """
 format = """
-$cmd_duration 󰜥 $directory $git_branch
-$character"""
+$cmd_duration 󰜥 $directory $git_branch$git_status $all
+$character
+"""
 
 # Replace the "❯" symbol in the prompt with "➜"
 [character]                            # The name of the module we are configuring is "character"
-success_symbol = "[   ](bold fg:blue)"
-error_symbol = "[   ](bold fg:red)"
+success_symbol = "[ 󰜥 ](bold fg:blue)"
+error_symbol = "[ 󰜥 ](bold fg:red)"
 
 # Disable the package module, hiding it from the prompt completely
-[package]
-disabled = true
 
 [git_branch]
 style = "bg: cyan"
 symbol = "󰘬"
-truncation_length = 12
 truncation_symbol = ""
 format = "󰜥 [](bold fg:cyan)[$symbol $branch(:$remote_branch)](fg:black bg:cyan)[ ](bold fg:cyan)"
 
@@ -35,24 +32,24 @@ commit_hash_length = 4
 tag_symbol = " "
 
 [git_state]
-format = '[\($state( $progress_current of $progress_total)\)]($style) '
+format = '($state( $progress_current of $progress_total))($style)'
 cherry_pick = "[🍒 PICKING](bold red)"
 
 [git_status]
 conflicted = " 🏳 "
 ahead = " 🏎💨 "
 behind = " 😰 "
-diverged = " 😵 "
-untracked = " 🤷 ‍"
-stashed = " 📦 "
-modified = " 📝 "
+diverged = " 󱡷 "
+untracked = " 󰎔 "
+stashed = " 󰆓 "
+modified = "  "
 staged = '[++\($count\)](green)'
-renamed = " ✍️ "
+renamed = "  "
 deleted = " 🗑 "
 
 [hostname]
 ssh_only = false
-format =  "[•$hostname](bg:cyan bold fg:black)[](bold fg:cyan)"
+format =  "[•$hostname](bg:cyan bold fg:black)[](bold fg:cyan) "
 trim_at = ".companyname.com"
 disabled = false
 
@@ -83,7 +80,7 @@ read_only = "  "
 style = "bg:green fg:black"
 truncation_length = 6
 truncation_symbol = " ••/"
-format = '[](bold fg:green)[󰉋 $path]($style)[](bold fg:green)'
+format = '[](bold fg:green)[󰉋 $path]($style)[](bold fg:green)'
 
 
 [directory.substitutions]
@@ -98,3 +95,178 @@ format = '[](bold fg:green)[󰉋 $path]($style)[](bold fg:green)'
 [cmd_duration]
 min_time = 0
 format = '[](bold fg:yellow)[󰪢 $duration](bold bg:yellow fg:black)[](bold fg:yellow)'
+
+[bun]
+format = 'via [🍔 $version](bold green) '
+
+[c]
+symbol = " "
+
+[cobol]
+symbol = "cobol "
+
+[conda]
+symbol = "conda "
+
+[crystal]
+symbol = "cr "
+
+[cmake]
+symbol = "cmake  "
+
+[daml]
+symbol = "daml "
+
+[dart]
+symbol = "dart  "
+
+[deno]
+symbol = "deno  "
+
+[dotnet]
+symbol = " 󰪮 "
+
+
+[docker_context]
+symbol = "docker  "
+
+[elixir]
+symbol = "exs  "
+
+[elm]
+symbol = "elm "
+
+
+[golang]
+symbol = "go 󰟓 "
+
+[guix_shell]
+symbol = "guix  "
+
+[hg_branch]
+symbol = "hg "
+
+[java]
+symbol = "java  "
+
+[julia]
+symbol = "jl  "
+
+[kotlin]
+symbol = "kt 󱈙 "
+
+[lua]
+symbol = "lua  "
+
+[nodejs]
+symbol = "nodejs 󰎙 "
+
+[meson]
+symbol = "meson "
+
+[nim]
+symbol = "nim "
+
+[nix_shell]
+symbol = "nix  "
+
+[ocaml]
+symbol = "ml "
+
+[opa]
+symbol = "opa "
+
+[os.symbols]
+Alpine = "alp "
+Amazon = "amz "
+Android = "andr "
+Arch = "arch 󰣇 "
+CentOS = "cent "
+Debian = "deb "
+DragonFly = "dfbsd "
+Emscripten = "emsc "
+EndeavourOS = "ndev "
+Fedora = "fed "
+FreeBSD = "fbsd "
+Garuda = "garu "
+Gentoo = "gent "
+HardenedBSD = "hbsd "
+Illumos = "lum "
+Linux = "lnx "
+Macos = "mac "
+Manjaro = "mjo "
+Mariner = "mrn "
+MidnightBSD = "mid "
+Mint = "mint "
+NetBSD = "nbsd "
+NixOS = "nix "
+OpenBSD = "obsd "
+openSUSE = "osuse "
+OracleLinux = "orac "
+Pop = "pop "
+Raspbian = "rasp "
+Redhat = "rhl "
+RedHatEnterprise = "rhel "
+Redox = "redox "
+Solus = "sol "
+SUSE = "suse "
+Ubuntu = "ubnt "
+Unknown = "unk "
+Windows = "win "
+
+[package]
+symbol = "pkg 󰏗 "
+
+[perl]
+symbol = "pl  "
+
+[php]
+symbol = "php  "
+
+[pulumi]
+symbol = "pulumi "
+
+[purescript]
+symbol = "purs "
+
+[python]
+symbol = "py  "
+
+[raku]
+symbol = "raku "
+
+[ruby]
+symbol = "rb  "
+
+[rust]
+symbol = "rs 󱘗 "
+
+[scala]
+symbol = "scala "
+
+[spack]
+symbol = "spack "
+
+[sudo]
+symbol = "sudo "
+
+[swift]
+symbol = "swift  "
+
+[terraform]
+symbol = "terraform "
+
+[zig]
+symbol = "zig  "
+
+
+[battery]
+full_symbol = '🔋 '
+charging_symbol = '⚡️ '
+
+[[battery.display]]
+threshold = 30
+style = 'bold red'
+
+[buf]
+symbol = '🦬 '
