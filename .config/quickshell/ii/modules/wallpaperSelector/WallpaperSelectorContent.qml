@@ -334,16 +334,14 @@ MouseArea {
                                 iconSize: Appearance.font.pixelSize.larger
                             }
                             StyledToolTip {
-                                content: Translation.tr("Use the system file picker instead\nRight-click to make this the default behavior")
+                                text: Translation.tr("Use the system file picker instead\nRight-click to make this the default behavior")
                             }
                         }
 
                         ToolbarButton {
                             implicitWidth: height
                             onClicked: {
-                                const randomIndex = Math.floor(Math.random() * Wallpapers.folderModel.count);
-                                const filePath = Wallpapers.folderModel.get(randomIndex, "filePath");
-                                root.selectWallpaperPath(filePath);
+                                Wallpapers.randomFromCurrentFolder();
                             }
                             contentItem: MaterialSymbol {
                                 anchors.centerIn: parent
@@ -352,7 +350,7 @@ MouseArea {
                                 iconSize: Appearance.font.pixelSize.larger
                             }
                             StyledToolTip {
-                                content: Translation.tr("Pick random from this folder")
+                                text: Translation.tr("Pick random from this folder")
                             }
                         }
 
@@ -366,7 +364,7 @@ MouseArea {
                                 iconSize: Appearance.font.pixelSize.larger
                             }
                             StyledToolTip {
-                                content: Translation.tr("Click to toggle light/dark mode\n(applied when wallpaper is chosen)")
+                                text: Translation.tr("Click to toggle light/dark mode\n(applied when wallpaper is chosen)")
                             }
                         }
 
@@ -417,7 +415,7 @@ MouseArea {
                                 iconSize: Appearance.font.pixelSize.larger
                             }
                             StyledToolTip {
-                                content: Translation.tr("Cancel wallpaper selection")
+                                text: Translation.tr("Cancel wallpaper selection")
                             }
                         }
                     }
