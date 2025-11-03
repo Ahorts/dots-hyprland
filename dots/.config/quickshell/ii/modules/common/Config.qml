@@ -164,6 +164,10 @@ Singleton {
                         property bool hourMarks: false
                         property bool dateInClock: true
                         property bool constantlyRotate: false
+                        property bool useSineCookie: false
+                    }
+                    property JsonObject digital: JsonObject {
+                        property bool animateChange: true
                     }
                     
                 }
@@ -194,6 +198,7 @@ Singleton {
                 }
                 property bool bottom: false // Instead of top
                 property int cornerStyle: 0 // 0: Hug | 1: Float | 2: Plain rectangle
+                property bool floatStyleShadow: true // Show shadow behind bar when cornerStyle == 1 (Float)
                 property bool borderless: false // true for no grouping of items
                 property string topLeftIcon: "spark" // Options: "distro" or any icon name in ~/.config/quickshell/ii/assets/icons
                 property bool showBackground: true
@@ -221,6 +226,7 @@ Singleton {
                     property bool showItemId: false
                     property bool invertPinnedItems: true // Makes the below a whitelist for the tray and blacklist for the pinned area
                     property list<string> pinnedItems: [ ]
+                    property bool filterPassive: true
                 }
                 property JsonObject workspaces: JsonObject {
                     property bool monochromeIcons: true
@@ -303,6 +309,9 @@ Singleton {
                     property string to: "06:30"   // Format: "HH:mm", 24-hour time
                     property int colorTemperature: 5000
                 }
+                property JsonObject antiFlashbang: JsonObject {
+                    property bool enable: false
+                }
             }
 
             property JsonObject lock: JsonObject {
@@ -319,6 +328,7 @@ Singleton {
                     property bool unlockKeyring: true
                     property bool requirePasswordToPower: false
                 }
+                property bool materialShapeChars: true
             }
 
             property JsonObject media: JsonObject {
@@ -359,14 +369,22 @@ Singleton {
                     property real opacity: 0.3
                     property real contentRegionOpacity: 0.8
                 }
+                property JsonObject rect: JsonObject {
+                    property bool showAimLines: true
+                }
                 property JsonObject circle: JsonObject {
                     property int strokeWidth: 6
-                    property int padding: 40
+                    property int padding: 10
                 }
             }
 
             property JsonObject resources: JsonObject {
                 property int updateInterval: 3000
+            }
+
+            property JsonObject musicRecognition: JsonObject {
+                property int timeout: 16
+                property int interval: 4
             }
 
             property JsonObject search: JsonObject {
@@ -397,7 +415,7 @@ Singleton {
                     property int delay: 300 // Delay before sending request. Reduces (potential) rate limits and lag.
                 }
                 property JsonObject ai: JsonObject {
-                    property bool textFadeIn: true
+                    property bool textFadeIn: false
                 }
                 property JsonObject booru: JsonObject {
                     property bool allowNsfw: false
@@ -412,10 +430,11 @@ Singleton {
                     property bool bottom: false
                     property bool valueScroll: true
                     property bool clickless: false
-                    property real cornerRegionWidth: 250
-                    property real cornerRegionHeight: 2
+                    property int cornerRegionWidth: 250
+                    property int cornerRegionHeight: 5
                     property bool visualize: false
                     property bool clicklessCornerEnd: true
+                    property int clicklessCornerVerticalOffset: 1
                 }
 
                 property JsonObject quickToggles: JsonObject {
@@ -476,8 +495,8 @@ Singleton {
 
             property JsonObject workSafety: JsonObject {
                 property JsonObject enable: JsonObject {
-                    property bool wallpaper: true
-                    property bool clipboard: true
+                    property bool wallpaper: false
+                    property bool clipboard: false
                 }
                 property JsonObject triggerCondition: JsonObject {
                     property list<string> networkNameKeywords: ["airport", "cafe", "college", "company", "eduroam", "free", "guest", "public", "school", "university"]
