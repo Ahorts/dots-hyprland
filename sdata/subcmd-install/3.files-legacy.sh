@@ -59,6 +59,9 @@ case $SKIP_HYPRLAND in
   true) sleep 0;;
   *)
     warning_rsync_delete; v rsync -av --delete "${arg_excludes[@]}" dots/.config/hypr/ "$XDG_CONFIG_HOME"/hypr/
+    if [ "$OS_DISTRO_ID" = "fedora" ];then
+      v rsync -av "${REPO_ROOT}/dots-extra/fedora/hypr/hyprland/execs.conf" "$XDG_CONFIG_HOME/hypr/hyprland/execs.conf"
+    fi
     # When hypr/custom does not exist, we assume that it's the firstrun.
     if [ -d "$XDG_CONFIG_HOME/hypr/custom" ];then ii_firstrun=false;else ii_firstrun=true;fi
     t="$XDG_CONFIG_HOME/hypr/hyprland.conf"
@@ -79,13 +82,18 @@ case $SKIP_HYPRLAND in
       v cp dots/.config/hypr/hyprland.conf $t
     fi
     t="$XDG_CONFIG_HOME/hypr/hypridle.conf"
+    if [[ "$INSTALL_VIA_NIX" = true ]]; then
+      s=dots-extra/vianix/hypridle.conf
+    else
+      s=dots/.config/hypr/hypridle.conf
+    fi
     if [ -f $t ];then
       echo -e "${STY_BLUE}[$0]: \"$t\" already exists.${STY_RST}"
-      v cp -f dots/.config/hypr/hypridle.conf $t.new
+      v cp -f $s $t.new
       existed_hypridle_conf=y
     else
       echo -e "${STY_YELLOW}[$0]: \"$t\" does not exist yet.${STY_RST}"
-      v cp dots/.config/hypr/hypridle.conf $t
+      v cp $s $t
       existed_hypridle_conf=n
     fi
     t="$XDG_CONFIG_HOME/hypr/hyprlock.conf"
