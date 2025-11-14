@@ -10,7 +10,8 @@ add_newline = false
 # $character
 # """
 format = """
-$cmd_duration 󰜥 $directory $git_branch$git_status $all
+$cmd_duration 󰜥 $directory $git_branch$git_status $all ${custom.typescript} ${custom.react} $nodejs
+
 $character
 """
 
@@ -54,7 +55,7 @@ trim_at = ".companyname.com"
 disabled = false
 
 [line_break]
-disabled = false
+disabled = true
 
 [memory_usage]
 disabled = true
@@ -270,3 +271,16 @@ style = 'bold red'
 
 [buf]
 symbol = '🦬 '
+
+# [custom.typescript]
+# command = "tsc --version | cut -d ' ' -f 2"
+# detect_files = ['tsconfig.json', '*.tsx', '*.ts']
+# format = 'via [TypeScript  v$output](bold blue) '
+
+[custom.typescript]
+# 1. Try to grep package.json. 2. If empty, run tsc --version.
+command = '''ver=$(grep '"typescript"[[:space:]]*:' package.json 2>/dev/null | head -n1 | sed -n 's/.*: *"\([^"]*\)".*/\1/p' | sed 's/[\^~]//g'); if [ -n "$ver" ]; then echo "$ver"; else tsc --version | cut -d ' ' -f 2; fi'''
+
+detect_files = ['tsconfig.json', 'package.json'] 
+detect_extensions = ['ts', 'tsx']
+format = 'via [TypeScript  v$output](bold blue) '
