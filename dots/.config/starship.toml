@@ -281,6 +281,6 @@ symbol = '🦬 '
 # 1. Try to grep package.json. 2. If empty, run tsc --version.
 command = '''ver=$(grep '"typescript"[[:space:]]*:' package.json 2>/dev/null | head -n1 | sed -n 's/.*: *"\([^"]*\)".*/\1/p' | sed 's/[\^~]//g'); if [ -n "$ver" ]; then echo "$ver"; else tsc --version | cut -d ' ' -f 2; fi'''
 
-detect_files = ['tsconfig.json', 'package.json'] 
+detect_files = ['tsconfig.json'] 
 detect_extensions = ['ts', 'tsx']
 format = 'via [TypeScript  v$output](bold blue) '
