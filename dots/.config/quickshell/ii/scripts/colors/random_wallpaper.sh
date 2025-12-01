@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Default wallpaper directory
-DEFAULT_WALLPAPER_DIR="$HOME/wallpaper"
+DEFAULT_WALLPAPER_DIR="$HOME/Pictures/Wallpapers"
 
 # Script directory (where switchwall.sh is located)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
