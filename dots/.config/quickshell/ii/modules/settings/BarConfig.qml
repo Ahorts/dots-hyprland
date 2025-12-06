@@ -4,6 +4,8 @@ import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
 
+import QtQml.Models
+
 ContentPage {
     forceWidth: true
 
@@ -19,6 +21,8 @@ ContentPage {
             }
         }
     }
+
+    ConfigListView {}
     
     ContentSection {
         icon: "spoke"
