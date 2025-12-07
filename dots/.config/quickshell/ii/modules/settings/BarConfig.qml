@@ -48,6 +48,18 @@ ContentPage {
         }
     }
     
+    ContentSection {
+        icon: "ad"
+        title: Translation.tr("Active window")
+        ConfigSwitch {
+            buttonIcon: "crop_free"
+            text: Translation.tr("Use fixed size")
+            checked: Config.options.bar.activeWindow.fixedSize
+            onCheckedChanged: {
+                Config.options.bar.activeWindow.fixedSize = checked;
+            }
+        }
+    }
 
     ContentSection {
         icon: "notifications"

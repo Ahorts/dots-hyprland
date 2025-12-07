@@ -17,8 +17,13 @@ Item {
     property bool focusingThisMonitor: HyprlandData.activeWorkspace?.monitor == monitor?.name
     property var biggestWindow: HyprlandData.biggestWindowForWorkspace(HyprlandData.monitors[root.monitor?.id]?.activeWorkspace.id)
 
-    implicitWidth: colLayout.implicitWidth
-    implicitHeight: root.vertical ? colLayout.implicitWidth + 20 : 0
+    readonly property bool isFixedSize: Config.options.bar.activeWindow.fixedSize
+
+    readonly property int maxSize: 350
+    readonly property int fixedSize: root.vertical ? 150 : 225
+
+    implicitWidth: isFixedSize? fixedSize : Math.min(colLayout.implicitWidth + 20, maxSize)
+    implicitHeight: isFixedSize ? fixedSize : root.vertical ? colLayout.implicitWidth + 20 : 0
 
     property string classText: root.focusingThisMonitor && root.activeWindow?.activated && root.biggestWindow ? 
                 root.activeWindow?.appId :
@@ -41,8 +46,6 @@ Item {
 
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.left: parent.left
-        anchors.right: parent.right
         spacing: -4
 
         StyledText {
@@ -55,12 +58,11 @@ Item {
         }
 
         StyledText {
-            Layout.fillWidth: true
+            Layout.preferredWidth: root.isFixedSize ? root.fixedSize : Math.min(implicitWidth, maxSize)
             font.pixelSize: Appearance.font.pixelSize.small
             color: Appearance.colors.colOnLayer0
             elide: Text.ElideRight
             rotation: root.vertical ? 90 : 0
-        
             text: root.vertical ? root.classText : root.titleText
         }
 

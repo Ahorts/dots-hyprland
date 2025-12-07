@@ -37,35 +37,18 @@ Item { // Bar content region
     property var rightList: []
 
     onFullModelChanged: {
-        let left = []
-        let center = []
-        let right = []
-
-        let foundCenter = false
-
-        let anyCentered = fullModel.some(item => item.centered === true)
-
-        if (!anyCentered) {
+        const idx = fullModel.findIndex(item => item.centered)
+        
+        if (idx === -1) {
             leftList = []
             centerList = fullModel
             rightList = []
             return
         }
 
-        for (let item of fullModel) {
-            if (item.centered) {
-                center.push(item)
-                foundCenter = true
-            } else if (!foundCenter) {
-                left.push(item)
-            } else {
-                right.push(item)
-            }
-        }
-
-        leftList = left
-        centerList = center
-        rightList = right
+        leftList = fullModel.slice(0, idx)
+        centerList = [fullModel[idx]]
+        rightList = fullModel.slice(idx + 1)
     }
 
     // Background shadow
@@ -132,9 +115,9 @@ Item { // Bar content region
                 endRadius: Config.options.bar.layouts.left.length > 0 ? Appearance.rounding.verysmall : Appearance.rounding.full
 
                 Layout.alignment: Qt.AlignVCenter
-                Layout.leftMargin: Appearance.rounding.screenRounding
+                Layout.leftMargin: Appearance.rounding.screenRounding / 2
 
-                Component.onCompleted: leftSidebarButtonWidth = leftSideButtonGroup.width + 3 // spacing
+                Component.onCompleted: leftSidebarButtonWidth = leftSideButtonGroup.width - 8
 
                 LeftSidebarButton { // Left sidebar button
                     colBackground: barLeftSideMouseArea.hovered ? Appearance.colors.colLayer1Hover : ColorUtils.transparentize(Appearance.colors.colLayer1Hover, 1)
@@ -174,7 +157,6 @@ Item { // Bar content region
         }
     }
 
-    
     
     Item {
         id: middleSection
@@ -313,7 +295,7 @@ Item { // Bar content region
             BarGroup {
                 id: rightSideButtonGroup
                 Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
-                Layout.rightMargin: Appearance.rounding.screenRounding
+                Layout.rightMargin: Appearance.rounding.screenRounding / 2
                 Layout.fillWidth: false
 
                 startRadius: Config.options.bar.layouts.right.length > 0 ? Appearance.rounding.verysmall : Appearance.rounding.full

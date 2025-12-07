@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import qs.services
 import qs.modules.common.functions
 
 Singleton {
@@ -215,6 +216,9 @@ Singleton {
             }
 
             property JsonObject bar: JsonObject {
+                property JsonObject activeWindow: JsonObject {
+                    property bool fixedSize: false
+                }
                 property JsonObject autoHide: JsonObject {
                     property bool enable: false
                     property int hoverRegionWidth: 2
@@ -275,40 +279,34 @@ Singleton {
                     // And adding the dynamic components to leftover
                     property list<var> availableComponents: [
                         {
-                            id: "active_window",
-                            icon: "label",
-                            title: "Active window",
-                            centered: false
-                        },
-                        {
                             id: "date",
                             icon: "date_range",
                             title: "Date",
                             centered: false,
-                            tooltip: "It's not compatible with horizontal mode"
+                            tooltip: "A bit useless in horizontal as clock will cover it"
                         },
                         {
                             id: "battery",
                             icon: "battery_android_6",
                             title: "Battery",
-                            centered: false
+                            centered: false,
+                            tooltip: !Battery.available ? Translation.tr("Battery not found") : null
                         }
                     ]
                     property list<var> left: [
+                        {
+                            id: "active_window",
+                            icon: "label",
+                            title: "Active window",
+                            centered: false
+                        },
+                    ]
+                    property list<var> center: [
                         {
                             id: "music_player",
                             icon: "music_note",
                             title: "Music player",
                             centered: false
-                        }
-                    ]
-                    property list<var> center: [
-                        {
-                            id: "utility_buttons",
-                            icon: "build",
-                            title: "Utility buttons",
-                            centered: false,
-                            tooltip: "It's not compatible with vertical mode"
                         },
                         {
                             id: "workspaces",
@@ -324,6 +322,12 @@ Singleton {
                         }
                     ]
                     property list<var> right: [
+                        {
+                            id: "utility_buttons",
+                            icon: "build",
+                            title: "Utility buttons",
+                            centered: false
+                        },
                         {
                             id: "clock",
                             icon: "nest_clock_farsight_analog",

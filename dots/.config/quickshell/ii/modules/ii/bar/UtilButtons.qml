@@ -10,22 +10,25 @@ import Quickshell.Services.UPower
 
 Item {
     id: root
+    property bool vertical: false
     property bool borderless: Config.options.bar.borderless
-    implicitWidth: rowLayout.implicitWidth + rowLayout.spacing * 2
-    implicitHeight: rowLayout.implicitHeight
+    implicitWidth: gridLayout.implicitWidth + gridLayout.rowSpacing * 2
+    implicitHeight: gridLayout.implicitHeight + gridLayout.columnSpacing * 2
     
 
-    RowLayout {
-        id: rowLayout
+    GridLayout {
+        id: gridLayout
+        columns: root.vertical ? 1 : -1
+        rows: root.vertical ? -1 : 1
 
-        spacing: 4
+        rowSpacing: 4
+        columnSpacing: 4
         anchors.centerIn: parent
 
         Loader {
             active: Config.options.bar.utilButtons.showScreenSnip
             visible: Config.options.bar.utilButtons.showScreenSnip
             sourceComponent: CircleUtilButton {
-                
                 Layout.alignment: Qt.AlignVCenter
                 onClicked: Quickshell.execDetached(["qs", "-p", Quickshell.shellPath(""), "ipc", "call", "region", "screenshot"]);
                 MaterialSymbol {

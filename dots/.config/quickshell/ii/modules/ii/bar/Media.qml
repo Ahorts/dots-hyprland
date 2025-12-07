@@ -15,8 +15,10 @@ Item {
     readonly property MprisPlayer activePlayer: MprisController.activePlayer
     readonly property string cleanedTitle: StringUtils.cleanMusicTitle(activePlayer?.trackTitle) || Translation.tr("No media")
 
+    property int maxWidth: 300
+
     Layout.fillHeight: true
-    implicitWidth: rowLayout.implicitWidth + rowLayout.spacing * 2
+    implicitWidth: Math.min(rowLayout.implicitWidth + rowLayout.spacing * 10, maxWidth)
     implicitHeight: Appearance.sizes.barHeight
 
     Timer {

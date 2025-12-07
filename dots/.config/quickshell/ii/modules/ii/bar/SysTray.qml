@@ -12,7 +12,7 @@ Item {
     implicitWidth: gridLayout.implicitWidth
     implicitHeight: gridLayout.implicitHeight
     property bool vertical: false
-    property bool invertSide: false
+    property bool invertSide: Config?.options.bar.bottom
     property bool trayOverflowOpen: false
     property bool showSeparator: true
     property bool showOverflowMenu: true
