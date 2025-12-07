@@ -70,8 +70,8 @@ Rectangle {
 
             buttonIcon: "box"
             textRole: "title"
-            model: Config.options.bar.layouts.dynamicComps
-            enabled: Config.options.bar.layouts.dynamicComps.length >= 1
+            model: Config.options.bar.layouts.availableComponents
+            enabled: Config.options.bar.layouts.availableComponents.length >= 1
 
             onActivated: index => {
                 root.selectedCompIndex = index;
@@ -88,15 +88,19 @@ Rectangle {
             bottomRightRadius: Appearance.rounding.full
 
             buttonText: Translation.tr("Add component")
-            enabled: Config.options.bar.layouts.dynamicComps.length >= 1
+            enabled: Config.options.bar.layouts.availableComponents.length >= 1
 
             colBackground: Appearance.colors.colSecondaryContainer
             colBackgroundHover: Appearance.colors.colSecondaryContainerHover
             rippleColor: Appearance.colors.colSecondaryContainerActive
             
             onClicked: {
-                listModel.push(Config.options.bar.layouts.dynamicComps[root.selectedCompIndex]);
-                Config.options.bar.layouts.dynamicComps.splice(root.selectedCompIndex, 1);
+                if (Config.options.bar.layouts.availableComponents[root.selectedCompIndex] == null) { // small sanity check
+                    Config.options.bar.layouts.availableComponents.splice(root.selectedCompIndex, 1);
+                    return;
+                }
+                listModel.push(Config.options.bar.layouts.availableComponents[root.selectedCompIndex]);
+                Config.options.bar.layouts.availableComponents.splice(root.selectedCompIndex, 1);
                 root.updated(listModel);
             }
         }

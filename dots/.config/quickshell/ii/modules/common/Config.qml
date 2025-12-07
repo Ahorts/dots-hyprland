@@ -273,7 +273,7 @@ Singleton {
                 property JsonObject layouts: JsonObject {
                     // Only adding place-essential components to left-center-right
                     // And adding the dynamic components to leftover
-                    property list<var> dynamicComps: [
+                    property list<var> availableComponents: [
                         {
                             id: "system_monitor",
                             icon: "monitor_heart",

@@ -87,17 +87,46 @@ Item { // Bar content region
                 Layout.leftMargin: Appearance.rounding.screenRounding
                 colBackground: barLeftSideMouseArea.hovered ? Appearance.colors.colLayer1Hover : ColorUtils.transparentize(Appearance.colors.colLayer1Hover, 1)
             }
-
-            ActiveWindow {
-                visible: root.useShortenedForm === 0
-                Layout.rightMargin: Appearance.rounding.screenRounding
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-            }
         }
     }
 
-    Row { // Middle section
+    Item {
+        id: leftStopper
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            left: parent.left
+            leftMargin: 54
+        }
+        width: 1
+    }
+
+    RowLayout { // Left section
+        id: leftSection
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            left: leftStopper.right
+        }
+        spacing: 4
+
+        Repeater {
+            id: leftRepeater
+            model: Config.options.bar.layouts.left
+            delegate: BarComponent {
+                list: leftRepeater.model
+            }
+        }
+
+        /* ActiveWindow {
+            visible: root.useShortenedForm === 0
+            Layout.rightMargin: Appearance.rounding.screenRounding
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+        } */
+    }
+
+    RowLayout { // Middle section //!FIXME: add a 'center' button to components to center it properly
         id: middleSection
         anchors {
             top: parent.top
@@ -106,84 +135,46 @@ Item { // Bar content region
         }
         spacing: 4
 
-        BarGroup {
-            id: leftCenterGroup
-            anchors.verticalCenter: parent.verticalCenter
-            implicitWidth: root.centerSideModuleWidth
-
-            Resources {
-                alwaysShowAllResources: root.useShortenedForm === 2
-                Layout.fillWidth: root.useShortenedForm === 2
-            }
-
-            Media {
-                visible: root.useShortenedForm < 2
-                Layout.fillWidth: true
-            }
-        }
-
-        VerticalBarSeparator {
-            visible: Config.options?.bar.borderless
-        }
-
-        BarGroup {
-            id: middleCenterGroup
-            anchors.verticalCenter: parent.verticalCenter
-            padding: workspacesWidget.widgetPadding
-
-            Workspaces {
-                id: workspacesWidget
-                Layout.fillHeight: true
-                MouseArea {
-                    // Right-click to toggle overview
-                    anchors.fill: parent
-                    acceptedButtons: Qt.RightButton
-
-                    onPressed: event => {
-                        if (event.button === Qt.RightButton) {
-                            GlobalStates.overviewOpen = !GlobalStates.overviewOpen;
-                        }
-                    }
-                }
-            }
-        }
-
-        VerticalBarSeparator {
-            visible: Config.options?.bar.borderless
-        }
-
-        MouseArea {
-            id: rightCenterGroup
-            anchors.verticalCenter: parent.verticalCenter
-            implicitWidth: root.centerSideModuleWidth
-            implicitHeight: rightCenterGroupContent.implicitHeight
-
-            onPressed: {
-                GlobalStates.sidebarRightOpen = !GlobalStates.sidebarRightOpen;
-            }
-
-            BarGroup {
-                id: rightCenterGroupContent
-                anchors.fill: parent
-
-                ClockWidget {
-                    showDate: (Config.options.bar.verbose && root.useShortenedForm < 2)
-                    Layout.alignment: Qt.AlignVCenter
-                    Layout.fillWidth: true
-                }
-
-                UtilButtons {
-                    visible: (Config.options.bar.verbose && root.useShortenedForm === 0)
-                    Layout.alignment: Qt.AlignVCenter
-                }
-
-                BatteryIndicator {
-                    visible: (root.useShortenedForm < 2 && Battery.available)
-                    Layout.alignment: Qt.AlignVCenter
-                }
+        Repeater {
+            id: middleRepeater
+            model: Config.options.bar.layouts.center
+            delegate: BarComponent {
+                list: middleRepeater.model
             }
         }
     }
+
+    RowLayout { // Right section //!FIXME: add pinned apps as components and also set the right/left margin properly
+        id: rightSection
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            right: rightStopper.left
+        }
+        spacing: 4
+
+        Repeater {
+            id: rightRepeater
+            model: Config.options.bar.layouts.right
+            delegate: BarComponent {
+                list: rightRepeater.model
+            }
+        }
+    }
+
+
+    Item {
+        id: rightStopper
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            right: parent.right
+            rightMargin: 100
+        }
+        width: 1
+    }
+
+    
 
     FocusedScrollMouseArea { // Right side | scroll to change volume
         id: barRightSideMouseArea

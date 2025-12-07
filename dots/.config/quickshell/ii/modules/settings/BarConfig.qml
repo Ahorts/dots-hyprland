@@ -11,35 +11,36 @@ ContentPage {
 
 
     ContentSection {
-        icon: "format_align_left"
-        title: Translation.tr("Left side layout")
-        ConfigListView {
-            listModel: Config.options.bar.layouts.left
-            onUpdated: (newList) => {
-                Config.options.bar.layouts.left = newList
-            } 
+        icon: "mobile_layout"
+        title: Translation.tr("Bar layout")
+        ContentSubsection {
+            title: Translation.tr("Left layout")
+            tooltip: Translation.tr("Top layout in vertical mode")
+            ConfigListView {
+                listModel: Config.options.bar.layouts.left
+                onUpdated: (newList) => {
+                    Config.options.bar.layouts.left = newList
+                } 
+            }
         }
-    }
-    
-    ContentSection {
-        icon: "format_align_center"
-        title: Translation.tr("Center layout")
-        ConfigListView {
-            listModel: Config.options.bar.layouts.center
-            onUpdated: (newList) => {
-                Config.options.bar.layouts.center = newList
-            } 
+        ContentSubsection {
+            title: Translation.tr("Center layout")
+            ConfigListView {
+                listModel: Config.options.bar.layouts.center
+                onUpdated: (newList) => {
+                    Config.options.bar.layouts.center = newList
+                } 
+            }
         }
-    }
-    
-    ContentSection {
-        icon: "format_align_right"
-        title: Translation.tr("Right side layout")
-        ConfigListView {
-            listModel: Config.options.bar.layouts.right
-            onUpdated: (newList) => {
-                Config.options.bar.layouts.right = newList
-            } 
+        ContentSubsection {
+            title: Translation.tr("Right layout")
+            tooltip: Translation.tr("Bottom layout in vertical mode")
+            ConfigListView {
+                listModel: Config.options.bar.layouts.right
+                onUpdated: (newList) => {
+                    Config.options.bar.layouts.right = newList
+                } 
+            }
         }
     }
     

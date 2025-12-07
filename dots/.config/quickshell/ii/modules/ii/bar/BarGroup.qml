@@ -9,6 +9,8 @@ Item {
     implicitWidth: vertical ? Appearance.sizes.baseVerticalBarWidth : (gridLayout.implicitWidth + padding * 2)
     implicitHeight: vertical ? (gridLayout.implicitHeight + padding * 2) : Appearance.sizes.baseBarHeight
     default property alias items: gridLayout.children
+    property var startRadius // left - top
+    property var endRadius // right - bottom
 
     Rectangle {
         id: background
@@ -20,7 +22,10 @@ Item {
             rightMargin: root.vertical ? 4 : 0
         }
         color: Config.options?.bar.borderless ? "transparent" : Appearance.colors.colLayer1
-        radius: Appearance.rounding.small
+        topLeftRadius: startRadius
+        bottomLeftRadius: startRadius
+        topRightRadius: endRadius
+        bottomRightRadius: endRadius
     }
 
     GridLayout {

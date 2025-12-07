@@ -147,7 +147,8 @@ Item {
                 }
 
                 onClicked: {
-                    Config.options.bar.layouts.dynamicComps.push(modelData)
+                    if (modelData != null) 
+                        Config.options.bar.layouts.availableComponents.push(modelData)
                     let arr = wrapper.getOrderedList()
                     let removed = arr.splice(visualIndex, 1)
                     root.updated(arr)
