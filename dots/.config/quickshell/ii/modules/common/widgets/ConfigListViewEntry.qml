@@ -4,43 +4,57 @@ import QtQuick.Layouts
 import qs.modules.common
 import qs.modules.common.widgets
 
-MouseArea {
-    id: dragArea
+Item {
+    id: wrapper
     
     required property var modelData
 
-    property bool held: false
+    //!FIX COLORS
+    property color colBackground: Appearance.colors.colLayer3
+    property color colHover: Appearance.colors.colLayer3Hover
+    property color colActive: Appearance.colors.colLayer3Active
+
+    property color colTitle: Appearance.colors.colOnLayer0
 
     anchors {
-        left: parent?.left
         right: parent?.right
+        left: parent?.left
     }
     height: content.height
+    property int visualIndex: DelegateModel.itemsIndex
 
-    pressAndHoldInterval: 200
-    drag.target: held ? content : undefined
-    drag.axis: Drag.YAxis
 
-    onPressAndHold: held = true
-    onReleased: held = false
+    Behavior on y {
+        animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+    }
+
+    function getOrderedList() {
+        var ordered = []
+
+        for (var i = 0; i < visualModel.items.count; i++) {
+            var item = visualModel.items.get(i).model
+            ordered.push(item.modelData)
+        }
+
+        return ordered
+    }
 
     Rectangle {
         id: content
 
         anchors {
-            horizontalCenter: parent.horizontalCenter
+            left: parent.left
+            right: parent.right
             verticalCenter: parent.verticalCenter
         }
-        width: dragArea.width
-        height: column.implicitHeight + 4
+        
+        radius: Appearance.rounding.normal //! FIX raidus for material like visual
+        height: contentRow.implicitHeight + 4
 
-        border.width: 1
-        border.color: "lightsteelblue"
-
-        color: dragArea.held ? "lightsteelblue" : "white"
-        Behavior on color { ColorAnimation { duration: 100 } }
-
-        radius: 2
+        color: dragArea.held ? colActive : colBackground
+        Behavior on color {
+            animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
+        }
 
         Drag.active: dragArea.held
         Drag.source: dragArea
@@ -57,37 +71,114 @@ MouseArea {
             AnchorChanges {
                 target: content
                 anchors {
-                    horizontalCenter: undefined
+                    left: undefined
+                    right: undefined
                     verticalCenter: undefined
                 }
             }
         }
 
-        Column { // Content
-            id: column
+        RowLayout {
+            id: contentRow
             anchors {
-                fill: parent
-                margins: 2
+                left: parent.left
+                right: parent.right
+                verticalCenter: parent.verticalCenter
+                margins: 20
+            }
+            spacing: 20
+
+            MaterialSymbol {
+                id: dragIndicatorIcon
+                text: "drag_indicator"
+                iconSize: Appearance.font.pixelSize.huge
+                color: Appearance.colors.colOutline
+            }
+            
+            MaterialSymbol {
+                id: icon
+                text: modelData.icon
+                iconSize: Appearance.font.pixelSize.hugeass
+                color: Appearance.colors.colPrimary
             }
 
-            Text { text: qsTr('Name: ') + modelData.test }
-            Text { text: qsTr('Type: ') + modelData.test }
-            Text { text: qsTr('Age: ') + modelData.test }
-            Text { text: qsTr('Size: ') + modelData.test }
+            StyledText {
+                id: title
+                text: modelData.title
+                color: wrapper.colTitle
+
+                Layout.leftMargin: -10
+                font {
+                    family: Appearance.font.family.title
+                    pixelSize: Appearance.font.pixelSize.normal
+                }
+            }
+            
+            Item {
+                height: 40
+                Layout.fillWidth: true
+            }
+
+            RippleButton {
+                id: removeButton
+                implicitWidth: implicitHeight
+                MaterialSymbol {
+                    text: "close"
+                    anchors.centerIn: parent
+                    color: Appearance.colors.colPrimary
+                    iconSize: Appearance.font.pixelSize.huge
+                }
+
+                onClicked: {
+                    Config.options.bar.layouts.dynamicComps.push(modelData)
+                    let arr = wrapper.getOrderedList()
+                    let removed = arr.splice(visualIndex, 1)
+                    root.updated(arr)
+                }
+            }
         }
 
+        
     }
-
+    
     DropArea {
+        id: dropArea
         anchors {
             fill: parent
-            margins: 10
+            margins: 20
         }
 
         onEntered: (drag) => {
-            visualModel.items.move(
-                    drag.source.DelegateModel.itemsIndex,
-                    dragArea.DelegateModel.itemsIndex)
+            let fromIndex = drag.source.parent.visualIndex
+            let toIndex = wrapper.visualIndex
+            
+            visualModel.items.move(fromIndex, toIndex)
+        }
+    }
+
+    MouseArea {
+        id: dragArea
+
+        property bool held: false
+
+        anchors {
+            left: parent.left
+            top: parent.top
+            bottom: parent.bottom
+        }
+        width: 75 // ?FIXME
+
+        pressAndHoldInterval: 200
+
+        drag.target: held ? content : undefined
+        drag.axis: Drag.YAxis
+        drag.minimumY: 0
+        drag.maximumY: root.listModel.length * 40 + (root.listModel.length - 1) * 4
+
+        onPressAndHold: held = true
+        onReleased: {
+            root.updated(wrapper.getOrderedList())
+            held = false
         }
     }
 }

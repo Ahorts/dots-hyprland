@@ -16,6 +16,7 @@ ComboBox {
     property color colBackgroundHover: Appearance.colors.colSecondaryContainerHover
     property color colBackgroundActive: Appearance.colors.colSecondaryContainerActive
 
+    opacity: root.enabled ? 1 : 0.4
     implicitHeight: 40
     Layout.fillWidth: true
 

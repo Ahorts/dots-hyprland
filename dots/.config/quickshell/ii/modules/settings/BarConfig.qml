@@ -9,6 +9,41 @@ import QtQml.Models
 ContentPage {
     forceWidth: true
 
+
+    ContentSection {
+        icon: "format_align_left"
+        title: Translation.tr("Left side layout")
+        ConfigListView {
+            listModel: Config.options.bar.layouts.left
+            onUpdated: (newList) => {
+                Config.options.bar.layouts.left = newList
+            } 
+        }
+    }
+    
+    ContentSection {
+        icon: "format_align_center"
+        title: Translation.tr("Center layout")
+        ConfigListView {
+            listModel: Config.options.bar.layouts.center
+            onUpdated: (newList) => {
+                Config.options.bar.layouts.center = newList
+            } 
+        }
+    }
+    
+    ContentSection {
+        icon: "format_align_right"
+        title: Translation.tr("Right side layout")
+        ConfigListView {
+            listModel: Config.options.bar.layouts.right
+            onUpdated: (newList) => {
+                Config.options.bar.layouts.right = newList
+            } 
+        }
+    }
+    
+
     ContentSection {
         icon: "notifications"
         title: Translation.tr("Notifications")
@@ -22,8 +57,6 @@ ContentPage {
         }
     }
 
-    ConfigListView {}
-    
     ContentSection {
         icon: "spoke"
         title: Translation.tr("Positioning")

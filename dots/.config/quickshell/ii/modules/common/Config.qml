@@ -270,6 +270,57 @@ Singleton {
                         property bool showUnreadCount: false
                     }
                 }
+                property JsonObject layouts: JsonObject {
+                    // Only adding place-essential components to left-center-right
+                    // And adding the dynamic components to leftover
+                    property list<var> dynamicComps: [
+                        {
+                            id: "system_monitor",
+                            icon: "monitor_heart",
+                            title: "System monitor"
+                        },
+                        {
+                            id: "music_player",
+                            icon: "music_note",
+                            title: "Music player"
+                        },
+                        {
+                            id: "workspaces",
+                            icon: "workspaces",
+                            title: "Workspaces"
+                        },
+                        {
+                            id: "active_window",
+                            icon: "label",
+                            title: "Active window"
+                        },
+                        {
+                            id: "date",
+                            icon: "date_range",
+                            title: "Date"
+                        },
+                        {
+                            id: "clock",
+                            icon: "nest_clock_farsight_analog",
+                            title: "Clock"
+                        },
+                        {
+                            id: "utility_buttons",
+                            icon: "build",
+                            title: "Utility buttons"
+                        },
+                        {
+                            id: "battery",
+                            icon: "battery_android_6",
+                            title: "Battery"
+                        }
+                    ]
+                    //!TODO: Add initial comps
+                    property list<var> left: []
+                    property list<var> center: []
+                    property list<var> right: []
+
+                }
                 property JsonObject tooltips: JsonObject {
                     property bool clickToShow: false
                 }
