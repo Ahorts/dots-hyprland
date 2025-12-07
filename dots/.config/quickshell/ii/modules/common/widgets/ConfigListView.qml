@@ -60,9 +60,14 @@ Rectangle {
             margins: 10
         }
 
+        spacing: 4
+
         StyledComboBox {
             id: componentSelector
             
+            topRightRadius: Appearance.rounding.verysmall
+            bottomRightRadius: Appearance.rounding.verysmall
+
             buttonIcon: "box"
             textRole: "title"
             model: Config.options.bar.layouts.dynamicComps
@@ -76,9 +81,13 @@ Rectangle {
         RippleButton {
             id: addComponentButton
             implicitHeight: componentSelector.implicitHeight
-            //buttonRadius: Appearance.rounding.full // Maybe?
-            buttonText: Translation.tr("Add component")
 
+            topLeftRadius: Appearance.rounding.verysmall
+            bottomLeftRadius: Appearance.rounding.verysmall
+            topRightRadius: Appearance.rounding.full
+            bottomRightRadius: Appearance.rounding.full
+
+            buttonText: Translation.tr("Add component")
             enabled: Config.options.bar.layouts.dynamicComps.length >= 1
 
             colBackground: Appearance.colors.colSecondaryContainer

@@ -23,6 +23,11 @@ Button {
     property var altAction // When right clicking
     property var middleClickAction // When middle clicking
 
+    property real topLeftRadius: buttonEffectiveRadius
+    property real topRightRadius: buttonEffectiveRadius
+    property real bottomLeftRadius: buttonEffectiveRadius
+    property real bottomRightRadius: buttonEffectiveRadius
+
     property color colBackground: ColorUtils.transparentize(Appearance?.colors.colLayer1Hover, 1) || "transparent"
     property color colBackgroundHover: Appearance?.colors.colLayer1Hover ?? "#E5DFED"
     property color colBackgroundToggled: Appearance?.colors.colPrimary ?? "#65558F"
@@ -133,7 +138,10 @@ Button {
 
     background: Rectangle {
         id: buttonBackground
-        radius: root.buttonEffectiveRadius
+        topLeftRadius: root.topLeftRadius
+        topRightRadius: root.topRightRadius
+        bottomLeftRadius: root.bottomLeftRadius
+        bottomRightRadius: root.bottomRightRadius
         implicitHeight: 30
 
         color: root.buttonColor
@@ -146,7 +154,10 @@ Button {
             maskSource: Rectangle {
                 width: buttonBackground.width
                 height: buttonBackground.height
-                radius: root.buttonEffectiveRadius
+                topLeftRadius: root.topLeftRadius
+                topRightRadius: root.topRightRadius
+                bottomLeftRadius: root.bottomLeftRadius
+                bottomRightRadius: root.bottomRightRadius
             }
         }
 

@@ -48,7 +48,24 @@ Item {
             verticalCenter: parent.verticalCenter
         }
         
-        radius: Appearance.rounding.normal //! FIX raidus for material like visual
+        topLeftRadius: {
+            if (listModel.length == 1 || visualIndex == 0) return Appearance.rounding.full
+            return Appearance.rounding.verysmall
+        }
+        topRightRadius: {
+            if (listModel.length == 1 || visualIndex == 0) return Appearance.rounding.full
+            return Appearance.rounding.verysmall
+        }
+        bottomLeftRadius: {
+            if (listModel.length == 1 || visualIndex == listModel.length - 1) return Appearance.rounding.full
+            return Appearance.rounding.verysmall
+        }
+        bottomRightRadius: {
+            if (listModel.length == 1 || visualIndex == listModel.length - 1) return Appearance.rounding.full
+            return Appearance.rounding.verysmall
+        }
+        
+        
         height: contentRow.implicitHeight + 4
 
         color: dragArea.held ? colActive : colBackground
