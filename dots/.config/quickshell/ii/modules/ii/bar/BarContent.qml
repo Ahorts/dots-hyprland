@@ -25,6 +25,9 @@ Item { // Bar content region
         color: Appearance.colors.colOutlineVariant
     }
 
+    property real leftSidebarButtonWidth
+    property real rightSidebarButtonWidth: barRightSideMouseArea.implicitWidth - 10 // not sure about 10
+
     // Background shadow
     Loader {
         active: Config.options.bar.showBackground && Config.options.bar.cornerStyle === 1 && Config.options.bar.floatStyleShadow
@@ -37,6 +40,7 @@ Item { // Bar content region
     // Background
     Rectangle {
         id: barBackground
+        z: -10 // making sure its behind everything
         anchors {
             fill: parent
             margins: Config.options.bar.cornerStyle === 1 ? (Appearance.sizes.hyprlandGapsOut) : 0 // idk why but +1 is needed
@@ -82,11 +86,21 @@ Item { // Bar content region
             anchors.fill: parent
             spacing: 10
 
-            LeftSidebarButton { // Left sidebar button
+            BarGroup {
+                id: leftSideButtonGroup
+                startRadius: Appearance.rounding.full
+                endRadius: Config.options.bar.layouts.left.length > 0 ? Appearance.rounding.verysmall : Appearance.rounding.full
+
                 Layout.alignment: Qt.AlignVCenter
                 Layout.leftMargin: Appearance.rounding.screenRounding
-                colBackground: barLeftSideMouseArea.hovered ? Appearance.colors.colLayer1Hover : ColorUtils.transparentize(Appearance.colors.colLayer1Hover, 1)
+
+                Component.onCompleted: leftSidebarButtonWidth = leftSideButtonGroup.width + 3 // spacing
+
+                LeftSidebarButton { // Left sidebar button
+                    colBackground: barLeftSideMouseArea.hovered ? Appearance.colors.colLayer1Hover : ColorUtils.transparentize(Appearance.colors.colLayer1Hover, 1)
+                }
             }
+            
         }
     }
 
@@ -96,7 +110,7 @@ Item { // Bar content region
             top: parent.top
             bottom: parent.bottom
             left: parent.left
-            leftMargin: 54
+            leftMargin: Appearance.rounding.screenRounding + leftSidebarButtonWidth //!FIXME
         }
         width: 1
     }
@@ -115,6 +129,7 @@ Item { // Bar content region
             model: Config.options.bar.layouts.left
             delegate: BarComponent {
                 list: leftRepeater.model
+                barSection: 0
             }
         }
 
@@ -126,25 +141,108 @@ Item { // Bar content region
         } */
     }
 
-    RowLayout { // Middle section //!FIXME: add a 'center' button to components to center it properly
+    property var fullModel: Config.options.bar.layouts.center
+
+    property var leftList: []
+    property var centerList: []
+    property var rightList: []
+
+    onFullModelChanged: {
+        let left = []
+        let center = []
+        let right = []
+
+        let foundCenter = false
+
+        let anyCentered = fullModel.some(item => item.centered === true)
+
+        if (!anyCentered) {
+            leftList = []
+            centerList = fullModel
+            rightList = []
+            return
+        }
+
+        for (let item of fullModel) {
+            if (item.centered) {
+                center.push(item)
+                foundCenter = true
+            } else if (!foundCenter) {
+                left.push(item)
+            } else {
+                right.push(item)
+            }
+        }
+
+        leftList = left
+        centerList = center
+        rightList = right
+    }
+    
+    Item {
         id: middleSection
         anchors {
             top: parent.top
             bottom: parent.bottom
             horizontalCenter: parent.horizontalCenter
         }
-        spacing: 4
 
-        Repeater {
-            id: middleRepeater
-            model: Config.options.bar.layouts.center
-            delegate: BarComponent {
-                list: middleRepeater.model
+        RowLayout {
+            anchors {
+                top: parent.top
+                bottom: parent.bottom
+                right: centerCenter.left
+                margins: 4
+            }
+            Repeater {
+                id: middleLeftRepeater
+                model: root.leftList
+                delegate: BarComponent {
+                    list: Config.options.bar.layouts.center
+                    barSection: 1
+                    originalIndex: Config.options.bar.layouts.center.findIndex(e => e.id === modelData.id) // we have to recalculate the index because repeater.model has changed
+                }
             }
         }
+
+        RowLayout { //center
+            id: centerCenter
+            anchors {
+                top: parent.top
+                bottom: parent.bottom
+                horizontalCenter: parent.horizontalCenter
+            }
+            Repeater {
+                model: root.centerList
+                delegate: BarComponent {
+                    list: Config.options.bar.layouts.center
+                    barSection: 1
+                    originalIndex: Config.options.bar.layouts.center.findIndex(e => e.id === modelData.id)
+                }
+            }
+        }
+
+        RowLayout {
+            anchors {
+                top: parent.top
+                bottom: parent.bottom
+                left: centerCenter.right
+                margins: 4
+            }
+            Repeater {
+                id: middleRightRepeater
+                model: root.rightList
+                delegate: BarComponent {
+                    list: Config.options.bar.layouts.center
+                    barSection: 1
+                    originalIndex: Config.options.bar.layouts.center.findIndex(e => e.id === modelData.id)
+                }
+            }
+        }
+
     }
 
-    RowLayout { // Right section //!FIXME: add pinned apps as components and also set the right/left margin properly
+    RowLayout { // Right section
         id: rightSection
         anchors {
             top: parent.top
@@ -158,6 +256,7 @@ Item { // Bar content region
             model: Config.options.bar.layouts.right
             delegate: BarComponent {
                 list: rightRepeater.model
+                barSection: 2
             }
         }
     }
@@ -169,7 +268,7 @@ Item { // Bar content region
             top: parent.top
             bottom: parent.bottom
             right: parent.right
-            rightMargin: 100
+            rightMargin: rightSidebarButtonWidth
         }
         width: 1
     }
@@ -179,6 +278,7 @@ Item { // Bar content region
     FocusedScrollMouseArea { // Right side | scroll to change volume
         id: barRightSideMouseArea
 
+        z: -1
         anchors {
             top: parent.top
             bottom: parent.bottom
@@ -213,105 +313,106 @@ Item { // Bar content region
             spacing: 5
             layoutDirection: Qt.RightToLeft
 
-            RippleButton { // Right sidebar button
-                id: rightSidebarButton
-
+            BarGroup {
+                id: rightSideButtonGroup
                 Layout.alignment: Qt.AlignRight | Qt.AlignVCenter
                 Layout.rightMargin: Appearance.rounding.screenRounding
                 Layout.fillWidth: false
 
-                implicitWidth: indicatorsRowLayout.implicitWidth + 10 * 2
-                implicitHeight: indicatorsRowLayout.implicitHeight + 5 * 2
+                startRadius: Config.options.bar.layouts.right.length > 0 ? Appearance.rounding.verysmall : Appearance.rounding.full
+                endRadius: Appearance.rounding.full
 
-                buttonRadius: Appearance.rounding.full
-                colBackground: barRightSideMouseArea.hovered ? Appearance.colors.colLayer1Hover : ColorUtils.transparentize(Appearance.colors.colLayer1Hover, 1)
-                colBackgroundHover: Appearance.colors.colLayer1Hover
-                colRipple: Appearance.colors.colLayer1Active
-                colBackgroundToggled: Appearance.colors.colSecondaryContainer
-                colBackgroundToggledHover: Appearance.colors.colSecondaryContainerHover
-                colRippleToggled: Appearance.colors.colSecondaryContainerActive
-                toggled: GlobalStates.sidebarRightOpen
-                property color colText: toggled ? Appearance.m3colors.m3onSecondaryContainer : Appearance.colors.colOnLayer0
+                RippleButton { // Right sidebar button
+                    id: rightSidebarButton
 
-                Behavior on colText {
-                    animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
-                }
+                    implicitWidth: indicatorsRowLayout.implicitWidth + 10 * 2
+                    implicitHeight: indicatorsRowLayout.implicitHeight + 5 * 2
 
-                onPressed: {
-                    GlobalStates.sidebarRightOpen = !GlobalStates.sidebarRightOpen;
-                }
+                    buttonRadius: Appearance.rounding.full
+                    colBackground: barRightSideMouseArea.hovered ? Appearance.colors.colLayer1Hover : ColorUtils.transparentize(Appearance.colors.colLayer1Hover, 1)
+                    colBackgroundHover: Appearance.colors.colLayer1Hover
+                    colRipple: Appearance.colors.colLayer1Active
+                    colBackgroundToggled: Appearance.colors.colSecondaryContainer
+                    colBackgroundToggledHover: Appearance.colors.colSecondaryContainerHover
+                    colRippleToggled: Appearance.colors.colSecondaryContainerActive
+                    toggled: GlobalStates.sidebarRightOpen
+                    property color colText: toggled ? Appearance.m3colors.m3onSecondaryContainer : Appearance.colors.colOnLayer0
 
-                RowLayout {
-                    id: indicatorsRowLayout
-                    anchors.centerIn: parent
-                    property real realSpacing: 15
-                    spacing: 0
+                    Behavior on colText {
+                        animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
+                    }
 
-                    Revealer {
-                        reveal: Audio.sink?.audio?.muted ?? false
-                        Layout.fillHeight: true
-                        Layout.rightMargin: reveal ? indicatorsRowLayout.realSpacing : 0
-                        Behavior on Layout.rightMargin {
-                            animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+                    onPressed: {
+                        GlobalStates.sidebarRightOpen = !GlobalStates.sidebarRightOpen;
+                    }
+
+                    RowLayout {
+                        id: indicatorsRowLayout
+                        anchors.centerIn: parent
+                        property real realSpacing: 15
+                        spacing: 0
+
+                        Revealer {
+                            reveal: Audio.sink?.audio?.muted ?? false
+                            Layout.fillHeight: true
+                            Layout.rightMargin: reveal ? indicatorsRowLayout.realSpacing : 0
+                            Behavior on Layout.rightMargin {
+                                animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+                            }
+                            MaterialSymbol {
+                                text: "volume_off"
+                                iconSize: Appearance.font.pixelSize.larger
+                                color: rightSidebarButton.colText
+                            }
+                        }
+                        Revealer {
+                            reveal: Audio.source?.audio?.muted ?? false
+                            Layout.fillHeight: true
+                            Layout.rightMargin: reveal ? indicatorsRowLayout.realSpacing : 0
+                            Behavior on Layout.rightMargin {
+                                animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+                            }
+                            MaterialSymbol {
+                                text: "mic_off"
+                                iconSize: Appearance.font.pixelSize.larger
+                                color: rightSidebarButton.colText
+                            }
+                        }
+                        HyprlandXkbIndicator {
+                            Layout.alignment: Qt.AlignVCenter
+                            Layout.rightMargin: indicatorsRowLayout.realSpacing
+                            color: rightSidebarButton.colText
+                        }
+                        Revealer {
+                            reveal: Notifications.silent || Notifications.unread > 0
+                            Layout.fillHeight: true
+                            Layout.rightMargin: reveal ? indicatorsRowLayout.realSpacing : 0
+                            implicitHeight: reveal ? notificationUnreadCount.implicitHeight : 0
+                            implicitWidth: reveal ? notificationUnreadCount.implicitWidth : 0
+                            Behavior on Layout.rightMargin {
+                                animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+                            }
+                            NotificationUnreadCount {
+                                id: notificationUnreadCount
+                            }
                         }
                         MaterialSymbol {
-                            text: "volume_off"
+                            text: Network.materialSymbol
+                            iconSize: Appearance.font.pixelSize.larger
+                            color: rightSidebarButton.colText
+                        }
+                        MaterialSymbol {
+                            Layout.leftMargin: indicatorsRowLayout.realSpacing
+                            visible: BluetoothStatus.available
+                            text: BluetoothStatus.connected ? "bluetooth_connected" : BluetoothStatus.enabled ? "bluetooth" : "bluetooth_disabled"
                             iconSize: Appearance.font.pixelSize.larger
                             color: rightSidebarButton.colText
                         }
                     }
-                    Revealer {
-                        reveal: Audio.source?.audio?.muted ?? false
-                        Layout.fillHeight: true
-                        Layout.rightMargin: reveal ? indicatorsRowLayout.realSpacing : 0
-                        Behavior on Layout.rightMargin {
-                            animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
-                        }
-                        MaterialSymbol {
-                            text: "mic_off"
-                            iconSize: Appearance.font.pixelSize.larger
-                            color: rightSidebarButton.colText
-                        }
-                    }
-                    HyprlandXkbIndicator {
-                        Layout.alignment: Qt.AlignVCenter
-                        Layout.rightMargin: indicatorsRowLayout.realSpacing
-                        color: rightSidebarButton.colText
-                    }
-                    Revealer {
-                        reveal: Notifications.silent || Notifications.unread > 0
-                        Layout.fillHeight: true
-                        Layout.rightMargin: reveal ? indicatorsRowLayout.realSpacing : 0
-                        implicitHeight: reveal ? notificationUnreadCount.implicitHeight : 0
-                        implicitWidth: reveal ? notificationUnreadCount.implicitWidth : 0
-                        Behavior on Layout.rightMargin {
-                            animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
-                        }
-                        NotificationUnreadCount {
-                            id: notificationUnreadCount
-                        }
-                    }
-                    MaterialSymbol {
-                        text: Network.materialSymbol
-                        iconSize: Appearance.font.pixelSize.larger
-                        color: rightSidebarButton.colText
-                    }
-                    MaterialSymbol {
-                        Layout.leftMargin: indicatorsRowLayout.realSpacing
-                        visible: BluetoothStatus.available
-                        text: BluetoothStatus.connected ? "bluetooth_connected" : BluetoothStatus.enabled ? "bluetooth" : "bluetooth_disabled"
-                        iconSize: Appearance.font.pixelSize.larger
-                        color: rightSidebarButton.colText
-                    }
                 }
             }
 
-            SysTray {
-                visible: root.useShortenedForm === 0
-                Layout.fillWidth: false
-                Layout.fillHeight: true
-                invertSide: Config?.options.bar.bottom
-            }
+            
 
             Item {
                 Layout.fillWidth: true

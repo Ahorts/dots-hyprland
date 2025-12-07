@@ -13,6 +13,7 @@ Item {
     property bool borderless: Config.options.bar.borderless
     implicitWidth: rowLayout.implicitWidth + rowLayout.spacing * 2
     implicitHeight: rowLayout.implicitHeight
+    
 
     RowLayout {
         id: rowLayout
@@ -24,6 +25,7 @@ Item {
             active: Config.options.bar.utilButtons.showScreenSnip
             visible: Config.options.bar.utilButtons.showScreenSnip
             sourceComponent: CircleUtilButton {
+                
                 Layout.alignment: Qt.AlignVCenter
                 onClicked: Quickshell.execDetached(["qs", "-p", Quickshell.shellPath(""), "ipc", "call", "region", "screenshot"]);
                 MaterialSymbol {

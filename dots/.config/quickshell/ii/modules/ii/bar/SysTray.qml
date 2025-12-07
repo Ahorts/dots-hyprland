@@ -141,12 +141,12 @@ Item {
             }
         }
 
-        StyledText {
+        /* StyledText { //? its a bit useless for me
             Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
             font.pixelSize: Appearance.font.pixelSize.larger
             color: Appearance.colors.colSubtext
             text: "•"
             visible: root.showSeparator && SystemTray.items.values.length > 0
-        }
+        } */
     }
 }

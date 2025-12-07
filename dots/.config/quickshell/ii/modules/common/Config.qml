@@ -277,42 +277,56 @@ Singleton {
                         {
                             id: "system_monitor",
                             icon: "monitor_heart",
-                            title: "System monitor"
+                            title: "System monitor",
+                            centered: false
                         },
                         {
                             id: "music_player",
                             icon: "music_note",
-                            title: "Music player"
+                            title: "Music player",
+                            centered: false
                         },
                         {
                             id: "workspaces",
                             icon: "workspaces",
-                            title: "Workspaces"
+                            title: "Workspaces",
+                            centered: false
                         },
                         {
                             id: "active_window",
                             icon: "label",
-                            title: "Active window"
+                            title: "Active window",
+                            centered: false
                         },
                         {
                             id: "date",
                             icon: "date_range",
-                            title: "Date"
+                            title: "Date",
+                            centered: false
                         },
                         {
                             id: "clock",
                             icon: "nest_clock_farsight_analog",
-                            title: "Clock"
+                            title: "Clock",
+                            centered: false
                         },
                         {
                             id: "utility_buttons",
                             icon: "build",
-                            title: "Utility buttons"
+                            title: "Utility buttons",
+                            centered: false
                         },
                         {
                             id: "battery",
                             icon: "battery_android_6",
-                            title: "Battery"
+                            title: "Battery",
+                            centered: false
+                        },
+                        {
+                            id: "system_tray",
+                            icon: "system_update_alt",
+                            title: "System tray",
+                            centered: false
                         }
                     ]
                     //!TODO: Add initial comps

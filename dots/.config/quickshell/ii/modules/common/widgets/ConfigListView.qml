@@ -19,10 +19,26 @@ Rectangle {
     color: Appearance.colors.colLayer2
     radius: Appearance.rounding.large
 
+    property int barSection // 0: left, 1: center, 2: right
     property var listModel
     property int selectedCompIndex
 
     signal updated(var newList)
+
+    function toggleCenter(idx, currentList) {
+        if (currentList[idx].centered) {
+            currentList[idx].centered = false
+            root.updated(currentList)
+            return
+        }
+        for (let i = 0; i < currentList.length; i++) {
+            currentList[i].centered = (i === idx);
+        }
+
+        root.updated(currentList)
+    }
+
+
 
     DelegateModel {
         id: visualModel
@@ -30,7 +46,9 @@ Rectangle {
         model: {
             values: root.listModel
         }
-        delegate: ConfigListViewEntry {}
+        delegate: ConfigListViewEntry {
+            barSection: root.barSection
+        }
     }
 
     StyledListView {

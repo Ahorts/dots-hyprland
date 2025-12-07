@@ -21,10 +21,10 @@ Item {
             leftMargin: root.vertical ? 4 : 0
             rightMargin: root.vertical ? 4 : 0
         }
-        color: Config.options?.bar.borderless ? "transparent" : Appearance.colors.colLayer1
+        color: Config.options?.bar.borderless ? "transparent" : Appearance.colors.colLayer2
         topLeftRadius: startRadius
-        bottomLeftRadius: startRadius
-        topRightRadius: endRadius
+        bottomLeftRadius: root.vertical ? endRadius: startRadius
+        topRightRadius: root.vertical ? startRadius: endRadius
         bottomRightRadius: endRadius
     }
 

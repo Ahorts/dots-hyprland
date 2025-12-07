@@ -17,6 +17,7 @@ ContentPage {
             title: Translation.tr("Left layout")
             tooltip: Translation.tr("Top layout in vertical mode")
             ConfigListView {
+                barSection: 0
                 listModel: Config.options.bar.layouts.left
                 onUpdated: (newList) => {
                     Config.options.bar.layouts.left = newList
@@ -25,7 +26,9 @@ ContentPage {
         }
         ContentSubsection {
             title: Translation.tr("Center layout")
+            tooltip: Translation.tr("Center the component with the button")
             ConfigListView {
+                barSection: 1
                 listModel: Config.options.bar.layouts.center
                 onUpdated: (newList) => {
                     Config.options.bar.layouts.center = newList
@@ -36,6 +39,7 @@ ContentPage {
             title: Translation.tr("Right layout")
             tooltip: Translation.tr("Bottom layout in vertical mode")
             ConfigListView {
+                barSection: 2
                 listModel: Config.options.bar.layouts.right
                 onUpdated: (newList) => {
                     Config.options.bar.layouts.right = newList

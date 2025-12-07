@@ -8,9 +8,13 @@ import Quickshell
 Item {
     id: rootItem
 
+    property int barSection // 0: left, 1: center, 2: right
     property var list
     required property var modelData
     required property int index
+    property var originalIndex: index
+
+
 
     implicitWidth: wrapper.implicitWidth
 
@@ -20,14 +24,37 @@ Item {
         "system_monitor": systemMonitorComp,
         "clock": clockComp,
         "battery": batteryComp,
-        "utility_buttons": utilityButtonsComp
+        "utility_buttons": utilityButtonsComp,
+        "system_tray": systemTrayComp
     })
 
     BarGroup {
         id: wrapper
         anchors.verticalCenter: rootItem.verticalCenter
-        startRadius: index == 0 || list.length == 1 ? Appearance.rounding.full : Appearance.rounding.verysmall
-        endRadius: index == list.length - 1 || list.length == 1 ? Appearance.rounding.full : Appearance.rounding.verysmall
+        startRadius: {
+            const isFirst = originalIndex === 0
+            const isSingle = list.length === 1
+
+            if (barSection == 0 && isFirst) // special case: first item in left section
+                return Appearance.rounding.verysmall
+            
+            if (isFirst || isSingle)
+                return Appearance.rounding.full
+
+            return Appearance.rounding.verysmall
+        }
+        endRadius: {
+            const isLast = originalIndex === list.length - 1
+            const isSingle = list.length === 1
+
+            if (barSection == 2 && isLast) // special case: last item in right section
+                return Appearance.rounding.verysmall
+
+            if (isLast || isSingle)
+                return Appearance.rounding.full
+
+            return Appearance.rounding.verysmall
+        }
         items: Loader {
             id: loader
             active: true
@@ -44,7 +71,9 @@ Item {
     }
     Component {
         id: musicPlayerComp
-        Media {}
+        Media {
+            implicitWidth: 250 // Add an config option maybe?
+        }
     }
     Component {
         id: utilityButtonsComp
@@ -63,9 +92,14 @@ Item {
     Component {
         id: clockComp
         ClockWidget {
+            implicitWidth: 200 //!FIXME
             showDate: (Config.options.bar.verbose && root.useShortenedForm < 2)
-            Layout.alignment: Qt.AlignVCenter
-            Layout.fillWidth: true
+        }
+    }
+    Component {
+        id: systemTrayComp
+        SysTray {
+            invertSide: Config?.options.bar.bottom
         }
     }
     Component {

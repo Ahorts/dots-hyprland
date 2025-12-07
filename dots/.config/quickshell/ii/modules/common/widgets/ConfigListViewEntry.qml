@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 
+import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
 
@@ -15,6 +16,8 @@ Item {
     property color colActive: Appearance.colors.colLayer3Active
 
     property color colTitle: Appearance.colors.colOnLayer0
+
+    property int barSection
 
     anchors {
         right: parent?.right
@@ -137,6 +140,27 @@ Item {
             }
 
             RippleButton {
+                visible: barSection == 1 // only showing it on center layout
+                id: centerButton
+                implicitWidth: implicitHeight
+                Layout.rightMargin: -10
+                MaterialSymbol {
+                    text: "center_focus_strong"
+                    anchors.centerIn: parent
+                    color: Appearance.colors.colPrimary
+                    iconSize: Appearance.font.pixelSize.huge
+                    fill: modelData.centered ? 1 : 0
+                }
+                StyledToolTip {
+                    text: Translation.tr("Center")
+                }
+
+                onClicked: {
+                    root.toggleCenter(wrapper.visualIndex, wrapper.getOrderedList())
+                }
+            }
+
+            RippleButton {
                 id: removeButton
                 implicitWidth: implicitHeight
                 MaterialSymbol {
@@ -144,6 +168,9 @@ Item {
                     anchors.centerIn: parent
                     color: Appearance.colors.colPrimary
                     iconSize: Appearance.font.pixelSize.huge
+                }
+                StyledToolTip {
+                    text: Translation.tr("Close")
                 }
 
                 onClicked: {

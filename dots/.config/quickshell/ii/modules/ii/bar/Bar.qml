@@ -28,6 +28,7 @@ Scope {
             component: PanelWindow { // Bar window
                 id: barRoot
                 screen: barLoader.modelData
+                
 
                 Timer {
                     id: showBarTimer
