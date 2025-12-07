@@ -28,6 +28,46 @@ Item { // Bar content region
     property real leftSidebarButtonWidth
     property real rightSidebarButtonWidth: barRightSideMouseArea.implicitWidth - 10 // not sure about 10
 
+
+    ////// Definning places of center modules //////
+    property var fullModel: Config.options.bar.layouts.center
+
+    property var leftList: []
+    property var centerList: []
+    property var rightList: []
+
+    onFullModelChanged: {
+        let left = []
+        let center = []
+        let right = []
+
+        let foundCenter = false
+
+        let anyCentered = fullModel.some(item => item.centered === true)
+
+        if (!anyCentered) {
+            leftList = []
+            centerList = fullModel
+            rightList = []
+            return
+        }
+
+        for (let item of fullModel) {
+            if (item.centered) {
+                center.push(item)
+                foundCenter = true
+            } else if (!foundCenter) {
+                left.push(item)
+            } else {
+                right.push(item)
+            }
+        }
+
+        leftList = left
+        centerList = center
+        rightList = right
+    }
+
     // Background shadow
     Loader {
         active: Config.options.bar.showBackground && Config.options.bar.cornerStyle === 1 && Config.options.bar.floatStyleShadow
@@ -110,7 +150,7 @@ Item { // Bar content region
             top: parent.top
             bottom: parent.bottom
             left: parent.left
-            leftMargin: Appearance.rounding.screenRounding + leftSidebarButtonWidth //!FIXME
+            leftMargin: Appearance.rounding.screenRounding + leftSidebarButtonWidth
         }
         width: 1
     }
@@ -132,52 +172,9 @@ Item { // Bar content region
                 barSection: 0
             }
         }
-
-        /* ActiveWindow {
-            visible: root.useShortenedForm === 0
-            Layout.rightMargin: Appearance.rounding.screenRounding
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-        } */
     }
 
-    property var fullModel: Config.options.bar.layouts.center
-
-    property var leftList: []
-    property var centerList: []
-    property var rightList: []
-
-    onFullModelChanged: {
-        let left = []
-        let center = []
-        let right = []
-
-        let foundCenter = false
-
-        let anyCentered = fullModel.some(item => item.centered === true)
-
-        if (!anyCentered) {
-            leftList = []
-            centerList = fullModel
-            rightList = []
-            return
-        }
-
-        for (let item of fullModel) {
-            if (item.centered) {
-                center.push(item)
-                foundCenter = true
-            } else if (!foundCenter) {
-                left.push(item)
-            } else {
-                right.push(item)
-            }
-        }
-
-        leftList = left
-        centerList = center
-        rightList = right
-    }
+    
     
     Item {
         id: middleSection
@@ -192,7 +189,7 @@ Item { // Bar content region
                 top: parent.top
                 bottom: parent.bottom
                 right: centerCenter.left
-                margins: 4
+                rightMargin: 4
             }
             Repeater {
                 id: middleLeftRepeater
@@ -227,7 +224,7 @@ Item { // Bar content region
                 top: parent.top
                 bottom: parent.bottom
                 left: centerCenter.right
-                margins: 4
+                leftMargin: 4
             }
             Repeater {
                 id: middleRightRepeater

@@ -24,6 +24,48 @@ Item { // Bar content region
         color: Appearance.colors.colOutlineVariant
     }
 
+    property int topSidebarButtonHeight
+    property int bottomSidebarButtonHeight: barBottomSectionMouseArea.implicitHeight - 24 // not sure about 20
+
+    ////// Definning places of center modules //////
+    property var fullModel: Config.options.bar.layouts.center
+
+    property var leftList: []
+    property var centerList: []
+    property var rightList: []
+
+    onFullModelChanged: {
+        let left = []
+        let center = []
+        let right = []
+
+        let foundCenter = false
+
+        let anyCentered = fullModel.some(item => item.centered === true)
+
+        if (!anyCentered) {
+            leftList = []
+            centerList = fullModel
+            rightList = []
+            return
+        }
+
+        for (let item of fullModel) {
+            if (item.centered) {
+                center.push(item)
+                foundCenter = true
+            } else if (!foundCenter) {
+                left.push(item)
+            } else {
+                right.push(item)
+            }
+        }
+
+        leftList = left
+        centerList = center
+        rightList = right
+    }
+
     // Background shadow
     Loader {
         active: Config.options.bar.showBackground && Config.options.bar.cornerStyle === 1
@@ -67,11 +109,23 @@ Item { // Bar content region
             anchors.fill: parent
             spacing: 10
 
-            Bar.LeftSidebarButton { // Left sidebar button
+            Bar.BarGroup {
+                id: topSidebarButtonGroup
+                vertical: true
                 Layout.alignment: Qt.AlignHCenter
                 Layout.topMargin: (Appearance.sizes.baseVerticalBarWidth - implicitWidth) / 2 + Appearance.sizes.hyprlandGapsOut
-                colBackground: barTopSectionMouseArea.hovered ? Appearance.colors.colLayer1Hover : ColorUtils.transparentize(Appearance.colors.colLayer1Hover, 1)
+
+                startRadius: Appearance.rounding.full
+                endRadius: Config.options.bar.layouts.left.length > 0 ? Appearance.rounding.verysmall : Appearance.rounding.full
+
+                Component.onCompleted: topSidebarButtonHeight = leftButton.height - 5
+
+                Bar.LeftSidebarButton {
+                    id: leftButton
+                    colBackground: barTopSectionMouseArea.hovered ? Appearance.colors.colLayer1Hover : ColorUtils.transparentize(Appearance.colors.colLayer1Hover, 1)
+                }
             }
+            
 
             Item {
                 Layout.fillHeight: true
@@ -80,84 +134,132 @@ Item { // Bar content region
         }
     }
 
-    Column { // Middle section
-        id: middleSection
-        anchors.centerIn: parent
+    Item {
+        id: topStopper
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: parent.top
+            topMargin: Appearance.rounding.screenRounding + topSidebarButtonHeight //!FIXME
+        }
+        height: 1
+    }
+
+    ColumnLayout { // Top section
+        id: topSection
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: topStopper.bottom
+        }
         spacing: 4
 
-        Bar.BarGroup {
-            vertical: true
-            padding: 8
-            Resources {
-                Layout.fillWidth: true
-                Layout.fillHeight: false
-            }
-            
-            HorizontalBarSeparator {}
-
-            VerticalMedia {
-                Layout.fillWidth: true
-                Layout.fillHeight: false
-            }
-        }
-
-        HorizontalBarSeparator {
-            visible: Config.options?.bar.borderless
-        }
-
-        Bar.BarGroup {
-            id: middleCenterGroup
-            vertical: true
-            padding: 6
-
-            Bar.Workspaces {
-                id: workspacesWidget
+        Repeater {
+            id: leftRepeater
+            model: Config.options.bar.layouts.left
+            delegate: Bar.BarComponent {
                 vertical: true
-                MouseArea {
-                    // Right-click to toggle overview
-                    anchors.fill: parent
-                    acceptedButtons: Qt.RightButton
+                list: leftRepeater.model
+                barSection: 0
+            }
+        }
+    }
 
-                    onPressed: event => {
-                        if (event.button === Qt.RightButton) {
-                            GlobalStates.overviewOpen = !GlobalStates.overviewOpen;
-                        }
-                    }
+    Item {
+        id: middleSection
+        anchors {
+            left: parent.left
+            right: parent.right
+            verticalCenter: parent.verticalCenter
+        }
+
+        ColumnLayout {
+            anchors {
+                left: parent.left
+                right: parent.right
+                bottom: centerCenter.top
+                bottomMargin: 4
+            }
+            Repeater {
+                id: middleLeftRepeater
+                model: root.leftList
+                delegate: Bar.BarComponent {
+                    vertical: true
+                    list: Config.options.bar.layouts.center
+                    barSection: 1
+                    originalIndex: Config.options.bar.layouts.center.findIndex(e => e.id === modelData.id) // we have to recalculate the index because repeater.model has changed
                 }
             }
         }
 
-        HorizontalBarSeparator {
-            visible: Config.options?.bar.borderless
+        ColumnLayout { //center
+            id: centerCenter
+            anchors {
+                left: parent.left
+                right: parent.right
+                verticalCenter: parent.verticalCenter
+            }
+            Repeater {
+                model: root.centerList
+                delegate: Bar.BarComponent {
+                    vertical: true
+                    list: Config.options.bar.layouts.center
+                    barSection: 1
+                    originalIndex: Config.options.bar.layouts.center.findIndex(e => e.id === modelData.id)
+                }
+            }
         }
 
-        Bar.BarGroup {
-            vertical: true
-            padding: 8
-            
-            VerticalClockWidget {
-                Layout.fillWidth: true
-                Layout.fillHeight: false
+        ColumnLayout {
+            anchors {
+                left: parent.left
+                right: parent.right
+                top: centerCenter.bottom
+                topMargin: 4
             }
-
-            HorizontalBarSeparator {}
-
-            VerticalDateWidget {
-                Layout.fillWidth: true
-                Layout.fillHeight: false
+            Repeater {
+                id: middleRightRepeater
+                model: root.rightList
+                delegate: Bar.BarComponent {
+                    vertical: true
+                    list: Config.options.bar.layouts.center
+                    barSection: 1
+                    originalIndex: Config.options.bar.layouts.center.findIndex(e => e.id === modelData.id)
+                }
             }
-
-            HorizontalBarSeparator {
-                visible: Battery.available
-            }
-
-            BatteryIndicator {
-                visible: Battery.available
-                Layout.fillWidth: true
-                Layout.fillHeight: false
-            }
-            
         }
+
+    }
+
+    ColumnLayout { // Bottom section
+        id: bottomSection
+        anchors {
+            left: parent.left
+            right: parent.right
+            bottom: bottomStopper.top
+        }
+        spacing: 4
+
+        Repeater {
+            id: rightRepeater
+            model: Config.options.bar.layouts.right
+            delegate: Bar.BarComponent {
+                vertical: true
+                list: rightRepeater.model
+                barSection: 2
+            }
+        }
+    }
+
+    Item {
+        id: bottomStopper
+        anchors {
+            left: parent.left
+            right: parent.right
+            bottom: parent.bottom
+            bottomMargin: Appearance.rounding.screenRounding + bottomSidebarButtonHeight
+        }
+        height: 1
     }
 
     FocusedScrollMouseArea { // Bottom section | scroll to change volume
@@ -190,19 +292,24 @@ Item { // Bar content region
                 Layout.fillHeight: true 
             }
 
-            Bar.SysTray {
+            /* Bar.SysTray {
                 vertical: true
                 Layout.fillWidth: true
                 Layout.fillHeight: false
                 invertSide: Config?.options.bar.bottom
-            }
+            } */
 
-            RippleButton { // Right sidebar button
-                id: rightSidebarButton
-
+            Bar.BarGroup {
+                vertical: true
                 Layout.alignment: Qt.AlignBottom | Qt.AlignHCenter
                 Layout.bottomMargin: Appearance.rounding.screenRounding
                 Layout.fillHeight: false
+
+                startRadius: Config.options.bar.layouts.right.length > 0 ? Appearance.rounding.verysmall : Appearance.rounding.full
+                endRadius: Appearance.rounding.full
+
+            RippleButton { // Right sidebar button
+                id: rightSidebarButton
 
                 implicitHeight: indicatorsColumnLayout.implicitHeight + 4 * 2
                 implicitWidth: indicatorsColumnLayout.implicitWidth + 6 * 2
@@ -292,6 +399,7 @@ Item { // Bar content region
                         color: rightSidebarButton.colText
                     }
                 }
+            }
             }
         }
     }

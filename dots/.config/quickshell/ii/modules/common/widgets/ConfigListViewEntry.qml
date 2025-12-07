@@ -139,6 +139,24 @@ Item {
                 Layout.fillWidth: true
             }
 
+            Loader {
+                Layout.rightMargin: -10
+                active: "tooltip" in modelData
+                sourceComponent: RippleButton {
+                    implicitWidth: implicitHeight
+                    MaterialSymbol {
+                        text: "info"
+                        anchors.centerIn: parent
+                        color: Appearance.colors.colPrimary
+                        iconSize: Appearance.font.pixelSize.huge
+                    }
+                    StyledToolTip {
+                        text: modelData.tooltip
+                    }
+                }
+            }
+            
+
             RippleButton {
                 visible: barSection == 1 // only showing it on center layout
                 id: centerButton
@@ -152,7 +170,7 @@ Item {
                     fill: modelData.centered ? 1 : 0
                 }
                 StyledToolTip {
-                    text: Translation.tr("Center")
+                    text: Translation.tr("Center the component")
                 }
 
                 onClicked: {

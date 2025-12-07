@@ -17,7 +17,7 @@ MouseArea {
     readonly property string cleanedTitle: StringUtils.cleanMusicTitle(activePlayer?.trackTitle) || Translation.tr("No media")
 
     Layout.fillHeight: true
-    implicitHeight: mediaCircProg.implicitHeight
+    implicitHeight: mediaCircProg.implicitHeight + 10 // +10 for padding it looks so small if we dont add it
     implicitWidth: Appearance.sizes.verticalBarWidth
 
     Timer {

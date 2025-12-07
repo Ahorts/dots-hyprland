@@ -275,24 +275,6 @@ Singleton {
                     // And adding the dynamic components to leftover
                     property list<var> availableComponents: [
                         {
-                            id: "system_monitor",
-                            icon: "monitor_heart",
-                            title: "System monitor",
-                            centered: false
-                        },
-                        {
-                            id: "music_player",
-                            icon: "music_note",
-                            title: "Music player",
-                            centered: false
-                        },
-                        {
-                            id: "workspaces",
-                            icon: "workspaces",
-                            title: "Workspaces",
-                            centered: false
-                        },
-                        {
                             id: "active_window",
                             icon: "label",
                             title: "Active window",
@@ -302,24 +284,50 @@ Singleton {
                             id: "date",
                             icon: "date_range",
                             title: "Date",
-                            centered: false
-                        },
-                        {
-                            id: "clock",
-                            icon: "nest_clock_farsight_analog",
-                            title: "Clock",
-                            centered: false
-                        },
-                        {
-                            id: "utility_buttons",
-                            icon: "build",
-                            title: "Utility buttons",
-                            centered: false
+                            centered: false,
+                            tooltip: "It's not compatible with horizontal mode"
                         },
                         {
                             id: "battery",
                             icon: "battery_android_6",
                             title: "Battery",
+                            centered: false
+                        }
+                    ]
+                    property list<var> left: [
+                        {
+                            id: "music_player",
+                            icon: "music_note",
+                            title: "Music player",
+                            centered: false
+                        }
+                    ]
+                    property list<var> center: [
+                        {
+                            id: "utility_buttons",
+                            icon: "build",
+                            title: "Utility buttons",
+                            centered: false,
+                            tooltip: "It's not compatible with vertical mode"
+                        },
+                        {
+                            id: "workspaces",
+                            icon: "workspaces",
+                            title: "Workspaces",
+                            centered: false
+                        },
+                        {
+                            id: "system_monitor",
+                            icon: "monitor_heart",
+                            title: "System monitor",
+                            centered: false
+                        }
+                    ]
+                    property list<var> right: [
+                        {
+                            id: "clock",
+                            icon: "nest_clock_farsight_analog",
+                            title: "Clock",
                             centered: false
                         },
                         {
@@ -329,10 +337,6 @@ Singleton {
                             centered: false
                         }
                     ]
-                    //!TODO: Add initial comps
-                    property list<var> left: []
-                    property list<var> center: []
-                    property list<var> right: []
 
                 }
                 property JsonObject tooltips: JsonObject {

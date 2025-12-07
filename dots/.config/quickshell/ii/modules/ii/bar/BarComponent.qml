@@ -5,6 +5,8 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 
+import qs.modules.ii.verticalBar as Vertical
+
 Item {
     id: rootItem
 
@@ -13,10 +15,10 @@ Item {
     required property var modelData
     required property int index
     property var originalIndex: index
-
-
+    property bool vertical: false
 
     implicitWidth: wrapper.implicitWidth
+    implicitHeight: wrapper.implicitHeight
 
     property var compMap: ({
         "workspaces": workspaceComp,
@@ -25,12 +27,30 @@ Item {
         "clock": clockComp,
         "battery": batteryComp,
         "utility_buttons": utilityButtonsComp,
-        "system_tray": systemTrayComp
+        "system_tray": systemTrayComp,
+        "active_window": activeWindowComp
+    })
+
+    property var verticalCompMap: ({
+        "workspaces": workspaceCompVert,
+        "music_player": musicPlayerCompVert,
+        "system_monitor": systemMonitorCompVert,
+        "clock": clockCompVert,
+        "battery": batteryCompVert,
+        "utility_buttons": utilityButtonsComp,
+        "system_tray": systemTrayCompVert,
+        "date": dateCompVert,
+        "active_window": activeWindowCompVert
     })
 
     BarGroup {
         id: wrapper
-        anchors.verticalCenter: rootItem.verticalCenter
+        anchors {
+            verticalCenter: root.vertical ? rootItem.verticalCenter : undefined
+            horizontalCenter: root.vertical ? undefined : rootItem.horizontalCenter
+        }
+        
+        vertical: rootItem.vertical
         startRadius: {
             const isFirst = originalIndex === 0
             const isSingle = list.length === 1
@@ -58,15 +78,43 @@ Item {
         items: Loader {
             id: loader
             active: true
-            sourceComponent: compMap[modelData.id]
+            sourceComponent: vertical ? verticalCompMap[modelData.id] : compMap[modelData.id]
         }
     }
     
-    
+    Component {
+        id: activeWindowCompVert
+         ActiveWindow {
+            vertical: true
+        }
+    }
+    Component {
+        id: activeWindowComp
+         ActiveWindow {
+            visible: root.useShortenedForm === 0
+            Layout.rightMargin: Appearance.rounding.screenRounding
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+        }
+    }
     Component {
         id: systemMonitorComp
         Resources {
-            alwaysShowAllResources: true
+            alwaysShowAllResources: true //FIXME
+        }
+    }
+    Component {
+        id: systemMonitorCompVert
+        Vertical.Resources {
+            Layout.fillWidth: true
+            Layout.fillHeight: false
+        }
+    }
+    Component {
+        id: musicPlayerCompVert
+        Vertical.VerticalMedia {
+            Layout.fillWidth: true
+            Layout.fillHeight: false
         }
     }
     Component {
@@ -90,6 +138,28 @@ Item {
         }
     }
     Component {
+        id: batteryCompVert
+        Vertical.BatteryIndicator {
+            visible: Battery.available
+            Layout.fillWidth: true
+            Layout.fillHeight: false
+        }
+    }
+    Component {
+        id: dateCompVert
+        Vertical.VerticalDateWidget {
+            Layout.fillWidth: true
+            Layout.fillHeight: false
+        }
+    }
+    Component {
+        id: clockCompVert
+        Vertical.VerticalClockWidget {
+            Layout.fillWidth: true
+            Layout.fillHeight: false
+        }
+    }
+    Component {
         id: clockComp
         ClockWidget {
             implicitWidth: 200 //!FIXME
@@ -97,9 +167,33 @@ Item {
         }
     }
     Component {
+        id: systemTrayCompVert
+        SysTray {
+            vertical: true
+            invertSide: Config?.options.bar.bottom
+        }
+    }
+    Component {
         id: systemTrayComp
         SysTray {
             invertSide: Config?.options.bar.bottom
+        }
+    }
+    Component {
+        id: workspaceCompVert
+        Workspaces {
+            vertical: true
+            MouseArea {
+                // Right-click to toggle overview
+                anchors.fill: parent
+                acceptedButtons: Qt.RightButton
+
+                onPressed: event => {
+                    if (event.button === Qt.RightButton) {
+                        GlobalStates.overviewOpen = !GlobalStates.overviewOpen;
+                    }
+                }
+            }
         }
     }
     Component {
