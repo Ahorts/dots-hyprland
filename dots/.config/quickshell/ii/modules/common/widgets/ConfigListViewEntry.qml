@@ -10,10 +10,9 @@ Item {
     
     required property var modelData
 
-    //!FIX COLORS
-    property color colBackground: Appearance.colors.colLayer3
-    property color colHover: Appearance.colors.colLayer3Hover
-    property color colActive: Appearance.colors.colLayer3Active
+    property color colBackground: visualIndex % 2 == 0 ? Appearance.colors.colLayer3 : Appearance.colors.colLayer2
+    property color colHover: visualIndex % 2 == 0 ? Appearance.colors.colLayer3Hover : Appearance.colors.colLayer2Hover
+    property color colActive: visualIndex % 2 == 0 ? Appearance.colors.colLayer3Active : Appearance.colors.colLayer2Active
 
     property color colTitle: Appearance.colors.colOnLayer0
 
@@ -42,6 +41,16 @@ Item {
         return ordered
     }
 
+    property real bottomRadius: {
+        if (listModel.length == 1 || visualIndex == listModel.length - 1) return Appearance.rounding.full
+        return Appearance.rounding.verysmall
+    }
+
+    property real topRadius: {
+        if (listModel.length == 1 || visualIndex == 0) return Appearance.rounding.full
+        return Appearance.rounding.verysmall
+    }
+
     Rectangle {
         id: content
 
@@ -50,24 +59,21 @@ Item {
             right: parent.right
             verticalCenter: parent.verticalCenter
         }
-        
-        topLeftRadius: {
-            if (listModel.length == 1 || visualIndex == 0) return Appearance.rounding.full
-            return Appearance.rounding.verysmall
+
+        scale: dragArea.held ? 1.02 : 1
+        opacity: dragArea.held ? 0.8 : 1
+
+        Behavior on scale {
+            animation: Appearance.animation.elementResize.numberAnimation.createObject(this)
         }
-        topRightRadius: {
-            if (listModel.length == 1 || visualIndex == 0) return Appearance.rounding.full
-            return Appearance.rounding.verysmall
-        }
-        bottomLeftRadius: {
-            if (listModel.length == 1 || visualIndex == listModel.length - 1) return Appearance.rounding.full
-            return Appearance.rounding.verysmall
-        }
-        bottomRightRadius: {
-            if (listModel.length == 1 || visualIndex == listModel.length - 1) return Appearance.rounding.full
-            return Appearance.rounding.verysmall
+        Behavior on opacity {
+            animation: Appearance.animation.elementResize.numberAnimation.createObject(this)
         }
         
+        topLeftRadius: topRadius
+        topRightRadius: topRadius
+        bottomLeftRadius: bottomRadius
+        bottomRightRadius: bottomRadius
         
         height: contentRow.implicitHeight + 4
 
@@ -138,24 +144,6 @@ Item {
                 height: 40
                 Layout.fillWidth: true
             }
-
-            Loader {
-                Layout.rightMargin: -10
-                active: "tooltip" in modelData
-                sourceComponent: RippleButton {
-                    implicitWidth: implicitHeight
-                    MaterialSymbol {
-                        text: "info"
-                        anchors.centerIn: parent
-                        color: Appearance.colors.colPrimary
-                        iconSize: Appearance.font.pixelSize.huge
-                    }
-                    StyledToolTip {
-                        text: modelData.tooltip
-                    }
-                }
-            }
-            
 
             RippleButton {
                 visible: barSection == 1 // only showing it on center layout
@@ -229,7 +217,7 @@ Item {
             top: parent.top
             bottom: parent.bottom
         }
-        width: 75 // ?FIXME
+        width: 50
 
         pressAndHoldInterval: 200
 

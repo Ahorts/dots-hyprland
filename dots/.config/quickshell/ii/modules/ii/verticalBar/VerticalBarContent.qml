@@ -156,8 +156,7 @@ Item { // Bar content region
 
         ColumnLayout {
             anchors {
-                left: parent.left
-                right: parent.right
+                horizontalCenter: parent.horizontalCenter
                 bottom: centerCenter.top
                 bottomMargin: 4
             }

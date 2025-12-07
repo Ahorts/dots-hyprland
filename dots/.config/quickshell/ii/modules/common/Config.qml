@@ -282,15 +282,13 @@ Singleton {
                             id: "date",
                             icon: "date_range",
                             title: "Date",
-                            centered: false,
-                            tooltip: "A bit useless in horizontal as clock will cover it"
+                            centered: false
                         },
                         {
                             id: "battery",
                             icon: "battery_android_6",
                             title: "Battery",
-                            centered: false,
-                            tooltip: !Battery.available ? Translation.tr("Battery not found") : null
+                            centered: false
                         }
                     ]
                     property list<var> left: [

@@ -15,6 +15,12 @@ Item {
     implicitWidth: gridLayout.implicitWidth + gridLayout.rowSpacing * 2
     implicitHeight: gridLayout.implicitHeight + gridLayout.columnSpacing * 2
     
+    Behavior on implicitWidth {
+        animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+    }
+    Behavior on implicitHeight {
+        animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+    }
 
     GridLayout {
         id: gridLayout

@@ -25,6 +25,10 @@ ComboBox {
     implicitHeight: 40
     Layout.fillWidth: true
 
+    Behavior on opacity {
+        animation: Appearance.animation.elementResize.numberAnimation.createObject(this)
+    }
+
     background: Rectangle {
         topLeftRadius: root.topLeftRadius
         topRightRadius: root.topRightRadius

@@ -34,14 +34,17 @@ Button {
     property color colBackgroundToggledHover: Appearance?.colors.colPrimaryHover ?? "#77699C"
     property color colRipple: Appearance?.colors.colLayer1Active ?? "#D6CEE2"
     property color colRippleToggled: Appearance?.colors.colPrimaryActive ?? "#D6CEE2"
-
     opacity: root.enabled ? 1 : 0.4
     property color buttonColor: ColorUtils.transparentize(root.toggled ? 
         (root.hovered ? colBackgroundToggledHover : 
             colBackgroundToggled) :
         (root.hovered ? colBackgroundHover : 
-            colBackground), root.enabled ? 0 : 1)
+            colBackground), root.enabled ? 0 : 0)
     property color rippleColor: root.toggled ? colRippleToggled : colRipple
+
+    Behavior on opacity {
+        animation: Appearance.animation.elementResize.numberAnimation.createObject(this)
+    }
 
     function startRipple(x, y) {
         const stateY = buttonBackground.y;

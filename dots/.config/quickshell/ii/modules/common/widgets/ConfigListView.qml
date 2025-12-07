@@ -16,7 +16,7 @@ Rectangle {
     // short version of -> height: listModel.length * 40 + (listModel.length - 1) * 4 + listModel.length * 4 + 20 (component height + space between them + component margin + listView padding)
     implicitHeight: listModel.length * 48 + componentSelector.height + 16 + 6
 
-    color: Appearance.colors.colLayer2
+    color: "transparent"
     radius: Appearance.rounding.large
 
     property int barSection // 0: left, 1: center, 2: right

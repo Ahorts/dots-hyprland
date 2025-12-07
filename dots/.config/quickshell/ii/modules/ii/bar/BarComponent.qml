@@ -32,13 +32,13 @@ Item {
         "date": [dateCompVert, dateCompVert]
     })
 
-    function getStartRadius() {
+    property real startRadius: {
         if(barSection === 0 && originalIndex === 0) return Appearance.rounding.verysmall
         if(originalIndex === 0 || list.length === 1) return Appearance.rounding.full
         return Appearance.rounding.verysmall
     }
 
-    function getEndRadius() {
+    property real endRadius: {
         if(barSection === 2 && originalIndex === list.length - 1) return Appearance.rounding.verysmall
         if(originalIndex === list.length - 1 || list.length === 1) return Appearance.rounding.full
         return Appearance.rounding.verysmall
@@ -52,8 +52,8 @@ Item {
             horizontalCenter: root.vertical ? undefined : rootItem.horizontalCenter
         }
         
-        startRadius: getStartRadius()
-        endRadius: getEndRadius()
+        startRadius: rootItem.startRadius
+        endRadius: rootItem.endRadius
 
         items: Loader {
             active: true
