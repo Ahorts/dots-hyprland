@@ -69,7 +69,18 @@ ShellRoot {
         Wallpapers.load()
     }
 
+    property bool wrappedConfig: Config.options.appearance.fakeScreenRounding == 3 // just a workaround to make the bar reload when wrapped mode is enabled
+    onWrappedConfigChanged: {
+        if (wrappedConfig) {
+            enableBar = false
+            enableVerticalBar = false
+            Qt.callLater(() => { enableVerticalBar = true; enableBar = true })
+        }
+    }
+
     LazyLoader { active: enableBar && Config.ready && !Config.options.bar.vertical; component: Bar {} }
+    LazyLoader { active: enableVerticalBar && Config.ready && Config.options.bar.vertical; component: VerticalBar {} }
+
     LazyLoader { active: enableBackground; component: Background {} }
     LazyLoader { active: enableCheatsheet; component: Cheatsheet {} }
     LazyLoader { active: enableCrosshair; component: Crosshair {} }
@@ -87,7 +98,6 @@ ShellRoot {
     LazyLoader { active: enableSessionScreen; component: SessionScreen {} }
     LazyLoader { active: enableSidebarLeft; component: SidebarLeft {} }
     LazyLoader { active: enableSidebarRight; component: SidebarRight {} }
-    LazyLoader { active: enableVerticalBar && Config.ready && Config.options.bar.vertical; component: VerticalBar {} }
     LazyLoader { active: enableWallpaperSelector; component: WallpaperSelector {} }
     LazyLoader { active: enableWrappedFrame; component: WrappedFrame {} }
 }
