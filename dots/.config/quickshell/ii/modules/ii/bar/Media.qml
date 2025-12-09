@@ -14,11 +14,15 @@ Item {
     property bool borderless: Config.options.bar.borderless
     readonly property MprisPlayer activePlayer: MprisController.activePlayer
     readonly property string cleanedTitle: StringUtils.cleanMusicTitle(activePlayer?.trackTitle) || Translation.tr("No media")
+    
+    property int customSize: Config.options.bar.mediaPlayer.customSize
+    property bool useCustomSize: Config.options.bar.mediaPlayer.useCustomSize 
 
     property int maxWidth: 300
+    
 
     Layout.fillHeight: true
-    implicitWidth: Math.min(rowLayout.implicitWidth + rowLayout.spacing * 10, maxWidth)
+    implicitWidth: useCustomSize ? customSize : Math.min(rowLayout.implicitWidth + rowLayout.spacing * 10, maxWidth)
     implicitHeight: Appearance.sizes.barHeight
 
     Timer {

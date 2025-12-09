@@ -62,6 +62,35 @@ ContentPage {
     }
 
     ContentSection {
+        icon: "music_cast"
+        title: Translation.tr("Media player")
+        ConfigSwitch {
+            enabled: !Config.options.bar.vertical
+            buttonIcon: "crop_free"
+            text: Translation.tr("Use custom size")
+            checked: Config.options.bar.mediaPlayer.useCustomSize
+            onCheckedChanged: {
+                Config.options.bar.mediaPlayer.useCustomSize = checked;
+            }
+            StyledToolTip {
+                text: Translation.tr("Only available in horizontal mode")
+            }
+        }
+        ConfigSpinBox {
+            enabled: !Config.options.bar.vertical
+            icon: "width_full"
+            text: Translation.tr("Custom size")
+            value: Config.options.bar.mediaPlayer.customSize
+            from: 100
+            to: 500
+            stepSize: 25
+            onValueChanged: {
+                Config.options.bar.mediaPlayer.customSize = value;
+            }
+        }
+    }
+
+    ContentSection {
         icon: "notifications"
         title: Translation.tr("Notifications")
         ConfigSwitch {
@@ -288,19 +317,6 @@ ContentPage {
                 onCheckedChanged: {
                     Config.options.bar.utilButtons.showScreenRecord = checked;
                 }
-            }
-        }
-    }
-
-    ContentSection {
-        icon: "cloud"
-        title: Translation.tr("Weather")
-        ConfigSwitch {
-            buttonIcon: "check"
-            text: Translation.tr("Enable")
-            checked: Config.options.bar.weather.enable
-            onCheckedChanged: {
-                Config.options.bar.weather.enable = checked;
             }
         }
     }

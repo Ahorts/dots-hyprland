@@ -31,6 +31,7 @@ Item {
     property real workspaceIconMarginShrinked: -4
     property int workspaceIndexInGroup: (monitor?.activeWorkspace?.id - 1) % root.workspacesShown
 
+
     property bool showNumbers: false
     Timer {
         id: showNumbersTimer
@@ -216,12 +217,14 @@ Item {
                             )  ? 1 : 0
                         z: 3
 
-                        anchors.centerIn: parent
+                        anchors.fill: parent
                         horizontalAlignment: Text.AlignHCenter
                         verticalAlignment: Text.AlignVCenter
                         font {
                             pixelSize: Appearance.font.pixelSize.small - ((text.length - 1) * (text !== "10") * 2)
                             family: Config.options?.bar.workspaces.useNerdFont ? Appearance.font.family.iconNerd : defaultFont
+                            weight: (monitor?.activeWorkspace?.id == button.workspaceValue) ? 
+                                Font.Bold : 1
                         }
                         text: Config.options?.bar.workspaces.numberMap[button.workspaceValue - 1] || button.workspaceValue
                         elide: Text.ElideRight

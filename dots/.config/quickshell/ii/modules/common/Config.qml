@@ -236,6 +236,10 @@ Singleton {
                 property bool showBackground: true
                 property bool verbose: true
                 property bool vertical: false
+                property JsonObject mediaPlayer: JsonObject {
+                    property bool useCustomSize: false
+                    property int customSize: 300
+                }
                 property JsonObject resources: JsonObject {
                     property bool alwaysShowSwap: true
                     property bool alwaysShowCpu: true
