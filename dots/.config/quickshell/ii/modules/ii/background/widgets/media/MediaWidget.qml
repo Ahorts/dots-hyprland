@@ -26,6 +26,8 @@ AbstractBackgroundWidget {
     readonly property bool showPreviousToggle: Config.options.background.widgets.media.showPreviousToggle
 
     readonly property var playerList: MprisController.players
+    property var filteredPlayerList: playerList.filter(player => player != null && player.trackAlbum != "")
+    property var filteredActivePlayer: MprisController.activePlayer?.trackAlbum != "" ? MprisController.activePlayer : null
     
     property MprisPlayer currentPlayer : null
     property var artUrl: currentPlayer?.trackArtUrl
@@ -34,7 +36,7 @@ AbstractBackgroundWidget {
     property string artFilePath: `${artDownloadLocation}/${artFileName}`
 
     property real widgetSize: 200
-    property real controlsSize: 55 // a config option maybe?
+    property real controlsSize: 55
     property real buttonIconSize: 30
     property bool showSwitchButton: false
 
@@ -62,15 +64,15 @@ AbstractBackgroundWidget {
         }
     }
 
-
     property bool downloaded: false
     property string displayedArtFilePath: root.downloaded ? Qt.resolvedUrl(artFilePath) : ""
-    // FIXME: find out to set player when its first openned
+
+    property bool playerInList: root.playerList.includes(root.currentPlayer)
 
     implicitHeight: contentItem.implicitHeight
     implicitWidth: contentItem.implicitWidth
 
-    // Switch button visiblity on hover
+    // 'Switch button' visiblity on hover
     hoverEnabled: true
     onEntered: {
         if (root.playerList.length <= 1) return
@@ -78,50 +80,47 @@ AbstractBackgroundWidget {
     }
     onExited: showSwitchButton = false
         
+
+    Component.onCompleted: updatePlayer()
+    onArtFilePathChanged: updateArt()
+
     onPlayerListChanged: {
-        if (root.displayedArtFilePath !== "") return 
-        root.currentPlayer = root.playerList[0]
+        if (root.currentPlayer != null) return
+        updatePlayer()
+    }
+    onFilteredActivePlayerChanged: {
+        if (root.currentPlayer != null) return
+        updatePlayer()
+    }
+    onPlayerInListChanged: {
+        if (root.playerInList) return
+        updatePlayer()
+    }
+    
+    function updatePlayer() {
+        console.log("[Media Player Widget]",filteredActivePlayer)
+        if (root.filteredPlayerList.length == 0) {
+            root.currentPlayer = null
+            return
+        }
+        if (root.filteredPlayerList.length > 0) {
+            root.currentPlayer = root.filteredPlayerList[0]
+            return
+        }
+        root.currentPlayer = MprisController.activePlayer
     }
 
-    Component.onCompleted: initializePlayer()
-    onArtFilePathChanged: updateArt()
-    onCurrentPlayerChanged: updatePlayer()
-    
     function nextPlayer() {
         root.currentPlayer = root.playerList[(root.playerList.indexOf(root.currentPlayer) + 1) % root.playerList.length]
     }
 
     function updateArt() {
-        if (root.artUrl.length == 0) {
-            root.artDominantColor = Appearance.m3colors.m3secondaryContainer
-            return;
-        }
-
         coverArtDownloader.targetFile = root.artUrl 
         coverArtDownloader.artFilePath = root.artFilePath
         root.downloaded = false
         coverArtDownloader.running = true
     }
 
-    function initializePlayer() {
-        if (root.playerList.length == 0) {
-            root.currentPlayer = null
-            root.displayedArtFilePath = ""
-            return
-        }
-        if (MprisController.activePlayer == null) {
-            root.currentPlayer = root.playerList[0]
-            return
-        }
-        root.currentPlayer = MprisController.activePlayer
-    }
-
-    function updatePlayer() {
-        if (root.currentPlayer != null) return
-        root.initializePlayer()
-    }
-
-    
     Process { // Cover art downloader
         id: coverArtDownloader
         property string targetFile: root.artUrl
@@ -139,38 +138,36 @@ AbstractBackgroundWidget {
         rescaleSize: 1 // Rescale to 1x1 pixel for faster processing
     }
 
-    
-
     Item {
         id: contentItem
 
-        implicitWidth: root.widgetSize // a config option maybe?
-        implicitHeight: implicitWidth
+        implicitWidth: root.widgetSize
+        implicitHeight: root.widgetSize
 
-        FadeLoader {
-            id: blurEffectLoader
+    
+        Image { // using a loader somehow breaks the image
+            id: blurredArt
             anchors.fill: parent
-            shown: Config.options.background.widgets.media.glowEffect
-            property var source: root.displayedArtFilePath
-            sourceComponent: Image {
-                id: blurredArt
-                anchors.centerIn: parent
-                source: blurEffectLoader.source
-                sourceSize.height: contentItem.implicitWidth
-                sourceSize.width: sourceSize.height
-                fillMode: Image.PreserveAspectCrop
-                cache: false
-                antialiasing: true
-                asynchronous: true
-                
-                layer.enabled: true
-                layer.effect: StyledBlurEffect {
-                    source: blurredArt
-                }
+            source: root.displayedArtFilePath
+            sourceSize.width: contentItem.implicitWidth
+            sourceSize.height: sourceSize.width
+            fillMode: Image.PreserveAspectCrop
+            cache: false
+            antialiasing: true
+            asynchronous: true
 
+            opacity: Config.options.background.widgets.media.glowEffect ? 1 : 0
+            Behavior on opacity {
+                animation: Appearance.animation.elementResize.numberAnimation.createObject(this)
+            }
+            
+            layer.enabled: true
+            layer.effect: StyledBlurEffect {
+                source: blurredArt
+                brightness: -0.1
             }
         }
-
+        
         FadeLoader {
             id: loopButtonLoader
             anchors {
@@ -193,13 +190,13 @@ AbstractBackgroundWidget {
 
         MaterialSymbol {
             id: contentItemIcon
-            visible: root.displayedArtFilePath === ""
+            visible: true
             anchors.centerIn: parent
             iconSize: 100
             fill: 1
             z: 1000
-            color: root.currentPlayer.isPlaying ? blendedColors.colOnPrimary : blendedColors.colOnSecondaryContainer
-            text: "disc_full"
+            color: root.currentPlayer?.isPlaying ? blendedColors.colOnPrimary : blendedColors.colOnSecondaryContainer
+            text: root.currentPlayer == null ? "disc_full" : !root.downloaded ? "hourglass_bottom" : ""
         }
         
         Rectangle { // Art background
@@ -240,11 +237,11 @@ AbstractBackgroundWidget {
                 left: parent.left
                 bottom: parent.bottom
             }
-            buttonRadius: root.currentPlayer.isPlaying ? Appearance.rounding.normal : controlsSize / 2
+            buttonRadius: root.currentPlayer?.isPlaying ? Appearance.rounding.normal : controlsSize / 2
             colBackground: root.dynamicColors.colSecondaryBackground
             colBackgroundHover: root.dynamicColors.colSecondaryBackgroundHover
             colRipple: root.dynamicColors.colSecondaryRipple
-            symbolText: root.currentPlayer.isPlaying ? "pause" : "play_arrow"
+            symbolText: root.currentPlayer == null ? "music_off" : root.currentPlayer?.isPlaying ? "pause" : "play_arrow"
             symbolColor: useAlbumColors ?  blendedColors.colTertiary : Appearance.colors.colTertiary
             onClicked: {
                 root.currentPlayer.togglePlaying()
@@ -260,7 +257,7 @@ AbstractBackgroundWidget {
             implicitHeight: controlsSize
             z: 2
             radius: Appearance.rounding.full
-            color: useAlbumColors ?  blendedColors.colTertiaryContainer : Appearance.colors.colTertiaryContainer
+            color: dynamicColors.colTertiaryBackground
 
             Behavior on implicitWidth {
                 animation: Appearance.animation.elementResize.numberAnimation.createObject(this)
