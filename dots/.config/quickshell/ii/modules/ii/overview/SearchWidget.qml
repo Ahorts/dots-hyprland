@@ -16,6 +16,7 @@ Item { // Wrapper
     readonly property string xdgConfigHome: Directories.config
     property string searchingText: LauncherSearch.query
     property bool showResults: searchingText != ""
+    property string overviewPosition: Config.options.overview.position
     implicitWidth: searchWidgetContent.implicitWidth + Appearance.sizes.elevationMargin * 2
     implicitHeight: searchBar.implicitHeight + searchBar.verticalPadding * 2 + Appearance.sizes.elevationMargin * 2
 
@@ -101,10 +102,25 @@ Item { // Wrapper
             top: parent.top
             horizontalCenter: parent.horizontalCenter
             topMargin: Appearance.sizes.elevationMargin
+            bottomMargin: Appearance.sizes.elevationMargin
         }
+        state: root.overviewPosition === "center" ? "top" : root.overviewPosition
+        states: [
+            State {
+                name: "top"
+                AnchorChanges { target: searchWidgetContent; anchors.top: parent.top; anchors.bottom: undefined; }
+                AnchorChanges { target: gridLayout; anchors.top: parent.top; anchors.bottom: undefined; }
+            },
+            State {
+                name: "bottom"
+                AnchorChanges { target: searchWidgetContent; anchors.top: undefined; anchors.bottom: parent.bottom; }
+                AnchorChanges { target: gridLayout; anchors.top: undefined; anchors.bottom: parent.bottom; }
+            }
+        ]
+        
         clip: true
-        implicitWidth: columnLayout.implicitWidth
-        implicitHeight: columnLayout.implicitHeight
+        implicitWidth: gridLayout.implicitWidth
+        implicitHeight: gridLayout.implicitHeight
         radius: searchBar.height / 2 + searchBar.verticalPadding
         color: Appearance.colors.colBackgroundSurfaceContainer
 
@@ -114,13 +130,24 @@ Item { // Wrapper
             animation: Appearance.animation.elementMove.numberAnimation.createObject(this)
         }
 
-        ColumnLayout {
-            id: columnLayout
-            anchors {
-                top: parent.top
-                horizontalCenter: parent.horizontalCenter
-            }
-            spacing: 0
+        GridLayout {
+            id: gridLayout
+            anchors.horizontalCenter: parent.horizontalCenter
+            columns: 1
+
+            state: Config.options.overview.position === "center" ? "top" : Config.options.overview.position
+            states: [
+                State {
+                    name: "top"
+                    AnchorChanges { target: searchWidgetContent; anchors.top: parent.top; anchors.bottom: undefined; }
+                    AnchorChanges { target: gridLayout; anchors.top: parent.top; anchors.bottom: undefined; }
+                },
+                State {
+                    name: "bottom"
+                    AnchorChanges { target: searchWidgetContent; anchors.top: undefined; anchors.bottom: parent.bottom; }
+                    AnchorChanges { target: gridLayout; anchors.top: undefined; anchors.bottom: parent.bottom; }
+                }
+            ]
 
             // clip: true
             layer.enabled: true
@@ -140,6 +167,7 @@ Item { // Wrapper
                 Layout.rightMargin: 4
                 Layout.topMargin: verticalPadding
                 Layout.bottomMargin: verticalPadding
+                Layout.row: root.overviewPosition == "bottom" ? 2 : 0
                 Synchronizer on searchingText {
                     property alias source: root.searchingText
                 }
@@ -151,6 +179,7 @@ Item { // Wrapper
                 Layout.fillWidth: true
                 height: 1
                 color: Appearance.colors.colOutlineVariant
+                Layout.row: 1
             }
 
             ListView { // App results
@@ -164,6 +193,7 @@ Item { // Wrapper
                 spacing: 2
                 KeyNavigation.up: searchBar
                 highlightMoveDuration: 100
+                Layout.row: root.overviewPosition == "bottom" ? 0 : 2
 
                 onFocusChanged: {
                     if (focus)

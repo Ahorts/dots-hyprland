@@ -14,6 +14,7 @@ import Quickshell.Hyprland
 Scope {
     id: overviewScope
     property bool dontAutoCancelSearch: false
+    property string position: Config.options.overview.position
     Variants {
         id: overviewVariants
         model: Quickshell.screens
@@ -32,7 +33,7 @@ Scope {
             color: "transparent"
 
             mask: Region {
-                item: GlobalStates.overviewOpen ? columnLayout : null
+                item: GlobalStates.overviewOpen ? gridLayout : null
             }
 
             anchors {
@@ -79,22 +80,34 @@ Scope {
                 }
             }
 
-            implicitWidth: columnLayout.implicitWidth
-            implicitHeight: columnLayout.implicitHeight
+            implicitWidth: gridLayout.implicitWidth
+            implicitHeight: gridLayout.implicitHeight
 
             function setSearchingText(text) {
                 searchWidget.setSearchingText(text);
                 searchWidget.focusFirstItem();
             }
 
-            Column {
-                id: columnLayout
+            GridLayout {
+                id: gridLayout
                 visible: GlobalStates.overviewOpen
                 anchors {
                     horizontalCenter: parent.horizontalCenter
-                    top: parent.top
+                    margins: overviewScope.position == "center" ? root.implicitHeight / 1.2 : 0
                 }
-                spacing: -8
+                columns: 1
+
+                state: overviewScope.position === "center" ? "top" : overviewScope.position
+                states: [
+                    State {
+                        name: "top"
+                        AnchorChanges { target: gridLayout; anchors.top: parent.top; anchors.bottom: undefined; }
+                    },
+                    State {
+                        name: "bottom" 
+                        AnchorChanges { target: gridLayout; anchors.top: undefined; anchors.bottom: parent.bottom; }
+                    }
+                ]
 
                 Keys.onPressed: event => {
                     if (event.key === Qt.Key_Escape) {
@@ -110,7 +123,8 @@ Scope {
 
                 SearchWidget {
                     id: searchWidget
-                    anchors.horizontalCenter: parent.horizontalCenter
+                    Layout.row: overviewScope.position == "bottom" ? 1 : 0
+                    Layout.alignment: Qt.AlignHCenter
                     Synchronizer on searchingText {
                         property alias source: root.searchingText
                     }
@@ -118,7 +132,8 @@ Scope {
 
                 Loader {
                     id: overviewLoader
-                    anchors.horizontalCenter: parent.horizontalCenter
+                    Layout.row: overviewScope.position == "bottom" ? 0 : 1
+                    Layout.alignment: Qt.AlignHCenter
                     active: GlobalStates.overviewOpen && (Config?.options.overview.enable ?? true)
                     sourceComponent: OverviewWidget {
                         panelWindow: root
