@@ -606,4 +606,77 @@ ContentPage {
             }
         }
     }
+
+    ContentSection {
+        icon: "music_cast"
+        title: Translation.tr("Widget: Media")
+
+        ConfigRow {
+            Layout.fillWidth: true
+
+            ConfigSwitch {
+                Layout.fillWidth: false
+                buttonIcon: "check"
+                text: Translation.tr("Enable")
+                checked: Config.options.background.widgets.media.enable
+                onCheckedChanged: {
+                    Config.options.background.widgets.media.enable = checked;
+                }
+            }
+            Item {
+                Layout.fillWidth: true
+            }
+            ConfigSelectionArray {
+                Layout.fillWidth: false
+                currentValue: Config.options.background.widgets.media.placementStrategy
+                onSelected: newValue => {
+                    Config.options.background.widgets.media.placementStrategy = newValue;
+                }
+                options: [
+                    {
+                        displayName: Translation.tr("Draggable"),
+                        icon: "drag_pan",
+                        value: "free"
+                    },
+                    {
+                        displayName: Translation.tr("Least busy"),
+                        icon: "category",
+                        value: "leastBusy"
+                    },
+                    {
+                        displayName: Translation.tr("Most busy"),
+                        icon: "shapes",
+                        value: "mostBusy"
+                    },
+                ]
+            }
+        }
+        ConfigRow {
+            ConfigSwitch {
+                buttonIcon: "opacity"
+                text: Translation.tr("Use album colors")
+                checked: Config.options.background.widgets.media.useAlbumColors
+                onCheckedChanged: {
+                    Config.options.background.widgets.media.useAlbumColors = checked;
+                }
+            }
+            ConfigSwitch {
+                buttonIcon: "backlight_high"
+                text: Translation.tr("Enable glow effect")
+                checked: Config.options.background.widgets.media.glowEffect
+                onCheckedChanged: {
+                    Config.options.background.widgets.media.glowEffect = checked;
+                }
+            }
+        }
+        ConfigSwitch {
+            buttonIcon: "skip_previous"
+            text: Translation.tr("Show previous toggle")
+            checked: Config.options.background.widgets.media.showPreviousToggle
+            onCheckedChanged: {
+                Config.options.background.widgets.media.showPreviousToggle = checked;
+            }
+        }
+        
+    }
 }

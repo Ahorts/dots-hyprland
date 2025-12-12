@@ -206,6 +206,15 @@ Singleton {
                             property string text: ""
                         }
                     }
+                    property JsonObject media: JsonObject {
+                        property bool enable: false
+                        property string placementStrategy: "free" // "free", "leastBusy", "mostBusy"
+                        property real x: 800
+                        property real y: 100
+                        property bool useAlbumColors: true
+                        property bool glowEffect: false
+                        property bool showPreviousToggle: true
+                    }
                     property JsonObject weather: JsonObject {
                         property bool enable: false
                         property string placementStrategy: "free" // "free", "leastBusy", "mostBusy"

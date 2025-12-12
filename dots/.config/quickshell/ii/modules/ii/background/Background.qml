@@ -17,6 +17,7 @@ import Quickshell.Hyprland
 import qs.modules.ii.background.widgets
 import qs.modules.ii.background.widgets.clock
 import qs.modules.ii.background.widgets.weather
+import qs.modules.ii.background.widgets.media
 
 Variants {
     id: root
@@ -290,6 +291,17 @@ Variants {
                         scaledScreenHeight: bgRoot.screen.height / bgRoot.effectiveWallpaperScale
                         wallpaperScale: bgRoot.effectiveWallpaperScale
                         wallpaperSafetyTriggered: bgRoot.wallpaperSafetyTriggered
+                    }
+                }
+
+                FadeLoader {
+                    shown: Config.options.background.widgets.media.enable
+                    sourceComponent: MediaWidget {
+                        screenWidth: bgRoot.screen.width
+                        screenHeight: bgRoot.screen.height
+                        scaledScreenWidth: bgRoot.screen.width / bgRoot.effectiveWallpaperScale
+                        scaledScreenHeight: bgRoot.screen.height / bgRoot.effectiveWallpaperScale
+                        wallpaperScale: bgRoot.effectiveWallpaperScale
                     }
                 }
             }

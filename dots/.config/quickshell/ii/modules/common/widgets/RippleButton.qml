@@ -34,6 +34,11 @@ Button {
     property color colBackgroundToggledHover: Appearance?.colors.colPrimaryHover ?? "#77699C"
     property color colRipple: Appearance?.colors.colLayer1Active ?? "#D6CEE2"
     property color colRippleToggled: Appearance?.colors.colPrimaryActive ?? "#D6CEE2"
+
+    Behavior on buttonEffectiveRadius {
+        animation: Appearance?.animation.elementMoveFast.numberAnimation.createObject(this)
+    }
+
     opacity: root.enabled ? 1 : 0.4
     property color buttonColor: ColorUtils.transparentize(root.toggled ? 
         (root.hovered ? colBackgroundToggledHover : 
