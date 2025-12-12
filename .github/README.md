@@ -31,7 +31,6 @@ However there can (and will) be bugs so **please** use original dots. Use this d
 - PR: https://github.com/end-4/dots-hyprland/pull/2593 -> Digital clock improvements (like A16 look) | Branch: [digital-clock-improvements](https://github.com/vaguesyntax/dots-hyprland/tree/digital-clock-improvements)
 - PR: https://github.com/end-4/dots-hyprland/pull/2539 -> Video wallpaper fixes | Branch: [video-wallpaper-fixes](https://github.com/vaguesyntax/dots-hyprland/tree/video-wallpaper-fixes)
 - PR: https://github.com/end-4/dots-hyprland/pull/2515 -> Config option for overview to show only on focused monitor | Branch  [overview-on-focused-monitor](https://github.com/vaguesyntax/dots-hyprland/tree/overview-on-focused-monitor)
-- PR: https://github.com/end-4/dots-hyprland/pull/2389 -> Position settings (top-center-bottom) for overview | Branch: [overview-changes](https://github.com/vaguesyntax/dots-hyprland/tree/overview-changes)
 
 <div align="center">
     <h2>• features i may open a pr later •</h2>
