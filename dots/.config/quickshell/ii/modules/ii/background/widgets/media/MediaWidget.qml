@@ -22,63 +22,106 @@ AbstractBackgroundWidget {
     configEntryName: "media"
 
     readonly property bool useAlbumColors: Config.options.background.widgets.media.useAlbumColors
+    readonly property bool useDynamicColors: root.useAlbumColors && root.currentPlayer != null 
     readonly property bool showPreviousToggle: Config.options.background.widgets.media.showPreviousToggle
 
-    readonly property MprisPlayer activePlayer: MprisController.activePlayer
-    property MprisPlayer currentPlayer
+    readonly property var playerList: MprisController.players
+    
+    property MprisPlayer currentPlayer : null
     property var artUrl: currentPlayer?.trackArtUrl
     property string artDownloadLocation: Directories.coverArt
     property string artFileName: Qt.md5(artUrl)
     property string artFilePath: `${artDownloadLocation}/${artFileName}`
 
+    property real widgetSize: 200
+    property real controlsSize: 55 // a config option maybe?
+    property real buttonIconSize: 30
+    property bool showSwitchButton: false
+
     property color artDominantColor: ColorUtils.mix((colorQuantizer?.colors[0] ?? Appearance.colors.colPrimary), Appearance.colors.colPrimaryContainer, 0.8) || Appearance.m3colors.m3secondaryContainer
     property QtObject blendedColors: AdaptedMaterialScheme {
         color: artDominantColor
     }
+    property var dynamicColors: {
+        return {
+            colPrimary: root.useDynamicColors                  ?  blendedColors.colPrimary                  : Appearance.colors.colPrimary,
+            colPrimaryBackground: root.useDynamicColors        ?  blendedColors.colPrimaryContainer         : Appearance.colors.colPrimaryContainer,
+            colPrimaryBackgroundHover: root.useDynamicColors   ?  blendedColors.colPrimaryContainerHover    : Appearance.colors.colPrimaryContainerHover,
+            colPrimaryRipple: root.useDynamicColors            ?  blendedColors.colPrimaryContainerActive   : Appearance.colors.colPrimaryContainerActive,
+
+            colSecondary: root.useDynamicColors                ?  blendedColors.colSecondary                : Appearance.colors.colSecondary,
+            colSecondaryBackground: root.useDynamicColors      ?  blendedColors.colSecondaryContainer       : Appearance.colors.colSecondaryContainer,
+            colSecondaryBackgroundHover: root.useDynamicColors ?  blendedColors.colSecondaryContainerHover  : Appearance.colors.colSecondaryContainerHover,
+            colSecondaryRipple: root.useDynamicColors          ?  blendedColors.colSecondaryContainerActive : Appearance.colors.colSecondaryContainerActive,
+
+            colTertiary: root.useDynamicColors                 ? blendedColors.colTertiary                  : Appearance.colors.colTertiary,
+            colTertiaryBackground: root.useDynamicColors       ? blendedColors.colTertiaryContainer         : Appearance.colors.colTertiaryContainer,
+            colTertiaryBackgroundHover: root.useDynamicColors  ? blendedColors.colTertiaryContainerHover    : Appearance.colors.colTertiaryContainerHover,
+            colTertiaryRipple: root.useDynamicColors           ? blendedColors.colTertiaryContainerActive   : Appearance.colors.colTertiaryContainerActive
+            
+        }
+    }
+
 
     property bool downloaded: false
     property string displayedArtFilePath: root.downloaded ? Qt.resolvedUrl(artFilePath) : ""
+    // FIXME: find out to set player when its first openned
 
     implicitHeight: contentItem.implicitHeight
     implicitWidth: contentItem.implicitWidth
 
-    property real controlsSize: 55 // a config option maybe?
-
-    acceptedButtons: Qt.LeftButton | Qt.MiddleButton 
-    onReleased: (mouse) => {
-        if (mouse.button == Qt.MiddleButton) {
-            root.nextPlayer()
-        }
+    // Switch button visiblity on hover
+    hoverEnabled: true
+    onEntered: {
+        if (root.playerList.length <= 1) return
+        showSwitchButton = true
+    }
+    onExited: showSwitchButton = false
+        
+    onPlayerListChanged: {
+        if (root.displayedArtFilePath !== "") return 
+        root.currentPlayer = root.playerList[0]
     }
 
+    Component.onCompleted: initializePlayer()
+    onArtFilePathChanged: updateArt()
+    onCurrentPlayerChanged: updatePlayer()
+    
     function nextPlayer() {
-        root.currentPlayer = MprisController.players[(MprisController.players.indexOf(root.currentPlayer) + 1) % MprisController.players.length]
+        root.currentPlayer = root.playerList[(root.playerList.indexOf(root.currentPlayer) + 1) % root.playerList.length]
     }
 
-    ColorQuantizer {
-        id: colorQuantizer
-        source: root.displayedArtFilePath
-        depth: 0 // 2^0 = 1 color
-        rescaleSize: 1 // Rescale to 1x1 pixel for faster processing
-    }
-
-    Component.onCompleted: {
-        root.currentPlayer = MprisController.activePlayer
-    }
-
-    onArtFilePathChanged: {
+    function updateArt() {
         if (root.artUrl.length == 0) {
             root.artDominantColor = Appearance.m3colors.m3secondaryContainer
             return;
         }
-        // Binding does not work in Process
+
         coverArtDownloader.targetFile = root.artUrl 
         coverArtDownloader.artFilePath = root.artFilePath
-        // Download
         root.downloaded = false
         coverArtDownloader.running = true
     }
 
+    function initializePlayer() {
+        if (root.playerList.length == 0) {
+            root.currentPlayer = null
+            root.displayedArtFilePath = ""
+            return
+        }
+        if (MprisController.activePlayer == null) {
+            root.currentPlayer = root.playerList[0]
+            return
+        }
+        root.currentPlayer = MprisController.activePlayer
+    }
+
+    function updatePlayer() {
+        if (root.currentPlayer != null) return
+        root.initializePlayer()
+    }
+
+    
     Process { // Cover art downloader
         id: coverArtDownloader
         property string targetFile: root.artUrl
@@ -89,22 +132,32 @@ AbstractBackgroundWidget {
         }
     }
 
+    ColorQuantizer {
+        id: colorQuantizer
+        source: root.displayedArtFilePath
+        depth: 0 // 2^0 = 1 color
+        rescaleSize: 1 // Rescale to 1x1 pixel for faster processing
+    }
+
+    
+
     Item {
         id: contentItem
 
-        implicitWidth: 200 // a config option maybe?
+        implicitWidth: root.widgetSize // a config option maybe?
         implicitHeight: implicitWidth
 
         FadeLoader {
             id: blurEffectLoader
             anchors.fill: parent
             shown: Config.options.background.widgets.media.glowEffect
+            property var source: root.displayedArtFilePath
             sourceComponent: Image {
                 id: blurredArt
                 anchors.centerIn: parent
-                source: root.displayedArtFilePath
-                sourceSize.width: sourceSize.height
+                source: blurEffectLoader.source
                 sourceSize.height: contentItem.implicitWidth
+                sourceSize.width: sourceSize.height
                 fillMode: Image.PreserveAspectCrop
                 cache: false
                 antialiasing: true
@@ -117,12 +170,43 @@ AbstractBackgroundWidget {
 
             }
         }
-        
 
+        FadeLoader {
+            id: loopButtonLoader
+            anchors {
+                right: parent.right
+                bottom: parent.bottom
+            }
+            z: 3
+            shown: showSwitchButton
+            sourceComponent: ControlButton {
+                colBackground: root.dynamicColors.colPrimaryBackground
+                colBackgroundHover: root.dynamicColors.colPrimaryBackgroundHover
+                colRipple: root.dynamicColors.colPrimaryRipple
+                symbolColor: root.dynamicColors.colSecondary
+                symbolText: "360"
+                onClicked: {
+                    root.nextPlayer()
+                }
+            }
+        }
+
+        MaterialSymbol {
+            id: contentItemIcon
+            visible: root.displayedArtFilePath === ""
+            anchors.centerIn: parent
+            iconSize: 100
+            fill: 1
+            z: 1000
+            color: root.currentPlayer.isPlaying ? blendedColors.colOnPrimary : blendedColors.colOnSecondaryContainer
+            text: "disc_full"
+        }
+        
         Rectangle { // Art background
             id: artBackground
             anchors.fill: parent
             radius: Appearance.rounding.full
+            color: Appearance.colors.colPrimaryContainer
             
             layer.enabled: true
             layer.effect: OpacityMask {
@@ -150,29 +234,20 @@ AbstractBackgroundWidget {
             }
         }
 
-        RippleButton { // play - pause bottom
+        ControlButton {
+            id: playButton
             anchors {
                 left: parent.left
                 bottom: parent.bottom
             }
-            implicitWidth: controlsSize
-            implicitHeight: implicitWidth
-            z: 2
-            
-            buttonRadius: currentPlayer.isPlaying ? Appearance.rounding.normal : controlsSize / 2
-            colBackground: useAlbumColors ?  blendedColors.colSecondaryContainer : Appearance.colors.colSecondaryContainer
-            colBackgroundHover: useAlbumColors ?  blendedColors.colSecondaryContainerHover : Appearance.colors.colSecondaryContainerHover
-            colBackgroundToggled: useAlbumColors ?  blendedColors.colSecondaryContainerActive : Appearance.colors.colSecondaryContainerActive
-            colRipple: useAlbumColors ? blendedColors.colSecondaryContainerActive : Appearance.colors.colSecondaryContainerActive
-            MaterialSymbol {
-                anchors.centerIn: parent
-                iconSize: 32
-                text: currentPlayer.isPlaying ? "pause" : "play_arrow"
-                fill: 1
-                color: useAlbumColors ?  blendedColors.colTertiary : Appearance.colors.colTertiary
-            }
+            buttonRadius: root.currentPlayer.isPlaying ? Appearance.rounding.normal : controlsSize / 2
+            colBackground: root.dynamicColors.colSecondaryBackground
+            colBackgroundHover: root.dynamicColors.colSecondaryBackgroundHover
+            colRipple: root.dynamicColors.colSecondaryRipple
+            symbolText: root.currentPlayer.isPlaying ? "pause" : "play_arrow"
+            symbolColor: useAlbumColors ?  blendedColors.colTertiary : Appearance.colors.colTertiary
             onClicked: {
-                currentPlayer.togglePlaying()
+                root.currentPlayer.togglePlaying()
             }
         }
 
@@ -193,52 +268,51 @@ AbstractBackgroundWidget {
 
             FadeLoader {
                 shown: root.showPreviousToggle
-                sourceComponent: RippleButton {
+                sourceComponent: ControlButton {
                     anchors.left: parent.left
-
-                    implicitWidth: controlsSize
-                    implicitHeight: implicitWidth
-                    z: 2
-                    buttonRadius: Appearance.rounding.full
-                    colBackground: useAlbumColors ?  blendedColors.colTertiaryContainer : Appearance.colors.colTertiaryContainer
-                    colBackgroundHover: useAlbumColors ?  blendedColors.colTertiaryContainerHover : Appearance.colors.colTertiaryContainerHover
-                    colBackgroundToggled: useAlbumColors ?  blendedColors.colTertiaryContainerActive : Appearance.colors.colTertiaryContainerActive
-                    colRipple: useAlbumColors ? blendedColors.colTertiaryContainerActive : Appearance.colors.colTertiaryContainerActive
-                    MaterialSymbol {
-                        anchors.centerIn: parent
-                        iconSize: 32
-                        text: "skip_previous"
-                        fill: 1
-                        color: useAlbumColors ?  blendedColors.colSecondary : Appearance.colors.colSecondary
-                    }
+                    colBackground: root.dynamicColors.colTertiaryBackground
+                    colBackgroundHover: root.dynamicColors.colTertiaryBackgroundHover
+                    colRipple: root.dynamicColors.colTertiaryRipple
+                    symbolColor: root.dynamicColors.colSecondary
+                    symbolText: "skip_previous"
                     onClicked: {
                         currentPlayer.previous()
                     }
                 }
             }
 
-            RippleButton {
-                anchors.right: parent.right
-                implicitWidth: controlsSize
-                implicitHeight: implicitWidth
-                z: 2
-                buttonRadius: Appearance.rounding.full
-                colBackground: useAlbumColors ?  blendedColors.colTertiaryContainer : Appearance.colors.colTertiaryContainer
-                colBackgroundHover: useAlbumColors ?  blendedColors.colTertiaryContainerHover : Appearance.colors.colTertiaryContainerHover
-                colBackgroundToggled: useAlbumColors ?  blendedColors.colTertiaryContainerActive : Appearance.colors.colTertiaryContainerActive
-                colRipple: useAlbumColors ? blendedColors.colTertiaryContainerActive : Appearance.colors.colTertiaryContainerActive
-                MaterialSymbol {
-                    anchors.centerIn: parent
-                    iconSize: 32
-                    text: "skip_next"
-                    fill: 1
-                    color: useAlbumColors ?  blendedColors.colSecondary : Appearance.colors.colSecondary
-                }
+            ControlButton {
+                anchors.right: parent.right 
+
+                colBackground: root.dynamicColors.colTertiaryBackground
+                colBackgroundHover: root.dynamicColors.colTertiaryBackgroundHover
+                colRipple: root.dynamicColors.colTertiaryRipple
+                symbolColor: root.dynamicColors.colSecondary
+                symbolText: "skip_next"
                 onClicked: {
                     currentPlayer.next()
                 }
             }
 
+        }
+    }
+
+    component ControlButton : RippleButton {
+        id: button
+        property string symbolText
+        property color symbolColor
+        
+        z: 2
+        implicitWidth: controlsSize
+        implicitHeight: implicitWidth
+        buttonRadius: Appearance.rounding.full
+
+        MaterialSymbol {
+            anchors.centerIn: parent
+            iconSize: root.buttonIconSize
+            text: button.symbolText
+            fill: 1
+            color: button.symbolColor
         }
     }
 }
