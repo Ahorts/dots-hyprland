@@ -1,4 +1,8 @@
 <div align="center">
+     <h1> https://github.com/end-4/dots-hyprland </h1>
+</div>
+
+<div align="center">
     <h1>【 end_4's Hyprland dotfiles (with my tweaks) 】</h1>
     <h3></h3>
 </div>
@@ -37,6 +41,4 @@ However there can (and will) be bugs so **please** use original dots. Use this d
 
   
 
-<div align="center">
-     <h1> https://github.com/end-4/dots-hyprland </h1>
-</div>
+
