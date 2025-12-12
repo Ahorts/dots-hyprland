@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import qs.services
 import qs.modules.common.functions
 
 Singleton {
@@ -226,6 +227,9 @@ Singleton {
             }
 
             property JsonObject bar: JsonObject {
+                property JsonObject activeWindow: JsonObject {
+                    property bool fixedSize: false
+                }
                 property JsonObject autoHide: JsonObject {
                     property bool enable: false
                     property int hoverRegionWidth: 2
@@ -243,6 +247,10 @@ Singleton {
                 property bool showBackground: true
                 property bool verbose: true
                 property bool vertical: false
+                property JsonObject mediaPlayer: JsonObject {
+                    property bool useCustomSize: false
+                    property int customSize: 300
+                }
                 property JsonObject resources: JsonObject {
                     property bool alwaysShowSwap: true
                     property bool alwaysShowCpu: true
@@ -280,6 +288,73 @@ Singleton {
                     property JsonObject notifications: JsonObject {
                         property bool showUnreadCount: false
                     }
+                }
+                property JsonObject layouts: JsonObject {
+                    // Only adding place-essential components to left-center-right
+                    // And adding the dynamic components to leftover
+                    property list<var> availableComponents: [
+                        {
+                            id: "date",
+                            icon: "date_range",
+                            title: "Date",
+                            centered: false
+                        },
+                        {
+                            id: "battery",
+                            icon: "battery_android_6",
+                            title: "Battery",
+                            centered: false
+                        }
+                    ]
+                    property list<var> left: [
+                        {
+                            id: "active_window",
+                            icon: "label",
+                            title: "Active window",
+                            centered: false
+                        },
+                    ]
+                    property list<var> center: [
+                        {
+                            id: "music_player",
+                            icon: "music_note",
+                            title: "Music player",
+                            centered: false
+                        },
+                        {
+                            id: "workspaces",
+                            icon: "workspaces",
+                            title: "Workspaces",
+                            centered: false
+                        },
+                        {
+                            id: "system_monitor",
+                            icon: "monitor_heart",
+                            title: "System monitor",
+                            centered: false
+                        }
+                    ]
+                    property list<var> right: [
+                        {
+                            id: "utility_buttons",
+                            icon: "build",
+                            title: "Utility buttons",
+                            centered: false
+                        },
+                        {
+                            id: "clock",
+                            icon: "nest_clock_farsight_analog",
+                            title: "Clock",
+                            centered: false
+                        },
+                        {
+                            id: "system_tray",
+                            icon: "system_update_alt",
+                            title: "System tray",
+                            centered: false
+                        }
+                    ]
+
                 }
                 property JsonObject tooltips: JsonObject {
                     property bool clickToShow: false

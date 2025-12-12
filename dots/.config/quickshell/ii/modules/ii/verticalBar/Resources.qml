@@ -7,14 +7,14 @@ import qs.modules.ii.bar as Bar
 MouseArea {
     id: root
     property bool alwaysShowAllResources: false
-    implicitHeight: columnLayout.implicitHeight
+    implicitHeight: columnLayout.implicitHeight + 15
     implicitWidth: columnLayout.implicitWidth
     hoverEnabled: !Config.options.bar.tooltips.clickToShow
 
     ColumnLayout {
         id: columnLayout
         spacing: 10
-        anchors.fill: parent
+        anchors.centerIn: parent
 
         Resource {
             Layout.alignment: Qt.AlignHCenter

@@ -4,8 +4,91 @@ import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
 
+import QtQml.Models
+
 ContentPage {
     forceWidth: true
+
+
+    ContentSection {
+        icon: "mobile_layout"
+        title: Translation.tr("Bar layout")
+        ContentSubsection {
+            title: Translation.tr("Left layout")
+            tooltip: Translation.tr("Top layout in vertical mode")
+            ConfigListView {
+                barSection: 0
+                listModel: Config.options.bar.layouts.left
+                onUpdated: (newList) => {
+                    Config.options.bar.layouts.left = newList
+                } 
+            }
+        }
+        ContentSubsection {
+            title: Translation.tr("Center layout")
+            tooltip: Translation.tr("Center the component with the button")
+            ConfigListView {
+                barSection: 1
+                listModel: Config.options.bar.layouts.center
+                onUpdated: (newList) => {
+                    Config.options.bar.layouts.center = newList
+                } 
+            }
+        }
+        ContentSubsection {
+            title: Translation.tr("Right layout")
+            tooltip: Translation.tr("Bottom layout in vertical mode")
+            ConfigListView {
+                barSection: 2
+                listModel: Config.options.bar.layouts.right
+                onUpdated: (newList) => {
+                    Config.options.bar.layouts.right = newList
+                } 
+            }
+        }
+    }
+    
+    ContentSection {
+        icon: "ad"
+        title: Translation.tr("Active window")
+        ConfigSwitch {
+            buttonIcon: "crop_free"
+            text: Translation.tr("Use fixed size")
+            checked: Config.options.bar.activeWindow.fixedSize
+            onCheckedChanged: {
+                Config.options.bar.activeWindow.fixedSize = checked;
+            }
+        }
+    }
+
+    ContentSection {
+        icon: "music_cast"
+        title: Translation.tr("Media player")
+        ConfigSwitch {
+            enabled: !Config.options.bar.vertical
+            buttonIcon: "crop_free"
+            text: Translation.tr("Use custom size")
+            checked: Config.options.bar.mediaPlayer.useCustomSize
+            onCheckedChanged: {
+                Config.options.bar.mediaPlayer.useCustomSize = checked;
+            }
+            StyledToolTip {
+                text: Translation.tr("Only available in horizontal mode")
+            }
+        }
+        ConfigSpinBox {
+            enabled: !Config.options.bar.vertical
+            icon: "width_full"
+            text: Translation.tr("Custom size")
+            value: Config.options.bar.mediaPlayer.customSize
+            from: 100
+            to: 500
+            stepSize: 25
+            onValueChanged: {
+                Config.options.bar.mediaPlayer.customSize = value;
+            }
+        }
+    }
 
     ContentSection {
         icon: "notifications"
@@ -19,7 +102,7 @@ ContentPage {
             }
         }
     }
-    
+
     ContentSection {
         icon: "spoke"
         title: Translation.tr("Positioning")
@@ -234,19 +317,6 @@ ContentPage {
                 onCheckedChanged: {
                     Config.options.bar.utilButtons.showScreenRecord = checked;
                 }
-            }
-        }
-    }
-
-    ContentSection {
-        icon: "cloud"
-        title: Translation.tr("Weather")
-        ConfigSwitch {
-            buttonIcon: "check"
-            text: Translation.tr("Enable")
-            checked: Config.options.bar.weather.enable
-            onCheckedChanged: {
-                Config.options.bar.weather.enable = checked;
             }
         }
     }

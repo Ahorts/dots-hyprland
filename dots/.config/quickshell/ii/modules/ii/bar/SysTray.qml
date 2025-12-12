@@ -12,7 +12,7 @@ Item {
     implicitWidth: gridLayout.implicitWidth
     implicitHeight: gridLayout.implicitHeight
     property bool vertical: false
-    property bool invertSide: false
+    property bool invertSide: Config?.options.bar.bottom
     property bool trayOverflowOpen: false
     property bool showSeparator: true
     property bool showOverflowMenu: true
@@ -141,12 +141,12 @@ Item {
             }
         }
 
-        StyledText {
+        /* StyledText { //? its a bit useless for me
             Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
             font.pixelSize: Appearance.font.pixelSize.larger
             color: Appearance.colors.colSubtext
             text: "•"
             visible: root.showSeparator && SystemTray.items.values.length > 0
-        }
+        } */
     }
 }

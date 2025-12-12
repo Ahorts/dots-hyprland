@@ -12,15 +12,28 @@ ComboBox {
 
     property string buttonIcon: ""
     property real buttonRadius: height / 2
+    property real topLeftRadius: buttonRadius
+    property real topRightRadius: buttonRadius
+    property real bottomLeftRadius: buttonRadius
+    property real bottomRightRadius: buttonRadius
+
     property color colBackground: Appearance.colors.colSecondaryContainer
     property color colBackgroundHover: Appearance.colors.colSecondaryContainerHover
     property color colBackgroundActive: Appearance.colors.colSecondaryContainerActive
 
+    opacity: root.enabled ? 1 : 0.4
     implicitHeight: 40
     Layout.fillWidth: true
 
+    Behavior on opacity {
+        animation: Appearance.animation.elementResize.numberAnimation.createObject(this)
+    }
+
     background: Rectangle {
-        radius: root.buttonRadius
+        topLeftRadius: root.topLeftRadius
+        topRightRadius: root.topRightRadius
+        bottomLeftRadius: root.bottomLeftRadius
+        bottomRightRadius: root.bottomRightRadius
         color: (root.down && !root.popup.visible) ? root.colBackgroundActive : root.hovered ? root.colBackgroundHover : root.colBackground
 
         Behavior on color {
