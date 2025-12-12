@@ -8,7 +8,8 @@
 </div>
 
 <div align="center"> 
-    
+     <h2>• screenshots •</h2>
+    <img width="1919" height="1078" alt="image" src="https://github.com/user-attachments/assets/61986d8e-eb0a-49ef-b4b4-543fef4a2e03" />
 </div>
 
 <div align="center">
