@@ -678,9 +678,9 @@ ContentPage {
                 ConfigSwitch {
                     buttonIcon: "backlight_high"
                     text: Translation.tr("Enable")
-                    checked: Config.options.background.widgets.media.glowEffect
+                    checked: Config.options.background.widgets.media.glow.enable
                     onCheckedChanged: {
-                        Config.options.background.widgets.media.glowEffect = checked;
+                        Config.options.background.widgets.media.glow.enable = checked;
                     }
                 }
                 ConfigSpinBox {
@@ -689,12 +689,69 @@ ContentPage {
                     stepSize: 5
                     icon: "brightness_5"
                     text: Translation.tr("Brightness (%)")
-                    value: Config.options.background.widgets.media.glowBrightness
+                    value: Config.options.background.widgets.media.glow.brightness
                     onValueChanged: {
-                        Config.options.background.widgets.media.glowBrightness = value;
+                        Config.options.background.widgets.media.glow.brightness = value;
                     }
                 }
             }
+        }
+        ContentSubsection {
+            title: Translation.tr("Visualizer")
+
+            ConfigRow {
+                uniform: true
+
+                ConfigSwitch {
+                    buttonIcon: "bar_chart"
+                    text: Translation.tr("Enable")
+                    checked: Config.options.background.widgets.media.visualizer.enable
+                    onCheckedChanged: {
+                        Config.options.background.widgets.media.visualizer.enable = checked;
+                    }
+                }
+                
+                ConfigSpinBox {
+                    from: 0
+                    to: 100
+                    stepSize: 5
+                    icon: "opacity"
+                    text: Translation.tr("Opacity (%)")
+                    value: Config.options.background.widgets.media.visualizer.opacity * 100
+                    onValueChanged: {
+                        Config.options.background.widgets.media.visualizer.opacity = value / 100;
+                    }
+                }
+            }
+            
+            ConfigRow {
+                uniform: true
+                
+                ConfigSpinBox {
+                    from: 0
+                    to: 5
+                    stepSize: 1
+                    icon: "rounded_corner"
+                    text: Translation.tr("Smoothing")
+                    value: Config.options.background.widgets.media.visualizer.smoothing
+                    onValueChanged: {
+                        Config.options.background.widgets.media.visualizer.smoothing = value;
+                    }
+                }
+
+                ConfigSpinBox {
+                    from: 0
+                    to: 10
+                    stepSize: 1
+                    icon: "blur_on"
+                    text: Translation.tr("Blur")
+                    value: Config.options.background.widgets.media.visualizer.blur
+                    onValueChanged: {
+                        Config.options.background.widgets.media.visualizer.blur = value;
+                    }
+                }
+            }
+
         }
     }
 }

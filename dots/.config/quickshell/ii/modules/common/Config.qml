@@ -212,9 +212,17 @@ Singleton {
                         property real x: 800
                         property real y: 100
                         property bool useAlbumColors: true
-                        property bool glowEffect: false
-                        property real glowBrightness: 50
                         property bool showPreviousToggle: true
+                        property JsonObject glow: JsonObject {
+                            property bool enable: false
+                            property real brightness: 50
+                        }
+                        property JsonObject visualizer: JsonObject {
+                            property bool enable: false
+                            property real opacity: 0.15
+                            property int smoothing: 2
+                            property int blur: 1
+                        }
                     }
                     property JsonObject weather: JsonObject {
                         property bool enable: false
