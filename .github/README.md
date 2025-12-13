@@ -36,9 +36,10 @@ However there can (and will) be bugs so **please** use original dots. Use this d
     <h2>• features i may open a pr later •</h2>
 </div>
 
-- Feature: Shell bar improvements
-- Feature: Background media widget
-- Feature: Overview widget position // top, center, bottom
+- Shell bar improvements // custom ordering
+- Background media widget
+- Overview widget position settings
+- Settings app search functionality
   
 
 
