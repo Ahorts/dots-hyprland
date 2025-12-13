@@ -38,7 +38,7 @@ However there can (and will) be bugs so **please** use original dots. Use this d
 
 - Feature: Shell bar improvements
 - Feature: Background media widget
-
+- Feature: Overview widget position // top, center, bottom
   
 
 
