@@ -166,6 +166,7 @@ AbstractBackgroundWidget {
                 layer.enabled: true
                 layer.effect: StyledBlurEffect {
                     source: blurredArt
+                    brightness: 0.002 * Config.options.background.widgets.media.glowBrightness
                 }
 
             }

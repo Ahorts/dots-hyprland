@@ -203,6 +203,7 @@ Singleton {
                         property real y: 100
                         property bool useAlbumColors: true
                         property bool glowEffect: false
+                        property real glowBrightness: 50
                         property bool showPreviousToggle: true
                     }
                     property JsonObject weather: JsonObject {
