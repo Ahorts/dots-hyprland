@@ -69,6 +69,8 @@ AbstractBackgroundWidget {
 
     property bool playerInList: root.playerList.includes(root.currentPlayer)
 
+    property list<real> visualizerPoints: [] 
+
     implicitHeight: contentItem.implicitHeight
     implicitWidth: contentItem.implicitWidth
 
@@ -98,7 +100,7 @@ AbstractBackgroundWidget {
     }
     
     function updatePlayer() {
-        console.log("[Media Player Widget]",filteredActivePlayer)
+        // console.log("[Media Player Widget]",filteredActivePlayer)
         if (root.filteredPlayerList.length == 0) {
             root.currentPlayer = null
             return
@@ -131,6 +133,23 @@ AbstractBackgroundWidget {
         }
     }
 
+    Process {
+        id: cavaProc
+        running: Config.options.background.widgets.media.visualizer.enable
+        onRunningChanged: {
+            if (!cavaProc.running) {
+                root.visualizerPoints = [];
+            }
+        }
+        command: ["cava", "-p", `${FileUtils.trimFileProtocol(Directories.scriptPath)}/cava/raw_output_config.txt`]
+        stdout: SplitParser {
+            onRead: data => {
+                let points = data.split(";").map(p => parseFloat(p.trim())).filter(p => !isNaN(p));
+                root.visualizerPoints = points;
+            }
+        }
+    }
+
     ColorQuantizer {
         id: colorQuantizer
         source: root.displayedArtFilePath
@@ -156,7 +175,7 @@ AbstractBackgroundWidget {
             antialiasing: true
             asynchronous: true
 
-            opacity: Config.options.background.widgets.media.glowEffect ? 1 : 0
+            opacity: Config.options.background.widgets.media.glow.enable ? 1 : 0
             Behavior on opacity {
                 animation: Appearance.animation.elementResize.numberAnimation.createObject(this)
             }
@@ -164,7 +183,7 @@ AbstractBackgroundWidget {
             layer.enabled: true
             layer.effect: StyledBlurEffect {
                 source: blurredArt
-                brightness: 0.002 * Config.options.background.widgets.media.glowBrightness
+                brightness: 0.002 * Config.options.background.widgets.media.glow.brightness
             }
         }
         
@@ -228,6 +247,18 @@ AbstractBackgroundWidget {
                 height: size
                 sourceSize.width: size
                 sourceSize.height: size
+            }
+
+            RadialWaveVisualizer {
+                z: 1
+                id: visualizer
+                anchors.fill: parent
+                points: root.visualizerPoints
+                live: root.currentPlayer?.isPlaying
+                color: dynamicColors.colPrimaryRipple
+                waveOpacity: Config.options.background.widgets.media.visualizer.opacity
+                waveBlur: Config.options.background.widgets.media.visualizer.blur
+                smoothing: Config.options.background.widgets.media.visualizer.smoothing
             }
         }
 
