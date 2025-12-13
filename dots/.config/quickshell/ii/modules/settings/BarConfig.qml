@@ -168,7 +168,7 @@ ContentPage {
         }
 
         ConfigRow {
-            
+            Layout.fillHeight: false
             ContentSubsection {
                 title: Translation.tr("Corner style")
                 Layout.fillWidth: true
@@ -222,7 +222,33 @@ ContentPage {
                 }
             }
         }
+
+        ContentSubsection {
+            title: Translation.tr("Background style")
+            Layout.fillWidth: false
+
+            ConfigSelectionArray {
+                currentValue: Config.options.bar.showBackground
+                onSelected: newValue => {
+                    Config.options.bar.showBackground = newValue;
+                }
+                options: [
+                    {
+                        displayName: Translation.tr("Visible"),
+                        icon: "visibility",
+                        value: true
+                    },
+                    {
+                        displayName: Translation.tr("Transparent"),
+                        icon: "opacity",
+                        value: false
+                    }
+                ]
+            }
+        }
     }
+
+    
 
     ContentSection {
         icon: "shelf_auto_hide"
