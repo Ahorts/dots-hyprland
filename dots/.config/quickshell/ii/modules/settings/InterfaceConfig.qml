@@ -5,11 +5,15 @@ import qs.modules.common
 import qs.modules.common.widgets
 
 ContentPage {
+    id: page
+    readonly property int index: 4
+    property bool register: parent.register ?? false
     forceWidth: true
 
     ContentSection {
         icon: "keyboard"
         title: Translation.tr("Cheat sheet")
+        keywords: ["cheatsheet", "super key", "mac symbols", "function keys", "mouse symbols", "split buttons", "font size", "keybind", "description"]
 
         ContentSubsection {
             title: Translation.tr("Super key symbol")
@@ -102,6 +106,7 @@ ContentPage {
     ContentSection {
         icon: "call_to_action"
         title: Translation.tr("Dock")
+        keywords: ["dock", "enable", "hover to reveal", "pinned on startup", "tint icons", "monochrome"]
 
         ConfigSwitch {
             buttonIcon: "check"
@@ -144,6 +149,7 @@ ContentPage {
     ContentSection {
         icon: "lock"
         title: Translation.tr("Lock screen")
+        keywords: ["lock screen", "hyprlock", "launch on startup", "security", "require password", "unlock keyring", "style", "center clock", "blur", "blur zoom"]
 
         ConfigSwitch {
             buttonIcon: "water_drop"
@@ -253,6 +259,7 @@ ContentPage {
     ContentSection {
         icon: "notifications"
         title: Translation.tr("Notifications")
+        keywords: ["notifications", "timeout", "ms"]
 
         ConfigSpinBox {
             icon: "av_timer"
@@ -270,6 +277,7 @@ ContentPage {
     ContentSection {
         icon: "select_window"
         title: Translation.tr("Overlay: General")
+        keywords: ["overlay", "general", "opening zoom animation", "darken screen"]
 
         ConfigSwitch {
             buttonIcon: "high_density"
@@ -292,6 +300,7 @@ ContentPage {
     ContentSection {
         icon: "point_scan"
         title: Translation.tr("Overlay: Crosshair")
+        keywords: ["overlay", "crosshair", "code", "editor", "Valorant", "open editor", "Super+G"]
 
         MaterialTextArea {
             Layout.fillWidth: true
@@ -331,6 +340,7 @@ ContentPage {
     ContentSection {
         icon: "point_scan"
         title: Translation.tr("Overlay: Floating Image")
+        keywords: ["overlay", "floating image", "image source"]
 
         MaterialTextArea {
             Layout.fillWidth: true
@@ -346,6 +356,7 @@ ContentPage {
     ContentSection {
         icon: "screenshot_frame_2"
         title: Translation.tr("Region selector (screen snipping/Google Lens)")
+        keywords: ["region selector", "screen snipping", "Google Lens", "target regions", "windows", "layers", "content", "rectangular selection", "circle selection", "stroke width", "padding", "aim lines"]
 
         ContentSubsection {
             title: Translation.tr("Hint target regions")
@@ -440,6 +451,7 @@ ContentPage {
     ContentSection {
         icon: "side_navigation"
         title: Translation.tr("Sidebars")
+        keywords: ["sidebars", "right sidebar", "translator", "quick toggles", "style", "columns", "sliders", "brightness", "volume", "microphone", "corner open", "hover", "bottom", "value scroll", "visualize region", "region width", "region height"]
 
         ConfigSwitch {
             buttonIcon: "memory"
@@ -669,6 +681,7 @@ ContentPage {
     ContentSection {
         icon: "voting_chip"
         title: Translation.tr("On-screen display")
+        keywords: ["on-screen display", "osd", "timeout", "ms"]
 
         ConfigSpinBox {
             icon: "av_timer"
@@ -686,6 +699,7 @@ ContentPage {
     ContentSection {
         icon: "overview_key"
         title: Translation.tr("Overview")
+        keywords: ["overview", "enable", "center icons", "scale", "rows", "columns"]
 
         ConfigSwitch {
             buttonIcon: "check"
@@ -744,6 +758,7 @@ ContentPage {
     ContentSection {
         icon: "wallpaper_slideshow"
         title: Translation.tr("Wallpaper selector")
+        keywords: ["wallpaper selector", "system file picker"]
 
         ConfigSwitch {
             buttonIcon: "ad"
@@ -758,6 +773,7 @@ ContentPage {
     ContentSection {
         icon: "text_format"
         title: Translation.tr("Fonts")
+        keywords: ["fonts", "main font", "numbers font", "title font", "monospace font", "nerd font icons", "reading font", "expressive font"]
 
         ContentSubsection {
             title: Translation.tr("Main font")
