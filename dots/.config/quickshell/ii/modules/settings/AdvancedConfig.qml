@@ -4,15 +4,11 @@ import qs.modules.common
 import qs.modules.common.widgets
 
 ContentPage {
-    id: page
-    readonly property int index: 6
-    property bool register: parent.register ?? false
     forceWidth: true
 
     ContentSection {
         icon: "colors"
         title: Translation.tr("Color generation")
-        keywords: ["color generation", "shell & utilities", "Qt apps", "terminal", "dark mode", "harmony", "harmonize threshold", "foreground boost"]
 
         ConfigSwitch {
             buttonIcon: "hardware"

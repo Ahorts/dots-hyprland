@@ -5,15 +5,11 @@ import qs.modules.common
 import qs.modules.common.widgets
 
 ContentPage {
-    id: page
-    readonly property int index: 3
-    property bool register: parent.register ?? false
     forceWidth: true
 
     ContentSection {
         icon: "sync_alt"
         title: Translation.tr("Parallax")
-        keywords: ["parallax", "vertical", "workspace", "sidebar", "zoom", "background", "wallpaper"]
 
         ConfigSwitch {
             buttonIcon: "unfold_more_double"
@@ -59,7 +55,6 @@ ContentPage {
     ContentSection {
         icon: "clock_loader_40"
         title: Translation.tr("Widget: Clock")
-        keywords: ["clock", "widget", "digital", "cookie", "animate", "sides", "rotate", "dial", "hour", "minute", "second", "date", "quote", "background", "widgets"]
         id: settingsClock
 
         function stylePresent(styleName) {
@@ -569,7 +564,6 @@ ContentPage {
     ContentSection {
         icon: "weather_mix"
         title: Translation.tr("Widget: Weather")
-        keywords: ["weather", "widget", "placement", "draggable", "least busy", "most busy", "background", "widgets"]
 
         ConfigRow {
             Layout.fillWidth: true
