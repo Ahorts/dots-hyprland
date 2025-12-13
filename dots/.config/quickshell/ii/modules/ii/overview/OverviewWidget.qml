@@ -159,12 +159,12 @@ Item {
                 model: ScriptModel {
                     values: {
                         // console.log(JSON.stringify(ToplevelManager.toplevels.values.map(t => t), null, 2))
-                        return [...ToplevelManager.toplevels.values.filter((toplevel) => {
+                        return ToplevelManager.toplevels.values.filter((toplevel) => {
                             const address = `0x${toplevel.HyprlandToplevel?.address}`
                             var win = windowByAddress[address]
                             const inWorkspaceGroup = (root.workspaceGroup * root.workspacesShown < win?.workspace?.id && win?.workspace?.id <= (root.workspaceGroup + 1) * root.workspacesShown)
                             return inWorkspaceGroup;
-                        })].reverse()
+                        })
                     }
                 }
                 delegate: OverviewWindow {
@@ -278,7 +278,7 @@ Item {
                         StyledToolTip {
                             extraVisibleCondition: false
                             alternativeVisibleCondition: dragArea.containsMouse && !window.Drag.active
-                            text: `${windowData.title}\n[${windowData.class}] ${windowData.xwayland ? "[XWayland] " : ""}`
+                            text: `${windowData?.title}\n[${windowData?.class}] ${windowData?.xwayland ? "[XWayland] " : ""}`
                         }
                     }
                 }
