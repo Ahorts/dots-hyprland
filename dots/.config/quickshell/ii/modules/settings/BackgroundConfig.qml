@@ -651,7 +651,9 @@ ContentPage {
                 ]
             }
         }
+
         ConfigRow {
+            uniform: true
             ConfigSwitch {
                 buttonIcon: "opacity"
                 text: Translation.tr("Use album colors")
@@ -661,22 +663,38 @@ ContentPage {
                 }
             }
             ConfigSwitch {
-                buttonIcon: "backlight_high"
-                text: Translation.tr("Enable glow effect")
-                checked: Config.options.background.widgets.media.glowEffect
+                buttonIcon: "skip_previous"
+                text: Translation.tr("Show previous toggle")
+                checked: Config.options.background.widgets.media.showPreviousToggle
                 onCheckedChanged: {
-                    Config.options.background.widgets.media.glowEffect = checked;
+                    Config.options.background.widgets.media.showPreviousToggle = checked;
                 }
             }
         }
-        ConfigSwitch {
-            buttonIcon: "skip_previous"
-            text: Translation.tr("Show previous toggle")
-            checked: Config.options.background.widgets.media.showPreviousToggle
-            onCheckedChanged: {
-                Config.options.background.widgets.media.showPreviousToggle = checked;
+        ContentSubsection {
+            title: Translation.tr("Glow effect")
+            ConfigRow {
+                uniform: true
+                ConfigSwitch {
+                    buttonIcon: "backlight_high"
+                    text: Translation.tr("Enable")
+                    checked: Config.options.background.widgets.media.glowEffect
+                    onCheckedChanged: {
+                        Config.options.background.widgets.media.glowEffect = checked;
+                    }
+                }
+                ConfigSpinBox {
+                    from: 5
+                    to: 100
+                    stepSize: 5
+                    icon: "brightness_5"
+                    text: Translation.tr("Brightness (%)")
+                    value: Config.options.background.widgets.media.glowBrightness
+                    onValueChanged: {
+                        Config.options.background.widgets.media.glowBrightness = value;
+                    }
+                }
             }
         }
-        
     }
 }
