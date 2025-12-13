@@ -9,6 +9,9 @@ import qs.modules.common.widgets
 import qs.modules.common.functions
 
 ContentPage {
+    id: page
+    readonly property int index: 0
+    property bool register: parent.register ?? false
     forceWidth: true
 
     Process {
@@ -59,6 +62,7 @@ ContentPage {
     ContentSection {
         icon: "format_paint"
         title: Translation.tr("Wallpaper & Colors")
+        keywords: ["wallpaper", "colors", "appearance", "palette", "transparency"]
         Layout.fillWidth: true
 
         RowLayout {
@@ -234,6 +238,7 @@ ContentPage {
     ContentSection {
         icon: "screenshot_monitor"
         title: Translation.tr("Bar & screen")
+        keywords: ["bar", "screen", "position", "style", "corner", "rounding", "appearance"]
 
         ConfigRow {
             ContentSubsection {

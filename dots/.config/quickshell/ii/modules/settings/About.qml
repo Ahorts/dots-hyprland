@@ -7,6 +7,7 @@ import qs.modules.common
 import qs.modules.common.widgets
 
 ContentPage {
+    property bool register: false
     forceWidth: true
 
     ContentSection {
