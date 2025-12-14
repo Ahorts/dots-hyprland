@@ -10,15 +10,8 @@ MouseArea {
     id: root
     required property var fileModelData
     property bool isDirectory: fileModelData.fileIsDir
-
-    property bool isVideo: {
-        const path = fileModelData.fileName.toLowerCase();
-        return path.endsWith('.mp4') || path.endsWith('.webm') || 
-                path.endsWith('.mkv') || path.endsWith('.avi') || 
-                path.endsWith('.mov') || path.endsWith('.m4v') ||
-                path.endsWith('.ogv');
-    }
-    property bool useThumbnail: Images.isValidImageByName(fileModelData.fileName) || root.isVideo
+    property bool useThumbnail: Images.isValidImageByName(fileModelData.fileName)
+    property bool showLoadingIndicator: false
 
     property alias colBackground: background.color
     property alias colText: wallpaperItemName.color
@@ -77,6 +70,8 @@ MouseArea {
                         sourceSize.width: wallpaperItemColumnLayout.width
                         sourceSize.height: wallpaperItemColumnLayout.height - wallpaperItemColumnLayout.spacing - wallpaperItemName.height
 
+                        onVisibleChanged: root.showLoadingIndicator = !thumbnailImage.visible
+
                         Connections {
                             target: Wallpapers
                             function onThumbnailGenerated(directory) {
@@ -105,20 +100,6 @@ MouseArea {
                 }
 
                 Loader {
-                    id: videoIconLoader
-                    active: root.isVideo && root.useThumbnail
-                    anchors.top: parent.top
-                    anchors.left: parent.left
-                    anchors.margins: 8
-                    sourceComponent: MaterialSymbol {
-                        text: "video_library"
-                        color: Appearance.colors.colPrimary
-                        font.pixelSize: Appearance.font.pixelSize.large
-                        fill: 1
-                    }
-                }
-
-                Loader {
                     id: iconLoader
                     active: !root.useThumbnail
                     anchors.fill: parent
@@ -126,6 +107,15 @@ MouseArea {
                         fileModelData: root.fileModelData
                         sourceSize.width: wallpaperItemColumnLayout.width
                         sourceSize.height: wallpaperItemColumnLayout.height - wallpaperItemColumnLayout.spacing - wallpaperItemName.height
+                    }
+                }
+
+                FadeLoader {
+                    id: loadingIndicatorLoader
+                    shown: root.showLoadingIndicator
+                    anchors.centerIn: parent
+                    sourceComponent: MaterialLoadingIndicator {
+                        loading: true
                     }
                 }
             }
