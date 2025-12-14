@@ -39,7 +39,8 @@ However there can (and will) be bugs so **please** use original dots. Use this d
 - Shell bar improvements // custom ordering
 - Background media widget
 - Overview widget position settings
-- Settings app search functionality
+  
+- WIP: Settings app search functionality
   
 
 
