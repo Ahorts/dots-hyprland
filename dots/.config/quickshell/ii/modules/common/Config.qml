@@ -203,6 +203,7 @@ Singleton {
                         property real y: 100
                         property bool useAlbumColors: true
                         property bool showPreviousToggle: true
+                        property bool tintArtCover: false
                         property JsonObject glow: JsonObject {
                             property bool enable: false
                             property real brightness: 50

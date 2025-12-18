@@ -249,6 +249,26 @@ AbstractBackgroundWidget {
                 sourceSize.height: size
             }
 
+            FadeLoader {
+                shown: Config.options.background.widgets.media.tintArtCover
+                anchors.fill: mediaArt
+                sourceComponent: Item {
+                    Desaturate {
+                        id: desaturatedIcon
+                        visible: false // There's already color overlay
+                        anchors.fill: parent
+                        source: mediaArt
+                        desaturation: 0.8
+                    }
+                    ColorOverlay {
+                        anchors.fill: desaturatedIcon
+                        source: desaturatedIcon
+                        color: ColorUtils.transparentize(Appearance.colors.colOnPrimary, 0.9)
+                    }
+                }
+            
+            }
+
             RadialWaveVisualizer {
                 z: 1
                 id: visualizer
