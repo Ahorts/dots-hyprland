@@ -662,6 +662,15 @@ ContentPage {
             }
         }
 
+        ConfigSwitch {
+            buttonIcon: "colors"
+            text: Translation.tr("Tint art cover")
+            checked: Config.options.background.widgets.media.tintArtCover
+            onCheckedChanged: {
+                Config.options.background.widgets.media.tintArtCover = checked;
+            }
+        }
+
         ConfigRow {
             uniform: true
             ConfigSwitch {
