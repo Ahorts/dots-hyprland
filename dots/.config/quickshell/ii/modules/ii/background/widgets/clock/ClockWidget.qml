@@ -63,7 +63,10 @@ AbstractBackgroundWidget {
             anchors.horizontalCenter: parent.horizontalCenter
             shown: root.clockStyle === "digital" && (root.shouldShow)
             fade: false
-            sourceComponent: DigitalClock {}
+            sourceComponent: DigitalClock {
+                colText: root.colText
+                textHorizontalAlignment: root.textHorizontalAlignment
+            }
         }
         StatusRow {
             anchors.horizontalCenter: parent.horizontalCenter
@@ -151,6 +154,7 @@ AbstractBackgroundWidget {
         ClockText {
             id: statusTextWidget
             color: statusTextRow.textColor
+            horizontalAlignment: root.textHorizontalAlignment
             anchors.verticalCenter: statusTextRow.verticalCenter
             font {
                 pixelSize: Appearance.font.pixelSize.large
