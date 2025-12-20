@@ -141,6 +141,10 @@ Singleton {
                 }
             }
 
+            property JsonObject screenRecord: JsonObject {
+                property bool active: false
+            }
+
             property JsonObject timer: JsonObject {
                 property JsonObject pomodoro: JsonObject {
                     property bool running: false

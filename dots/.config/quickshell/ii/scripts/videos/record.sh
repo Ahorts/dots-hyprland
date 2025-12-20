@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 
+# echo "SCRIPT STARTED $(date)" >> /tmp/region-record.log
+
 CONFIG_FILE="$HOME/.config/illogical-impulse/config.json"
 JSON_PATH=".screenRecord.savePath"
+
+STATE_FILE="$HOME/.local/state/quickshell/states.json"
+STATE_JSON_PATH=".screenRecord.active"
 
 CUSTOM_PATH=$(jq -r "$JSON_PATH" "$CONFIG_FILE" 2>/dev/null)
 
@@ -16,11 +21,17 @@ fi
 getdate() {
     date '+%Y-%m-%d_%H.%M.%S'
 }
+
 getaudiooutput() {
     pactl list sources | grep 'Name' | grep 'monitor' | cut -d ' ' -f2
 }
 getactivemonitor() {
     hyprctl monitors -j | jq -r '.[] | select(.focused == true) | .name'
+}
+
+updatestate() {
+    local state_value=$1
+    jq "$STATE_JSON_PATH = $state_value" "$STATE_FILE" > "${STATE_FILE}.tmp" && mv "${STATE_FILE}.tmp" "$STATE_FILE"
 }
 
 mkdir -p "$RECORDING_DIR"
@@ -37,6 +48,7 @@ for ((i=0;i<${#ARGS[@]};i++)); do
             MANUAL_REGION="${ARGS[i+1]}"
         else
             notify-send "Recording cancelled" "No region specified for --region" -a 'Recorder' & disown
+            updatestate false
             exit 1
         fi
     elif [[ "${ARGS[i]}" == "--sound" ]]; then
@@ -48,14 +60,16 @@ done
 
 if pgrep wf-recorder > /dev/null; then
     notify-send "Recording Stopped" "Stopped" -a 'Recorder' &
+    updatestate false
     pkill wf-recorder &
 else
     if [[ $FULLSCREEN_FLAG -eq 1 ]]; then
         notify-send "Starting recording" 'recording_'"$(getdate)"'.mp4' -a 'Recorder' & disown
+        updatestate true
         if [[ $SOUND_FLAG -eq 1 ]]; then
-            wf-recorder -o "$(getactivemonitor)" --pixel-format yuv420p -f './recording_'"$(getdate)"'.mp4' -t --audio="$(getaudiooutput)"
+            wf-recorder -o "$(getactivemonitor)" --pixel-format yuv420p -f './recording_'"$(getdate)"'.mp4' --audio="$(getaudiooutput)"
         else
-            wf-recorder -o "$(getactivemonitor)" --pixel-format yuv420p -f './recording_'"$(getdate)"'.mp4' -t
+            wf-recorder -o "$(getactivemonitor)" --pixel-format yuv420p -f './recording_'"$(getdate)"'.mp4' 
         fi
     else
         # If a manual region was provided via --region, use it; otherwise run slurp as before.
@@ -64,15 +78,26 @@ else
         else
             if ! region="$(slurp 2>&1)"; then
                 notify-send "Recording cancelled" "Selection was cancelled" -a 'Recorder' & disown
+                updatestate false
                 exit 1
             fi
         fi
 
+        pos="${region%% *}"      # x,y
+        size="${region##* }"     # WxH
+        x="${pos%,*}"
+        y="${pos#*,}"
+        geometry="${x},${y} ${size}"
+
         notify-send "Starting recording" 'recording_'"$(getdate)"'.mp4' -a 'Recorder' & disown
+        updatestate true
         if [[ $SOUND_FLAG -eq 1 ]]; then
-            wf-recorder --pixel-format yuv420p -f './recording_'"$(getdate)"'.mp4' -t --geometry "$region" --audio="$(getaudiooutput)"
+            wf-recorder -o "$(getactivemonitor)" --pixel-format yuv420p -f './recording_'"$(getdate)"'.mp4'  --geometry "$geometry" --audio="$(getaudiooutput)"
         else
-            wf-recorder --pixel-format yuv420p -f './recording_'"$(getdate)"'.mp4' -t --geometry "$region"
+            # echo "SCRIPT DEBUG: wf-recorder -o "$(getactivemonitor)" --pixel-format yuv420p -f './recording_'"$(getdate)"'.mp4'  --geometry "$geometry"" >> /tmp/region-record.log
+            wf-recorder -o "$(getactivemonitor)" --pixel-format yuv420p -f './recording_'"$(getdate)"'.mp4'  --geometry "$geometry"
         fi
     fi
 fi
+
+# echo "SCRIPT EXIT $(date)" >> /tmp/region-record.log

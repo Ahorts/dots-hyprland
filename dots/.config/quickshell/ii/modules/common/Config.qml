@@ -293,6 +293,14 @@ Singleton {
                             icon: "battery_android_6",
                             title: "Battery",
                             centered: false
+                        },
+                        {
+                            id: "record_indicator",
+                            icon: "screen_record",
+                            title: "Record indicator",
+                            centered: false,
+                            visible: false,
+                            tooltip: Translation.tr("Only visible when recording")
                         }
                     ]
                     property list<var> left: [

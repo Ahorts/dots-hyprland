@@ -19,6 +19,13 @@ Item {
 
     implicitWidth: wrapper.implicitWidth
     implicitHeight: wrapper.implicitHeight
+    visible: modelData.visible ?? true
+
+    function toggleVisible(visible) {
+        if (barSection == 0) Config.options.bar.layouts.left[originalIndex].visible = visible
+        else if (barSection == 1) Config.options.bar.layouts.center[originalIndex].visible = visible
+        else if (barSection == 2) Config.options.bar.layouts.right[originalIndex].visible = visible
+    }
 
     property var compMap: ({ // [horizontal, vertical]
         "workspaces": [workspaceComp,workspaceComp],
@@ -29,18 +36,33 @@ Item {
         "utility_buttons": [utilityButtonsComp, utilityButtonsCompVert],
         "system_tray": [systemTrayComp, systemTrayCompVert],
         "active_window": [activeWindowComp, activeWindowCompVert],
-        "date": [dateCompVert, dateCompVert]
+        "date": [dateCompVert, dateCompVert],
+        "record_indicator": [recordIndicatorComp, recordIndicatorComp],
     })
 
     property real startRadius: {
-        if(barSection === 0 && originalIndex === 0) return Appearance.rounding.verysmall
-        if(originalIndex === 0 || list.length === 1) return Appearance.rounding.full
+        if (list.length === 1 || (barSection !== 2 && originalIndex === 0))
+            return Appearance.rounding.full
+
+        if (list.length > 1) {
+            let firstVisible = list.find(item => item.visible !== false)
+            if (firstVisible && list.indexOf(firstVisible) === originalIndex) {
+                return Appearance.rounding.full
+            }
+        }
         return Appearance.rounding.verysmall
     }
 
     property real endRadius: {
-        if(barSection === 2 && originalIndex === list.length - 1) return Appearance.rounding.verysmall
-        if(originalIndex === list.length - 1 || list.length === 1) return Appearance.rounding.full
+        if (list.length === 1 || (barSection !== 2 && originalIndex === list.length - 1)) 
+            return Appearance.rounding.full
+
+        if (list.length > 1) {
+            let lastVisible = list.slice().reverse().find(item => item.visible !== false)
+            if (lastVisible && list.indexOf(lastVisible) === originalIndex) {
+                return Appearance.rounding.full
+            }
+        }
         return Appearance.rounding.verysmall
     }
 
@@ -54,13 +76,17 @@ Item {
         
         startRadius: rootItem.startRadius
         endRadius: rootItem.endRadius
+        colBackground: itemLoader.item.colBackground ?? Appearance.colors.colLayer2
 
         items: Loader {
+            id: itemLoader
             active: true
             sourceComponent: compMap[modelData.id][vertical ? 1 : 0]
         }
     }
     
+    Component { id: recordIndicatorComp; RecordIndicator {} }
+
     Component { id: activeWindowCompVert; ActiveWindow { vertical: true } }
     Component { id: activeWindowComp; ActiveWindow {} }
 
