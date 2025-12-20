@@ -163,61 +163,43 @@ ContentPage {
                         RowLayout {
                             ColorPreviewButton {
                                 colorScheme: "auto"
-                                StyledToolTip {
-                                    text: Translation.tr("Auto")
-                                }
+                                colorSchemeDisplayName: Translation.tr("Auto")
                             }
                             ColorPreviewButton {
                                 colorScheme: "scheme-content"
-                                StyledToolTip {
-                                    text: Translation.tr("Content")
-                                }
+                                colorSchemeDisplayName: Translation.tr("Content")
                             }
                             ColorPreviewButton {
                                 colorScheme: "scheme-expressive"
-                                StyledToolTip {
-                                    text: Translation.tr("Expressive")
-                                }
+                                colorSchemeDisplayName: Translation.tr("Expressive")
                             }
                         }
                         RowLayout {
                             ColorPreviewButton {
                                 colorScheme: "scheme-fidelity"
-                                StyledToolTip {
-                                    text: Translation.tr("Fidelity")
-                                }
+                                colorSchemeDisplayName: Translation.tr("Fidelity")
                             }
                             ColorPreviewButton {
                                 colorScheme: "scheme-fruit-salad"
-                                StyledToolTip {
-                                    text: Translation.tr("Fruit Salad")
-                                }
+                                colorSchemeDisplayName: Translation.tr("Fruit Salad")
                             }
                             ColorPreviewButton {
                                 colorScheme: "scheme-monochrome"
-                                StyledToolTip {
-                                    text: Translation.tr("Monochrome")
-                                }
+                                colorSchemeDisplayName: Translation.tr("Monochrome")
                             }
                         }
                         RowLayout {
                             ColorPreviewButton {
                                 colorScheme: "scheme-neutral"
-                                StyledToolTip {
-                                    text: Translation.tr("Neutral")
-                                }
+                                colorSchemeDisplayName: Translation.tr("Neutral")
                             }
                             ColorPreviewButton {
                                 colorScheme: "scheme-rainbow"
-                                StyledToolTip {
-                                    text: Translation.tr("Rainbow")
-                                }
+                                colorSchemeDisplayName: Translation.tr("Rainbow")
                             }
                             ColorPreviewButton {
                                 colorScheme: "scheme-tonal-spot"
-                                StyledToolTip {
-                                    text: Translation.tr("Tonal Spot")
-                                }
+                                colorSchemeDisplayName: Translation.tr("Tonal Spot")
                             }
                         }
                     

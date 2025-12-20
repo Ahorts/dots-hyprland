@@ -13,6 +13,7 @@ RippleButton {
     id: root
 
     property string colorScheme: "scheme-auto"
+    property string colorSchemeDisplayName: ""
     property color accentColor
     readonly property bool toggled: Config.options.appearance.palette.type === root.colorScheme
 
@@ -27,6 +28,8 @@ RippleButton {
     property color primaryColor: "transparent"
     property color secondaryColor: "transparent"
     property color tertiaryColor: "transparent"
+
+    property bool loaded: false
 
     colBackground: toggled ? Appearance.colors.colPrimaryContainer : Appearance.colors.colLayer2
     colBackgroundHover: toggled ? Appearance.colors.colPrimaryContainerHover : Appearance.colors.colLayer2Hover
@@ -55,20 +58,28 @@ RippleButton {
                 root.primaryColor   = colors[0]?.trim()
                 root.secondaryColor = colors[1]?.trim()
                 root.tertiaryColor  = colors[2]?.trim()
+                root.loaded = true;
                 myCanvas.requestPaint()
             }
         }
+    }
+
+    StyledToolTip {
+        text: root.colorSchemeDisplayName
     }
 
     Item {
         id: myRect
         anchors.fill: parent
 
-        MaterialSymbol {
-            anchors.centerIn: parent
-            text: "hourglass_bottom"
-            color: Appearance.colors.colPrimary
-            iconSize: Appearance.font.pixelSize.hugeass
+        StyledText {
+            anchors.fill: parent
+            visible: !root.loaded
+            elide: Text.ElideRight
+            text: root.colorSchemeDisplayName
+            horizontalAlignment: Text.AlignHCenter
+            color: Appearance.colors.colOnPrimaryContainer
+            font.pixelSize: Appearance.font.pixelSize.small
         }
 
         Canvas {
