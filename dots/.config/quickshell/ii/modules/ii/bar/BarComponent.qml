@@ -20,6 +20,13 @@ Item {
     implicitWidth: wrapper.implicitWidth
     implicitHeight: wrapper.implicitHeight
 
+    function toggleVisible(visibility) {
+        visible = visibility
+        if (barSection == 0) Config.options.bar.layouts.left[originalIndex].visible = visibility
+        else if (barSection == 1) Config.options.bar.layouts.center[originalIndex].visible = visibility
+        else if (barSection == 2) Config.options.bar.layouts.right[originalIndex].visible = visibility
+    }
+
     property var compMap: ({ // [horizontal, vertical]
         "workspaces": [workspaceComp,workspaceComp],
         "music_player": [musicPlayerComp, musicPlayerCompVert],
@@ -29,19 +36,36 @@ Item {
         "utility_buttons": [utilityButtonsComp, utilityButtonsCompVert],
         "system_tray": [systemTrayComp, systemTrayCompVert],
         "active_window": [activeWindowComp, activeWindowCompVert],
-        "date": [dateCompVert, dateCompVert]
+        "date": [dateCompVert, dateCompVert],
+        "record_indicator": [recordIndicatorComp, recordIndicatorCompVert],
+        "screen_share_indicator": [screenshareIndicatorComp, screenshareIndicatorComp]
     })
 
+    
     property real startRadius: {
-        if(barSection === 0 && originalIndex === 0) return Appearance.rounding.verysmall
-        if(originalIndex === 0 || list.length === 1) return Appearance.rounding.full
-        return Appearance.rounding.verysmall
+        if (barSection === 0) {
+            return Appearance.rounding.verysmall
+        } else if (barSection === 2) {
+            let hasVisibleLeft = list.slice(0, originalIndex).some(item => item.visible !== false)
+            return hasVisibleLeft ? Appearance.rounding.verysmall : Appearance.rounding.full
+        } else { // barSection 1 
+            if (list.length === 1) return Appearance.rounding.full
+            let hasVisibleLeft = list.slice(0, originalIndex).some(item => item.visible !== false)
+            return hasVisibleLeft ? Appearance.rounding.verysmall : Appearance.rounding.full
+        }
     }
 
     property real endRadius: {
-        if(barSection === 2 && originalIndex === list.length - 1) return Appearance.rounding.verysmall
-        if(originalIndex === list.length - 1 || list.length === 1) return Appearance.rounding.full
-        return Appearance.rounding.verysmall
+        if (barSection === 2) {
+            return Appearance.rounding.verysmall
+        } else if (barSection === 0) {
+            let hasVisibleRight = list.slice(originalIndex + 1).some(item => item.visible !== false)
+            return hasVisibleRight ? Appearance.rounding.verysmall : Appearance.rounding.full
+        } else { // barSection 1 
+            if (list.length === 1) return Appearance.rounding.full
+            let hasVisibleRight = list.slice(originalIndex + 1).some(item => item.visible !== false)
+            return hasVisibleRight ? Appearance.rounding.verysmall : Appearance.rounding.full
+        }
     }
 
     BarGroup {
@@ -54,13 +78,20 @@ Item {
         
         startRadius: rootItem.startRadius
         endRadius: rootItem.endRadius
+        colBackground: itemLoader.item.colBackground ?? Appearance.colors.colLayer2
 
         items: Loader {
+            id: itemLoader
             active: true
             sourceComponent: compMap[modelData.id][vertical ? 1 : 0]
         }
     }
-    
+
+    Component { id: screenshareIndicatorComp; ScreenShareIndicator {} }
+
+    Component { id: recordIndicatorComp; RecordIndicator {} }
+    Component { id: recordIndicatorCompVert; RecordIndicator { vertical: true } }
+
     Component { id: activeWindowCompVert; ActiveWindow { vertical: true } }
     Component { id: activeWindowComp; ActiveWindow {} }
 

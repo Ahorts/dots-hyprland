@@ -19,9 +19,13 @@ ContentPage {
             ConfigListView {
                 barSection: 0
                 listModel: Config.options.bar.layouts.left
+                sourceListModel: Config.options.bar.layouts.availableComps
                 onUpdated: (newList) => {
                     Config.options.bar.layouts.left = newList
                 } 
+                onSourceUpdated: (newList) => {
+                    Config.options.bar.layouts.availableComps = newList
+                }
             }
         }
         ContentSubsection {
@@ -30,9 +34,13 @@ ContentPage {
             ConfigListView {
                 barSection: 1
                 listModel: Config.options.bar.layouts.center
+                sourceListModel: Config.options.bar.layouts.availableComps
                 onUpdated: (newList) => {
                     Config.options.bar.layouts.center = newList
                 } 
+                onSourceUpdated: (newList) => {
+                    Config.options.bar.layouts.availableComps = newList
+                }
             }
         }
         ContentSubsection {
@@ -41,8 +49,12 @@ ContentPage {
             ConfigListView {
                 barSection: 2
                 listModel: Config.options.bar.layouts.right
+                sourceListModel: Config.options.bar.layouts.availableComps
                 onUpdated: (newList) => {
                     Config.options.bar.layouts.right = newList
+                }
+                onSourceUpdated: (newList) => {
+                    Config.options.bar.layouts.availableComps = newList
                 } 
             }
         }
@@ -168,7 +180,7 @@ ContentPage {
         }
 
         ConfigRow {
-            
+            Layout.fillHeight: false
             ContentSubsection {
                 title: Translation.tr("Corner style")
                 Layout.fillWidth: true
@@ -222,7 +234,33 @@ ContentPage {
                 }
             }
         }
+
+        ContentSubsection {
+            title: Translation.tr("Background style")
+            Layout.fillWidth: false
+
+            ConfigSelectionArray {
+                currentValue: Config.options.bar.showBackground
+                onSelected: newValue => {
+                    Config.options.bar.showBackground = newValue;
+                }
+                options: [
+                    {
+                        displayName: Translation.tr("Visible"),
+                        icon: "visibility",
+                        value: true
+                    },
+                    {
+                        displayName: Translation.tr("Transparent"),
+                        icon: "opacity",
+                        value: false
+                    }
+                ]
+            }
+        }
     }
+
+    
 
     ContentSection {
         icon: "shelf_auto_hide"

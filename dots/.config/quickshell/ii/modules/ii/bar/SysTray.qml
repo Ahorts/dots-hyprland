@@ -23,6 +23,9 @@ Item {
     onUnpinnedItemsChanged: {
         if (unpinnedItems.length == 0) root.closeOverflowMenu();
     }
+    onPinnedItemsChanged: {
+        rootItem.toggleVisible(pinnedItems.length > 0);
+    }
 
     function grabFocus() {
         focusGrab.active = true;

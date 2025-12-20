@@ -9,6 +9,8 @@ import qs.modules.common
 import qs.modules.common.widgets
 import qs.modules.common.functions
 
+import Quickshell.Io
+
 Item { // Bar content region
     id: root
 
@@ -151,7 +153,7 @@ Item { // Bar content region
             id: leftRepeater
             model: Config.options.bar.layouts.left
             delegate: BarComponent {
-                list: leftRepeater.model
+                list: Config.options.bar.layouts.left
                 barSection: 0
             }
         }
