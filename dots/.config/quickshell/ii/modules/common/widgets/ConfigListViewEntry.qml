@@ -149,6 +149,7 @@ Item {
                 active: modelData.tooltip ?? false
                 Layout.rightMargin: -10
                 sourceComponent: RippleButton {
+                    
                     implicitWidth: implicitHeight
                     MaterialSymbol {
                         text: "info"
@@ -198,8 +199,11 @@ Item {
                 }
 
                 onClicked: {
-                    if (modelData != null) 
-                        Config.options.bar.layouts.availableComponents.push(modelData)
+                    if (modelData != null) { // small sanity check
+                        root.sourceListModel.push(modelData)
+                        root.sourceUpdated(root.sourceListModel)
+                    }
+                        
                     let arr = wrapper.getOrderedList()
                     let removed = arr.splice(visualIndex, 1)
                     root.updated(arr)

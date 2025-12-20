@@ -19,12 +19,12 @@ Item {
 
     implicitWidth: wrapper.implicitWidth
     implicitHeight: wrapper.implicitHeight
-    visible: modelData.visible ?? true
 
-    function toggleVisible(visible) {
-        if (barSection == 0) Config.options.bar.layouts.left[originalIndex].visible = visible
-        else if (barSection == 1) Config.options.bar.layouts.center[originalIndex].visible = visible
-        else if (barSection == 2) Config.options.bar.layouts.right[originalIndex].visible = visible
+    function toggleVisible(visibility) {
+        visible = visibility
+        if (barSection == 0) Config.options.bar.layouts.left[originalIndex].visible = visibility
+        else if (barSection == 1) Config.options.bar.layouts.center[originalIndex].visible = visibility
+        else if (barSection == 2) Config.options.bar.layouts.right[originalIndex].visible = visibility
     }
 
     property var compMap: ({ // [horizontal, vertical]
@@ -37,33 +37,35 @@ Item {
         "system_tray": [systemTrayComp, systemTrayCompVert],
         "active_window": [activeWindowComp, activeWindowCompVert],
         "date": [dateCompVert, dateCompVert],
-        "record_indicator": [recordIndicatorComp, recordIndicatorComp],
+        "record_indicator": [recordIndicatorComp, recordIndicatorCompVert],
+        "screen_share_indicator": [screenshareIndicatorComp, screenshareIndicatorComp]
     })
 
+    
     property real startRadius: {
-        if (list.length === 1 || (barSection !== 2 && originalIndex === 0))
-            return Appearance.rounding.full
-
-        if (list.length > 1) {
-            let firstVisible = list.find(item => item.visible !== false)
-            if (firstVisible && list.indexOf(firstVisible) === originalIndex) {
-                return Appearance.rounding.full
-            }
+        if (barSection === 0) {
+            return Appearance.rounding.verysmall
+        } else if (barSection === 2) {
+            let hasVisibleLeft = list.slice(0, originalIndex).some(item => item.visible !== false)
+            return hasVisibleLeft ? Appearance.rounding.verysmall : Appearance.rounding.full
+        } else { // barSection 1 
+            if (list.length === 1) return Appearance.rounding.full
+            let hasVisibleLeft = list.slice(0, originalIndex).some(item => item.visible !== false)
+            return hasVisibleLeft ? Appearance.rounding.verysmall : Appearance.rounding.full
         }
-        return Appearance.rounding.verysmall
     }
 
     property real endRadius: {
-        if (list.length === 1 || (barSection !== 2 && originalIndex === list.length - 1)) 
-            return Appearance.rounding.full
-
-        if (list.length > 1) {
-            let lastVisible = list.slice().reverse().find(item => item.visible !== false)
-            if (lastVisible && list.indexOf(lastVisible) === originalIndex) {
-                return Appearance.rounding.full
-            }
+        if (barSection === 2) {
+            return Appearance.rounding.verysmall
+        } else if (barSection === 0) {
+            let hasVisibleRight = list.slice(originalIndex + 1).some(item => item.visible !== false)
+            return hasVisibleRight ? Appearance.rounding.verysmall : Appearance.rounding.full
+        } else { // barSection 1 
+            if (list.length === 1) return Appearance.rounding.full
+            let hasVisibleRight = list.slice(originalIndex + 1).some(item => item.visible !== false)
+            return hasVisibleRight ? Appearance.rounding.verysmall : Appearance.rounding.full
         }
-        return Appearance.rounding.verysmall
     }
 
     BarGroup {
@@ -84,8 +86,11 @@ Item {
             sourceComponent: compMap[modelData.id][vertical ? 1 : 0]
         }
     }
-    
+
+    Component { id: screenshareIndicatorComp; ScreenShareIndicator {} }
+
     Component { id: recordIndicatorComp; RecordIndicator {} }
+    Component { id: recordIndicatorCompVert; RecordIndicator { vertical: true } }
 
     Component { id: activeWindowCompVert; ActiveWindow { vertical: true } }
     Component { id: activeWindowComp; ActiveWindow {} }

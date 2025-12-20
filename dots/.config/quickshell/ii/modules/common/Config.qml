@@ -281,26 +281,34 @@ Singleton {
                 property JsonObject layouts: JsonObject {
                     // Only adding place-essential components to left-center-right
                     // And adding the dynamic components to leftover
-                    property list<var> availableComponents: [
-                        {
-                            id: "date",
-                            icon: "date_range",
-                            title: "Date",
-                            centered: false
-                        },
-                        {
-                            id: "battery",
-                            icon: "battery_android_6",
-                            title: "Battery",
-                            centered: false
-                        },
+                    property list<var> availableComps: [
                         {
                             id: "record_indicator",
                             icon: "screen_record",
                             title: "Record indicator",
                             centered: false,
-                            visible: false,
-                            tooltip: Translation.tr("Only visible when recording")
+                            visible: false
+                        },
+                        {
+                            id: "screen_share_indicator",
+                            icon: "screen_share",
+                            title: "Screen share indicator",
+                            centered: false,
+                            visible: false
+                        },
+                        {
+                            id: "date",
+                            icon: "date_range",
+                            title: "Date",
+                            centered: false,
+                            visible: true
+                        },
+                        {
+                            id: "battery",
+                            icon: "battery_android_6",
+                            title: "Battery",
+                            centered: false,
+                            visible: true
                         }
                     ]
                     property list<var> left: [
@@ -308,7 +316,8 @@ Singleton {
                             id: "active_window",
                             icon: "label",
                             title: "Active window",
-                            centered: false
+                            centered: false,
+                            visible: true
                         },
                     ]
                     property list<var> center: [
@@ -316,19 +325,22 @@ Singleton {
                             id: "music_player",
                             icon: "music_note",
                             title: "Music player",
-                            centered: false
+                            centered: false,
+                            visible: true
                         },
                         {
                             id: "workspaces",
                             icon: "workspaces",
                             title: "Workspaces",
-                            centered: false
+                            centered: false,
+                            visible: true
                         },
                         {
                             id: "system_monitor",
                             icon: "monitor_heart",
                             title: "System monitor",
-                            centered: false
+                            centered: false,
+                            visible: true
                         }
                     ]
                     property list<var> right: [
@@ -336,19 +348,22 @@ Singleton {
                             id: "utility_buttons",
                             icon: "build",
                             title: "Utility buttons",
-                            centered: false
+                            centered: false,
+                            visible: true
                         },
                         {
                             id: "clock",
                             icon: "nest_clock_farsight_analog",
                             title: "Clock",
-                            centered: false
+                            centered: false,
+                            visible: true
                         },
                         {
                             id: "system_tray",
                             icon: "system_update_alt",
                             title: "System tray",
-                            centered: false
+                            centered: false,
+                            visible: true
                         }
                     ]
 

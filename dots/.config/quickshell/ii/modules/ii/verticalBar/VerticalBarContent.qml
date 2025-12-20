@@ -28,26 +28,13 @@ Item { // Bar content region
     property int bottomSidebarButtonHeight: barBottomSectionMouseArea.implicitHeight - 24 // not sure about
 
     ////// Definning places of center modules //////
-    property var fullModel: Config.options.bar.layouts.center
+    property var fullModel: Config.options?.bar?.layouts?.center
 
-    property var leftList: []
-    property var centerList: []
-    property var rightList: []
+    property int centerIdx: (fullModel || []).findIndex(item => item.centered)
 
-    onFullModelChanged: {
-        const idx = fullModel.findIndex(item => item.centered)
-        
-        if (idx === -1) {
-            leftList = []
-            centerList = fullModel
-            rightList = []
-            return
-        }
-
-        leftList = fullModel.slice(0, idx)
-        centerList = [fullModel[idx]]
-        rightList = fullModel.slice(idx + 1)
-    }
+    property var leftList: centerIdx === -1 ? [] : fullModel.slice(0, centerIdx)
+    property var centerList: centerIdx === -1 ? fullModel : [fullModel[centerIdx]]
+    property var rightList: centerIdx === -1 ? [] : fullModel.slice(centerIdx + 1)
 
     // Background shadow
     Loader {

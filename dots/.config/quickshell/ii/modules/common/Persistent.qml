@@ -143,6 +143,7 @@ Singleton {
 
             property JsonObject screenRecord: JsonObject {
                 property bool active: false
+                property int seconds: 0
             }
 
             property JsonObject timer: JsonObject {

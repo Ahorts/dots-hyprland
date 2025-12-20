@@ -12,11 +12,41 @@ CUSTOM_PATH=$(jq -r "$JSON_PATH" "$CONFIG_FILE" 2>/dev/null)
 
 RECORDING_DIR=""
 
+TIMER_PID=""  
+SECONDS_ELAPSED=-1
+
 if [[ -n "$CUSTOM_PATH" ]]; then
     RECORDING_DIR="$CUSTOM_PATH"
 else
     RECORDING_DIR="$HOME/Videos" # Use default path
 fi
+
+start_timer() {
+    if [[ -n "$TIMER_PID" ]]; then
+        kill "$TIMER_PID" 2>/dev/null
+    fi
+
+    ( 
+        while true; do
+            SECONDS_ELAPSED=$((SECONDS_ELAPSED + 1))
+            jq ".screenRecord.seconds = $SECONDS_ELAPSED" "$STATE_FILE" > "${STATE_FILE}.tmp" && mv "${STATE_FILE}.tmp" "$STATE_FILE"
+            sleep 1
+        done
+    ) &
+    TIMER_PID=$!
+}
+stop_timer() {
+    if [[ -n "$TIMER_PID" ]]; then
+        kill "$TIMER_PID" 2>/dev/null
+        wait "$TIMER_PID" 2>/dev/null
+        TIMER_PID=""
+        jq ".screenRecord.seconds = 0" "$STATE_FILE" > "${STATE_FILE}.tmp" && mv "${STATE_FILE}.tmp" "$STATE_FILE" # setting it to 0 after killing the timer
+    fi
+}
+
+
+trap stop_timer EXIT
+
 
 getdate() {
     date '+%Y-%m-%d_%H.%M.%S'
@@ -32,7 +62,13 @@ getactivemonitor() {
 updatestate() {
     local state_value=$1
     jq "$STATE_JSON_PATH = $state_value" "$STATE_FILE" > "${STATE_FILE}.tmp" && mv "${STATE_FILE}.tmp" "$STATE_FILE"
+    if [[ "$state_value" == "true" ]]; then
+        start_timer
+    else
+        stop_timer
+    fi
 }
+
 
 mkdir -p "$RECORDING_DIR"
 cd "$RECORDING_DIR" || exit
