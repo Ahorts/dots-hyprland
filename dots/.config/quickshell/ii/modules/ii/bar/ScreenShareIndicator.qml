@@ -39,7 +39,7 @@ MouseArea {
     MaterialSymbol {
         id: iconIndicator
         z: 1
-        text: "screen_share"
+        text: "cast"
         anchors {
             top: parent.top
             bottom: parent.bottom
@@ -56,7 +56,7 @@ MouseArea {
             RowLayout {
                 MaterialSymbol {
                     Layout.bottomMargin: 2
-                    text: "screen_share"
+                    text: "cast"
                 }
                 StyledText {
                     text: Translation.tr("**%1** is using your screen").arg(stateFile.text().trim())
