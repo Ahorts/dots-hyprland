@@ -199,20 +199,20 @@ ContentPage {
             Layout.fillWidth: false
 
             ConfigSelectionArray {
-                currentValue: Config.options.bar.showBackground
+                currentValue: Config.options.bar.backgroundStyle
                 onSelected: newValue => {
-                    Config.options.bar.showBackground = newValue;
+                    Config.options.bar.backgroundStyle = newValue;
                 }
-                options: [
-                    {
-                        displayName: Translation.tr("Visible"),
-                        icon: "visibility",
-                        value: true
-                    },
+                options: [          
                     {
                         displayName: Translation.tr("Transparent"),
                         icon: "opacity",
-                        value: false
+                        value: 0
+                    },
+                    {
+                        displayName: Translation.tr("Visible"),
+                        icon: "visibility",
+                        value: 1
                     }
                 ]
             }

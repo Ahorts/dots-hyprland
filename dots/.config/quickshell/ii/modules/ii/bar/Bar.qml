@@ -10,10 +10,13 @@ import qs.modules.common.widgets
 
 Scope {
     id: bar
-    property bool showBarBackground: Config.options.bar.showBackground
+    
+    property bool showBarBackground: Config.options.bar.backgroundStyle == 1
 
     Variants {
         // For each monitor
+        
+
         model: {
             const screens = Quickshell.screens;
             const list = Config.options.bar.screenList;
@@ -28,6 +31,8 @@ Scope {
             component: PanelWindow { // Bar window
                 id: barRoot
                 screen: barLoader.modelData
+
+                
                 
 
                 Timer {
