@@ -97,6 +97,34 @@ ShellRoot {
     
     ReloadPopup {}
 
+
+    //! A better aproach would be better 
+    //? We are resettings the bar (and vertical bar) when we change any settings related to bar position or wrapped frame options
+    property int screenRounding: Config.options.appearance.fakeScreenRounding
+    property bool barBottom: Config.options.bar.bottom
+    property bool barVertical: Config.options.bar.vertical
+    onBarBottomChanged: updateWrappedFrame()
+    onBarVerticalChanged: updateWrappedFrame()
+    onScreenRoundingChanged: updateWrappedFrame()
+    
+    function updateWrappedFrame() {
+        if (screenRounding === 3) { // Wrapped enabled
+            let currentPanels = Array.from(Config.options.enabledPanels);
+            let barExists = currentPanels.indexOf("iiBar") !== -1;
+            let vBarExists = currentPanels.indexOf("iiVerticalBar") !== -1;
+
+            let filtered = currentPanels.filter(panel => panel !== "iiBar" && panel !== "iiVerticalBar");
+            Config.options.enabledPanels = filtered;
+
+            Qt.callLater(() => {
+                let restored = Array.from(Config.options.enabledPanels);
+                if (barExists) restored.push("iiBar");
+                if (vBarExists) restored.push("iiVerticalBar");
+                Config.options.enabledPanels = restored;
+            })
+        }
+    }
+
     component PanelLoader: LazyLoader {
         required property string identifier
         property bool extraCondition: true
@@ -106,7 +134,7 @@ ShellRoot {
     // Panel families
     property list<string> families: ["ii", "waffle"]
     property var panelFamilies: ({
-        "ii": ["iiBar", "iiBackground", "iiCheatsheet", "iiDock", "iiLock", "iiMediaControls", "iiNotificationPopup", "iiOnScreenDisplay", "iiOnScreenKeyboard", "iiOverlay", "iiOverview", "iiPolkit", "iiRegionSelector", "iiScreenCorners", "iiSessionScreen", "iiSidebarLeft", "iiSidebarRight", "iiVerticalBar", "iiWallpaperSelector"],
+        "ii": ["iiBar", "iiBackground", "iiCheatsheet", "iiDock", "iiLock", "iiMediaControls", "iiNotificationPopup", "iiOnScreenDisplay", "iiOnScreenKeyboard", "iiOverlay", "iiOverview", "iiPolkit", "iiRegionSelector", "iiScreenCorners", "iiSessionScreen", "iiSidebarLeft", "iiSidebarRight", "iiVerticalBar", "iiWallpaperSelector", "iiWrappedFrame"],
         "waffle": ["wActionCenter", "wBar", "wBackground", "wLock", "wNotificationCenter", "wOnScreenDisplay", "wTaskView", "wPolkit", "wSessionScreen", "wStartMenu", "iiCheatsheet", "iiNotificationPopup", "iiOnScreenKeyboard", "iiOverlay", "iiRegionSelector", "iiWallpaperSelector"],
     })
     function cyclePanelFamily() {
