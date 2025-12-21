@@ -36,9 +36,10 @@ However there can (and will) be bugs so **please** use original dots. Use this d
     <h2>• features i may open a pr later •</h2>
 </div>
 
-- Shell bar improvements // custom ordering
+- Shell bar improvements // custom ordering, screen recording and screen sharing indicators
 - Background media widget
 - Overview widget position settings
+- Settings color scheme previes
   
 - WIP: Settings app search functionality
   
