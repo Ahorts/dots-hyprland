@@ -318,28 +318,32 @@ Singleton {
                             icon: "screen_record",
                             title: "Record indicator",
                             centered: false,
-                            visible: false
+                            visible: false,
+                            scrollTo: ""
                         },
                         {
                             id: "screen_share_indicator",
                             icon: "screen_share",
                             title: "Screen share indicator",
                             centered: false,
-                            visible: false
+                            visible: false,
+                            scrollTo: ""
                         },
                         {
                             id: "date",
                             icon: "date_range",
                             title: "Date",
                             centered: false,
-                            visible: true
+                            visible: true,
+                            scrollTo: ""
                         },
                         {
                             id: "battery",
                             icon: "battery_android_6",
                             title: "Battery",
                             centered: false,
-                            visible: true
+                            visible: true,
+                            scrollTo: ""
                         }
                     ]
                     property list<var> left: [
@@ -348,7 +352,8 @@ Singleton {
                             icon: "label",
                             title: "Active window",
                             centered: false,
-                            visible: true
+                            visible: true,
+                            scrollTo: "active_window"
                         },
                     ]
                     property list<var> center: [
@@ -357,21 +362,24 @@ Singleton {
                             icon: "music_note",
                             title: "Music player",
                             centered: false,
-                            visible: true
+                            visible: true,
+                            scrollTo: "music_player"
                         },
                         {
                             id: "workspaces",
                             icon: "workspaces",
                             title: "Workspaces",
                             centered: false,
-                            visible: true
+                            visible: true,
+                            scrollTo: "workspaces"
                         },
                         {
                             id: "system_monitor",
                             icon: "monitor_heart",
                             title: "System monitor",
                             centered: false,
-                            visible: true
+                            visible: true,
+                            scrollTo: ""
                         }
                     ]
                     property list<var> right: [
@@ -380,21 +388,24 @@ Singleton {
                             icon: "build",
                             title: "Utility buttons",
                             centered: false,
-                            visible: true
+                            visible: true,
+                            scrollTo: "utility_buttons"
                         },
                         {
                             id: "clock",
                             icon: "nest_clock_farsight_analog",
                             title: "Clock",
                             centered: false,
-                            visible: true
+                            visible: true,
+                            scrollTo: ""
                         },
                         {
                             id: "system_tray",
                             icon: "system_update_alt",
                             title: "System tray",
                             centered: false,
-                            visible: true
+                            visible: true,
+                            scrollTo: "system_tray"
                         }
                     ]
 
