@@ -13,11 +13,9 @@
 <div align="center">
     <h2>• warning •</h2>
 These dots are not mine! You can access original dots from : https://github.com/end-4/dots-hyprland. 
-    
-If you are a beginner, please use original dots for better stability.
 
-This repo contains my PRs and my tweaks to original dots. (mostly up to date with original dots). This is my daily driver when I am not coding.
-However there can (and will) be bugs **so don't expect stability here**. Use this dots if you know what you are doing.
+This repo contains my PRs and tweaks to original dots. (mostly up to date with original dots). This is my daily driver when I am not coding.
+However there can (and will) be bugs **so don't expect stability here**. Use these dots if you know what you are doing.
 
 </div>
 
@@ -38,5 +36,7 @@ However there can (and will) be bugs **so don't expect stability here**. Use thi
 - Overview widget position settings
 - Settings color scheme previes
   
+
+credits: screenshot wallpaper from [exo](https://github.com/debuggyo/Exo)
 
 
