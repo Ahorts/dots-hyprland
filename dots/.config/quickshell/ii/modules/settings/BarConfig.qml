@@ -7,7 +7,21 @@ import qs.modules.common.widgets
 import QtQml.Models
 
 ContentPage {
+    id: page
     forceWidth: true
+
+    property var componentMap: ({
+        "active_window": activeWindow,
+        "music_player": musicPlayer,
+        "utility_buttons": utilityButtons,
+        "system_tray": systemTray,
+        "workspaces": workspaces
+    })
+
+    function scrollTo(stringId) {
+        const item = componentMap[stringId]
+        page.contentY = item.y
+    }
 
 
     ContentSection {
@@ -56,61 +70,6 @@ ContentPage {
                 onSourceUpdated: (newList) => {
                     Config.options.bar.layouts.availableComps = newList
                 } 
-            }
-        }
-    }
-    
-    ContentSection {
-        icon: "ad"
-        title: Translation.tr("Active window")
-        ConfigSwitch {
-            buttonIcon: "crop_free"
-            text: Translation.tr("Use fixed size")
-            checked: Config.options.bar.activeWindow.fixedSize
-            onCheckedChanged: {
-                Config.options.bar.activeWindow.fixedSize = checked;
-            }
-        }
-    }
-
-    ContentSection {
-        icon: "music_cast"
-        title: Translation.tr("Media player")
-        ConfigSwitch {
-            enabled: !Config.options.bar.vertical
-            buttonIcon: "crop_free"
-            text: Translation.tr("Use custom size")
-            checked: Config.options.bar.mediaPlayer.useCustomSize
-            onCheckedChanged: {
-                Config.options.bar.mediaPlayer.useCustomSize = checked;
-            }
-            StyledToolTip {
-                text: Translation.tr("Only available in horizontal mode")
-            }
-        }
-        ConfigSpinBox {
-            enabled: !Config.options.bar.vertical
-            icon: "width_full"
-            text: Translation.tr("Custom size")
-            value: Config.options.bar.mediaPlayer.customSize
-            from: 100
-            to: 500
-            stepSize: 25
-            onValueChanged: {
-                Config.options.bar.mediaPlayer.customSize = value;
-            }
-        }
-    }
-
-    ContentSection {
-        icon: "notifications"
-        title: Translation.tr("Notifications")
-        ConfigSwitch {
-            buttonIcon: "counter_2"
-            text: Translation.tr("Unread indicator: show count")
-            checked: Config.options.bar.indicators.notifications.showUnreadCount
-            onCheckedChanged: {
-                Config.options.bar.indicators.notifications.showUnreadCount = checked;
             }
         }
     }
@@ -259,10 +218,66 @@ ContentPage {
             }
         }
     }
-
     
+    ContentSection {
+        id: activeWindow
+        icon: "ad"
+        title: Translation.tr("Active window")
+        ConfigSwitch {
+            buttonIcon: "crop_free"
+            text: Translation.tr("Use fixed size")
+            checked: Config.options.bar.activeWindow.fixedSize
+            onCheckedChanged: {
+                Config.options.bar.activeWindow.fixedSize = checked;
+            }
+        }
+    }
 
     ContentSection {
+        id: musicPlayer
+        icon: "music_cast"
+        title: Translation.tr("Media player")
+        ConfigSwitch {
+            enabled: !Config.options.bar.vertical
+            buttonIcon: "crop_free"
+            text: Translation.tr("Use custom size")
+            checked: Config.options.bar.mediaPlayer.useCustomSize
+            onCheckedChanged: {
+                Config.options.bar.mediaPlayer.useCustomSize = checked;
+            }
+            StyledToolTip {
+                text: Translation.tr("Only available in horizontal mode")
+            }
+        }
+        ConfigSpinBox {
+            enabled: !Config.options.bar.vertical
+            icon: "width_full"
+            text: Translation.tr("Custom size")
+            value: Config.options.bar.mediaPlayer.customSize
+            from: 100
+            to: 500
+            stepSize: 25
+            onValueChanged: {
+                Config.options.bar.mediaPlayer.customSize = value;
+            }
+        }
+    }
+
+    ContentSection {
+        icon: "notifications"
+        title: Translation.tr("Notifications")
+        ConfigSwitch {
+            buttonIcon: "counter_2"
+            text: Translation.tr("Unread indicator: show count")
+            checked: Config.options.bar.indicators.notifications.showUnreadCount
+            onCheckedChanged: {
+                Config.options.bar.indicators.notifications.showUnreadCount = checked;
+            }
+        }
+    }
+
+    ContentSection {
+        id: systemTray
         icon: "shelf_auto_hide"
         title: Translation.tr("Tray")
 
@@ -286,6 +301,7 @@ ContentPage {
     }
 
     ContentSection {
+        id: utilityButtons
         icon: "widgets"
         title: Translation.tr("Utility buttons")
 
@@ -360,6 +376,7 @@ ContentPage {
     }
 
     ContentSection {
+        id: workspaces
         icon: "workspaces"
         title: Translation.tr("Workspaces")
 

@@ -112,7 +112,7 @@ Item {
                 verticalCenter: parent.verticalCenter
                 margins: 20
             }
-            spacing: 20
+            spacing: 10
 
             MaterialSymbol {
                 id: dragIndicatorIcon
@@ -123,17 +123,20 @@ Item {
             
             MaterialSymbol {
                 id: icon
+                Layout.leftMargin: 10
                 text: modelData.icon
                 iconSize: Appearance.font.pixelSize.hugeass
                 color: Appearance.colors.colPrimary
+                fill: 1
             }
+
 
             StyledText {
                 id: title
                 text: modelData.title
                 color: wrapper.colTitle
 
-                Layout.leftMargin: -10
+                Layout.leftMargin: 10
                 font {
                     family: Appearance.font.family.title
                     pixelSize: Appearance.font.pixelSize.normal
@@ -146,57 +149,36 @@ Item {
             }
 
             Loader {
-                active: modelData.tooltip ?? false
-                Layout.rightMargin: -10
-                sourceComponent: RippleButton {
-                    
-                    implicitWidth: implicitHeight
-                    MaterialSymbol {
-                        text: "info"
-                        anchors.centerIn: parent
-                        color: Appearance.colors.colPrimary
-                        iconSize: Appearance.font.pixelSize.huge
+                active: modelData.scrollTo != ""
+                sourceComponent: EntryButton {
+                    iconText: "settings"
+                    tooltip: Translation.tr("Settings")
+
+                    onClicked: {
+                        page.scrollTo(modelData.scrollTo)
                     }
-                    StyledToolTip {
-                        text: modelData.tooltip
+                }
+            }
+            
+            
+            Loader {
+                active: barSection == 1 // only showing it on center layout
+                sourceComponent: EntryButton {
+                    iconText: "center_focus_strong"
+                    iconFill: modelData.centered
+                    tooltip: Translation.tr("Center")
+
+                    onClicked: {
+                        root.toggleCenter(wrapper.visualIndex, wrapper.getOrderedList())
                     }
                 }
             }
             
 
-            RippleButton {
-                visible: barSection == 1 // only showing it on center layout
-                id: centerButton
-                implicitWidth: implicitHeight
-                Layout.rightMargin: -10
-                MaterialSymbol {
-                    text: "center_focus_strong"
-                    anchors.centerIn: parent
-                    color: Appearance.colors.colPrimary
-                    iconSize: Appearance.font.pixelSize.huge
-                    fill: modelData.centered ? 1 : 0
-                }
-                StyledToolTip {
-                    text: Translation.tr("Center the component")
-                }
-
-                onClicked: {
-                    root.toggleCenter(wrapper.visualIndex, wrapper.getOrderedList())
-                }
-            }
-
-            RippleButton {
+            EntryButton {
                 id: removeButton
-                implicitWidth: implicitHeight
-                MaterialSymbol {
-                    text: "close"
-                    anchors.centerIn: parent
-                    color: Appearance.colors.colPrimary
-                    iconSize: Appearance.font.pixelSize.huge
-                }
-                StyledToolTip {
-                    text: Translation.tr("Close")
-                }
+                iconText: "close"
+                tooltip: Translation.tr("Remove")
 
                 onClicked: {
                     if (modelData != null) { // small sanity check
@@ -252,6 +234,27 @@ Item {
         onReleased: {
             root.updated(wrapper.getOrderedList())
             held = false
+        }
+    }
+
+    component EntryButton: RippleButton {
+        id: button
+        implicitWidth: implicitHeight
+
+        property string iconText: ""
+        property bool iconFill: false
+        property string tooltip: ""
+
+        MaterialSymbol {
+            text: button.iconText
+            anchors.centerIn: parent
+            color: Appearance.colors.colPrimary
+            iconSize: Appearance.font.pixelSize.huge
+            fill: button.iconFill ? 1 : 0
+        }
+
+        StyledToolTip {
+            text: button.tooltip
         }
     }
 }
