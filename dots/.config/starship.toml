@@ -272,32 +272,34 @@ style = 'bold red'
 [buf]
 symbol = '🦬 '
 
-# [custom.typescript]
-# command = "tsc --version | cut -d ' ' -f 2"
-# detect_files = ['tsconfig.json', '*.tsx', '*.ts']
-# format = 'via [TypeScript  v$output](bold blue) '
-[custom.typescript]
-# This command first checks package.json for a local version, then falls back to the global 'tsc' version.
-command = '''
-if [ -f package.json ]; then
-  ver=$(grep '"typescript":' package.json | head -n1 | sed -E 's/.*: *"([^"]*)".*/\1/' | sed 's/[\^~]//g')
-  [ -n "$ver" ] && echo "$ver" && exit 0
-fi
-tsc --version | cut -d ' ' -f 2
-'''
-# Triggers if a config file is present OR any .ts/.tsx files exist
-detect_files = ['tsconfig.json', 'package.json']
-detect_extensions = ['ts', 'tsx']
-format = 'via [TypeScript  v$output](bold blue) '
-
 [custom.react]
-# Extracts the react version from package.json and removes prefix symbols like ^ or ~
+# The 'via' and 'v' are now part of the echo, so they only show if $ver exists.
 command = '''
 if [ -f package.json ]; then
   ver=$(grep '"react":' package.json | head -n1 | sed -E 's/.*: *"([^"]*)".*/\1/' | sed 's/[\^~]//g')
-  [ -n "$ver" ] && echo "$ver"
+  if [ -n "$ver" ]; then
+    echo "via React  v$ver"
+  fi
 fi
 '''
-# Triggers if React-specific files or extensions are present
-detect_files = ['package.json', 'App.js', 'App.tsx']
-format = 'via [React  v$output](bold blue) '
+detect_files = ['package.json']
+# Remove the static text from format; it now just displays the $output
+format = '[$output ](bold blue)'
+
+[custom.typescript]
+command = '''
+if [ -f package.json ]; then
+  ver=$(grep '"typescript":' package.json | head -n1 | sed -E 's/.*: *"([^"]*)".*/\1/' | sed 's/[\^~]//g')
+  if [ -n "$ver" ]; then
+    echo "via TypeScript  v$ver"
+    exit 0
+  fi
+fi
+# Fallback to global tsc if not in package.json but .ts files exist
+if ls *.ts *.tsx >/dev/null 2>&1; then
+  echo "via TypeScript  v$(tsc --version | cut -d ' ' -f 2)"
+fi
+'''
+detect_files = ['package.json', 'tsconfig.json']
+detect_extensions = ['ts', 'tsx']
+format = '[$output ](bold blue)'
