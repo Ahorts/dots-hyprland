@@ -10,7 +10,7 @@ add_newline = false
 # $character
 # """
 format = """
-$cmd_duration 󰜥 $directory $git_branch$git_status $all ${custom.typescript} ${custom.react} $nodejs
+$cmd_duration 󰜥 $directory $git_branch$git_status $all $nodejs ${custom.typescript} ${custom.react} 
 
 $character
 """
@@ -276,11 +276,28 @@ symbol = '🦬 '
 # command = "tsc --version | cut -d ' ' -f 2"
 # detect_files = ['tsconfig.json', '*.tsx', '*.ts']
 # format = 'via [TypeScript  v$output](bold blue) '
-
 [custom.typescript]
-# 1. Try to grep package.json. 2. If empty, run tsc --version.
-command = '''ver=$(grep '"typescript"[[:space:]]*:' package.json 2>/dev/null | head -n1 | sed -n 's/.*: *"\([^"]*\)".*/\1/p' | sed 's/[\^~]//g'); if [ -n "$ver" ]; then echo "$ver"; else tsc --version | cut -d ' ' -f 2; fi'''
-
-detect_files = ['tsconfig.json'] 
+# This command first checks package.json for a local version, then falls back to the global 'tsc' version.
+command = '''
+if [ -f package.json ]; then
+  ver=$(grep '"typescript":' package.json | head -n1 | sed -E 's/.*: *"([^"]*)".*/\1/' | sed 's/[\^~]//g')
+  [ -n "$ver" ] && echo "$ver" && exit 0
+fi
+tsc --version | cut -d ' ' -f 2
+'''
+# Triggers if a config file is present OR any .ts/.tsx files exist
+detect_files = ['tsconfig.json', 'package.json']
 detect_extensions = ['ts', 'tsx']
 format = 'via [TypeScript  v$output](bold blue) '
+
+[custom.react]
+# Extracts the react version from package.json and removes prefix symbols like ^ or ~
+command = '''
+if [ -f package.json ]; then
+  ver=$(grep '"react":' package.json | head -n1 | sed -E 's/.*: *"([^"]*)".*/\1/' | sed 's/[\^~]//g')
+  [ -n "$ver" ] && echo "$ver"
+fi
+'''
+# Triggers if React-specific files or extensions are present
+detect_files = ['package.json', 'App.js', 'App.tsx']
+format = 'via [React  v$output](bold blue) '
