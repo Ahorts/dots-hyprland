@@ -207,15 +207,20 @@ AbstractBackgroundWidget {
             }
         }
 
-        MaterialSymbol {
-            id: contentItemIcon
-            visible: true
+        FadeLoader {
+            z: 2
             anchors.centerIn: parent
-            iconSize: 100
-            fill: 1
-            z: 1000
-            color: root.currentPlayer?.isPlaying ? blendedColors.colOnPrimary : blendedColors.colOnSecondaryContainer
-            text: root.currentPlayer == null ? "disc_full" : !root.downloaded ? "hourglass_bottom" : ""
+            shown: root.currentPlayer == null
+            sourceComponent: MaterialShapeWrappedMaterialSymbol {
+                fill: 1
+                padding: 20
+                text: root.currentPlayer == null ? "music_off" : !root.downloaded ? "hourglass_bottom" : ""
+                anchors.centerIn: parent
+                iconSize: root.widgetSize / 4
+                shape: MaterialShape.Shape.Cookie12Sided
+                color: blendedColors.colOnSecondaryContainer
+                colSymbol: Appearance.colors.colPrimaryContainer
+            }
         }
         
         Rectangle { // Art background
@@ -292,7 +297,7 @@ AbstractBackgroundWidget {
             colBackground: root.dynamicColors.colSecondaryBackground
             colBackgroundHover: root.dynamicColors.colSecondaryBackgroundHover
             colRipple: root.dynamicColors.colSecondaryRipple
-            symbolText: root.currentPlayer == null ? "music_off" : root.currentPlayer?.isPlaying ? "pause" : "play_arrow"
+            symbolText: root.currentPlayer?.isPlaying ? "pause" : "play_arrow"
             symbolColor: useAlbumColors ?  blendedColors.colTertiary : Appearance.colors.colTertiary
             onClicked: {
                 root.currentPlayer.togglePlaying()
