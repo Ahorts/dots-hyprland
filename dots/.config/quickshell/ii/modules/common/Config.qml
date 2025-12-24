@@ -382,6 +382,10 @@ Singleton {
                 property JsonObject tooltips: JsonObject {
                     property bool clickToShow: false
                 }
+                property JsonObject sizes: JsonObject {
+                    property int height: 40 // horizontal mode
+                    property int width: 46 // vertical mode
+                }
             }
 
             property JsonObject battery: JsonObject {
