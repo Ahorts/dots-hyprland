@@ -119,6 +119,7 @@ ShellRoot {
 
             let filtered = currentPanels.filter(panel => panel !== "iiBar" && panel !== "iiVerticalBar");
             Config.options.enabledPanels = filtered;
+            console.log(currentPanels.filter(panel => panel !== "iiBar" && panel !== "iiVerticalBar"))
 
             Qt.callLater(() => {
                 let restored = Array.from(Config.options.enabledPanels);
