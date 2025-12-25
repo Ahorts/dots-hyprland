@@ -75,6 +75,34 @@ ContentPage {
     }
 
     ContentSection {
+        icon: "open_in_full"
+        title: Translation.tr("Bar sizes")
+
+        ConfigSpinBox {
+            icon: "height"
+            text: Translation.tr("Bar height")
+            value: Config.options.bar.sizes.height
+            from: 30
+            to: 50
+            stepSize: 1
+            onValueChanged: {
+                Config.options.bar.sizes.height = value;
+            }
+        }
+        ConfigSpinBox {
+            icon: "width"
+            text: Translation.tr("Bar width")
+            value: Config.options.bar.sizes.width
+            from: 30
+            to: 50
+            stepSize: 1
+            onValueChanged: {
+                Config.options.bar.sizes.width = value;
+            }
+        }
+    }
+
+    ContentSection {
         icon: "spoke"
         title: Translation.tr("Positioning")
 
@@ -199,20 +227,20 @@ ContentPage {
             Layout.fillWidth: false
 
             ConfigSelectionArray {
-                currentValue: Config.options.bar.showBackground
+                currentValue: Config.options.bar.backgroundStyle
                 onSelected: newValue => {
-                    Config.options.bar.showBackground = newValue;
+                    Config.options.bar.backgroundStyle = newValue;
                 }
-                options: [
-                    {
-                        displayName: Translation.tr("Visible"),
-                        icon: "visibility",
-                        value: true
-                    },
+                options: [          
                     {
                         displayName: Translation.tr("Transparent"),
                         icon: "opacity",
-                        value: false
+                        value: 0
+                    },
+                    {
+                        displayName: Translation.tr("Visible"),
+                        icon: "visibility",
+                        value: 1
                     }
                 ]
             }
