@@ -161,11 +161,9 @@ Item {
                 }
 
             }
-            // Bottom padding
+        }
+    }   
 
-            Item {
-                implicitHeight: listBottomPadding
-=======
     StyledListView {
         id: listView
         anchors.fill: parent
@@ -255,7 +253,7 @@ Item {
                         }
                     }
                 }
->>>>>>> main
+
             }
 
         }
@@ -272,13 +270,8 @@ Item {
 
     }
 
-<<<<<<< HEAD
-    // Placeholder when list is empty
-    Item {
-=======
     Item {
         // Placeholder when list is empty
->>>>>>> main
         visible: opacity > 0
         opacity: taskList.length === 0 ? 1 : 0
         anchors.fill: parent
@@ -309,8 +302,4 @@ Item {
         }
 
     }
-<<<<<<< HEAD
-
-=======
->>>>>>> main
 }
