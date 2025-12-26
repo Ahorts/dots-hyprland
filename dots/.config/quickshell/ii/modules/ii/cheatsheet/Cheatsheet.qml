@@ -21,6 +21,10 @@ Scope { // Scope
         {
             "icon": "experiment",
             "name": Translation.tr("Elements")
+          },
+        {
+            "icon": "calendar_month",
+            "name": Translation.tr("Timetable")
         },
     ]
 
@@ -169,6 +173,7 @@ Scope { // Scope
 
                         CheatsheetKeybinds {}
                         CheatsheetPeriodicTable {}
+                        CheatsheetTimetable {}
                     }
                 }
             }
