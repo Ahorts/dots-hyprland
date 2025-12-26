@@ -31,12 +31,27 @@ However there can (and will) be bugs **so don't expect stability here**. Use the
     <h2>• features i may open a pr later •</h2>
 </div>
 
-- Shell bar improvements // custom ordering, **screen recording** and **screen sharing indicators**
+- Shell bar improvements _**// custom ordering, screen recording and screen sharing indicators**_
 - Background media widget
 - Overview widget position settings
 - Settings color scheme previes
   
+<div align="center">
+    <h2>• other features •</h2>
+</div>
 
-credits: screenshot wallpaper from [exo](https://github.com/debuggyo/Exo)
+- Extended calendar functionality from this PR: https://github.com/end-4/dots-hyprland/pull/1887 _**// tweaked**_
+
+
+<div align="center">
+    <h2>• credits •</h2>
+</div>
+
+- [@end-4](https://github.com/end-4) ofc
+- screenshot wallpaper from [exo](https://github.com/debuggyo/Exo)
+
+
+
+
 
 
