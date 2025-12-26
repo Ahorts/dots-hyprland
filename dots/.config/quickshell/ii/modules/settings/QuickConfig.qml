@@ -170,8 +170,8 @@ ContentPage {
                                 colorSchemeDisplayName: Translation.tr("Content")
                             }
                             ColorPreviewButton {
-                                colorScheme: "scheme-expressive"
-                                colorSchemeDisplayName: Translation.tr("Expressive")
+                                colorScheme: "scheme-tonal-spot"
+                                colorSchemeDisplayName: Translation.tr("Tonal Spot")
                             }
                         }
                         RowLayout {
@@ -184,22 +184,22 @@ ContentPage {
                                 colorSchemeDisplayName: Translation.tr("Fruit Salad")
                             }
                             ColorPreviewButton {
-                                colorScheme: "scheme-monochrome"
-                                colorSchemeDisplayName: Translation.tr("Monochrome")
+                                colorScheme: "scheme-expressive"
+                                colorSchemeDisplayName: Translation.tr("Expressive")
                             }
                         }
                         RowLayout {
-                            ColorPreviewButton {
-                                colorScheme: "scheme-neutral"
-                                colorSchemeDisplayName: Translation.tr("Neutral")
-                            }
                             ColorPreviewButton {
                                 colorScheme: "scheme-rainbow"
                                 colorSchemeDisplayName: Translation.tr("Rainbow")
                             }
                             ColorPreviewButton {
-                                colorScheme: "scheme-tonal-spot"
-                                colorSchemeDisplayName: Translation.tr("Tonal Spot")
+                                colorScheme: "scheme-neutral"
+                                colorSchemeDisplayName: Translation.tr("Neutral")
+                            }
+                            ColorPreviewButton {
+                                colorScheme: "scheme-monochrome"
+                                colorSchemeDisplayName: Translation.tr("Monochrome")
                             }
                         }
                     
