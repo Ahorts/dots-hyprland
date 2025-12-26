@@ -22,8 +22,8 @@ Scope { // Scope
             "name": Translation.tr("Elements")
           },
         {
-            "icon": "calendar_view_week",
-            "name": Translation.tr("TimeTable")
+            "icon": "calendar_month",
+            "name": Translation.tr("Timetable")
         },
     ]
 

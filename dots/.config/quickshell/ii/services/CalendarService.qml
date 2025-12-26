@@ -107,10 +107,6 @@ Singleton {
 
 
       function getEventsInWeek() {
-        
-
-
-
         const d = new Date();
         const num_day_today = d.getDay();
         let result = [];
@@ -131,7 +127,8 @@ Singleton {
                     "start": start_time,
                     "end": end_time,
                     "title": title,
-                    "color": evt['color'] 
+                    "color": evt['color'],
+                    "description": evt['description']
                 });
               });
               result.push(obj)
@@ -146,7 +143,7 @@ Singleton {
       id: getEventsProcess
       running: false
         // get events for 3 months
-        command: ["khal", "list", "--json", "title", "--json", "start-date", "--json" ,"start-time", "--json" ,"end-time",    Qt.formatDate((() => { let d = new Date(); d.setMonth(d.getMonth() - 3); return d; })(), "dd/MM/yyyy") ,Qt.formatDate((() => { let d = new Date(); d.setMonth(d.getMonth() + 3); return d; })(), "dd/MM/yyyy")]
+        command: ["khal", "list", "--json", "title", "--json", "start-date", "--json" ,"start-time", "--json" ,"end-time", "--json", "description",    Qt.formatDate((() => { let d = new Date(); d.setMonth(d.getMonth() - 3); return d; })(), "dd/MM/yyyy") ,Qt.formatDate((() => { let d = new Date(); d.setMonth(d.getMonth() + 3); return d; })(), "dd/MM/yyyy")]
         stdout: StdioCollector {
 
           onStreamFinished:{
@@ -184,7 +181,8 @@ Singleton {
                       "content": event['title'],
                       "startDate": startDate,
                       "endDate": endDate,
-                      "color": ColorUtils.stringToColor(event['title']),  
+                      "color": ColorUtils.stringToColor(event['title']), 
+                      "description": event['description'] ?? ""
                   })
                 }
               }

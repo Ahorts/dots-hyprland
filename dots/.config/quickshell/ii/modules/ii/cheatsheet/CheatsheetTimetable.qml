@@ -18,7 +18,7 @@ Item {
     property int slotDuration: 60 // in minutes
     property int slotHeight: 60 // in pixels
     property int timeColumnWidth: 100
-    property real maxContentWidth: 1200
+    property real maxContentWidth: 1350
 
     readonly property int totalSlots: Math.floor(((endHour * 60) - (startHour * 60 + startMinute)) / slotDuration)
     readonly property real pixelsPerMinute: slotHeight / slotDuration
@@ -29,7 +29,7 @@ Item {
     property real currentTimeY: -1
     property bool initialScrollApplied: false
     readonly property real dayColumnWidth: Math.min(180, (maxContentWidth - timeColumnWidth - (days.length + 1) * spacing) / days.length)
-  readonly property int currentDayIndex: (DateTime.clock.date.getDay() - Config.options.time.firstDayOfWeek+ 6)%7
+    readonly property int currentDayIndex: (DateTime.clock.date.getDay() - Config.options.time.firstDayOfWeek+ 6)%7
 
     implicitWidth: Math.min(maxContentWidth, timeColumnWidth + (dayColumnWidth * days.length) + ((days.length + 1) * spacing))
     implicitHeight: Math.min(headerHeight + contentHeight, maxHeight)
@@ -59,6 +59,8 @@ Item {
     readonly property bool hasAllDayEvents: maxAllDayEventCount > 0
     readonly property color todayHighlightFill: withOpacity(Appearance.colors.colPrimary, 0.12)
     readonly property color todayHighlightBorder: withOpacity(Appearance.colors.colPrimary, 0.28)
+    readonly property color dayBackgroundFill: withOpacity(Appearance.colors.colSecondary, 0.04)
+    readonly property color dayBackgroundFillVariant: withOpacity(Appearance.colors.colSecondary, 0.08)
 
     function updateCurrentTimeLine() {
         let time = DateTime.clock.date;
@@ -71,8 +73,6 @@ Item {
 
         currentTimeY = diffMinutes * root.pixelsPerMinute;
     }
-
-  
 
     function withOpacity(colorValue, alpha) {
         if (!colorValue)
@@ -114,7 +114,9 @@ Item {
 
         let title = event.title || qsTr("Event");
         if (root.isAllDayEvent(event))
-            return title + "\n" + qsTr("All day");
+            return Translation.tr("All day event:") + "\n" + title;
+
+        let description = event.description || "";
 
         let startTotal = root.parseTimeToMinutes(event.start);
         let endTotal = root.parseTimeToMinutes(event.end);
@@ -132,7 +134,7 @@ Item {
         let startStr = formatTime(startTotal) || event.start || "";
         let endStr = formatTime(endTotal) || event.end || "";
         let range = startStr && endStr ? startStr + " - " + endStr : startStr || endStr;
-        return range ? title + "\n" + range : title;
+        return range ? description ? "•  " + title + "\n•  " + range + "\n•  " + description : "•  " +  title + "\n•  " + range : "•  " + title;
     }
 
     function parseTimeToMinutes(timeStr) {
@@ -225,7 +227,6 @@ Item {
         Qt.callLater(root.maybeApplyInitialScroll);
     }
 
-    // Material 3 surface container
     Rectangle {
         anchors.fill: parent
         color: Appearance.colors.colSurfaceContainer
@@ -254,14 +255,14 @@ Item {
                     width: Math.min(timeHeaderText.implicitWidth + 16, parent.width - 4)
                     height: 32
                     radius: Appearance.rounding.normal
-                    color: Appearance.colors.colSecondaryContainer
+                    color: Appearance.colors.colPrimary
 
                     StyledText {
                         id: timeHeaderText
                         anchors.centerIn: parent
                         text: DateTime.time
                         font.weight: Font.Medium
-                        color: Appearance.colors.colOnSecondaryContainer
+                        color: Appearance.colors.colOnPrimary
                         elide: Text.ElideRight
                     }
                 }
@@ -276,23 +277,25 @@ Item {
                     property var allDayEvents: root.getAllDayEvents(modelData.events) 
 
                     Rectangle {
+                        property bool isToday: index === root.currentDayIndex
+
                         anchors.centerIn: parent
                         width: parent.width - 4
                         height: 40
                         radius: Appearance.rounding.large
-                        color: allDayEvents.length >0 ? Appearance.colors.colPrimaryContainer :Appearance.colors.colSurfaceContainerHigh
+                        color: allDayEvents.length > 0 ? Appearance.colors.colPrimaryContainer : isToday ? Appearance.colors.colPrimary : Appearance.colors.colSurfaceContainerHigh
 
                         StyledText {
                             id: dayTitle
                             anchors.centerIn: parent
                             font.weight: Font.Medium
-                            color: Appearance.colors.colOnSurfaceVariant
+                            color: allDayEvents.length > 0 ? Appearance.colors.colOnPrimaryContainer : parent.isToday ? Appearance.colors.colOnPrimary : Appearance.colors.colOnSurfaceVariant
                             text: modelData.name
                             elide: Text.ElideRight
                           }
                             
                          HoverHandler {
-                                        id: allDayHover
+                            id: allDayHover
                           }
         
 
@@ -309,19 +312,15 @@ Item {
                                     color: 'transparent' 
 
                                    
-
-                                    ToolTip {
-                                        visible: allDayHover.hovered
-                                        delay: 250
-                                        timeout: 0
+                                    StyledToolTip {
+                                        extraVisibleCondition: allDayHover.hovered
                                         text: root.formatEventTooltip(modelData)
                                     }
-
                                 }
                             }
                         }
                     }
-                    }
+                }
             }
         }
 
@@ -389,21 +388,22 @@ Item {
                     spacing: root.spacing
 
                     Repeater {
+                        id: daysRepeater
                         model: root.days
                         delegate: Item {
                             width: root.dayColumnWidth
                             height: parent.height
                             clip: true
+                            
                             property bool isToday: index === root.currentDayIndex
                             property var timedEvents: root.getTimedEvents(modelData.events)
 
                             Rectangle {
                                 anchors.fill: parent
                                 radius: Appearance.rounding.large
-                                color: isToday ? root.todayHighlightFill : Qt.rgba(0, 0, 0, 0)
+                                color: isToday ? root.todayHighlightFill : index % 2 == 0 ? root.dayBackgroundFill : root.dayBackgroundFillVariant
                                 border.width: isToday ? 1 : 0
-                                border.color: isToday ? root.todayHighlightBorder : Qt.rgba(0, 0, 0, 0)
-                                z: -1
+                                border.color: isToday ? root.todayHighlightBorder : "transparent"
                             }
 
                             Repeater {
@@ -411,7 +411,7 @@ Item {
                                 Rectangle {
                                     width: parent.width - 10
                                     anchors.horizontalCenter: parent.horizontalCenter
-                                    radius: Appearance.rounding.large
+                                    radius: Appearance.rounding.normal
                                     clip: true
                                     y: {
                                         let startHr = parseInt(modelData.start.split(":")[0]);
@@ -436,19 +436,29 @@ Item {
                                         id: eventHover
                                     }
 
-                                    ToolTip {
-                                        visible: eventHover.hovered
-                                        delay: 200
-                                        timeout: 0
+                                    StyledToolTip {
+                                        extraVisibleCondition: eventHover.hovered
                                         text: root.formatEventTooltip(modelData)
                                     }
 
                                     Column {
-                                        anchors.fill: parent
-                                        anchors.margins: 12
+                                        anchors {
+                                            fill: parent
+                                            margins: 8
+                                        }
                                         spacing: 4
 
-                                        Text {
+                                        StyledText {
+                                            id: eventTitle
+                                            text: modelData.title
+
+                                            font.weight: Font.DemiBold
+                                            elide: Text.ElideRight
+                                            width: parent.width
+                                            color: ColorUtils.getContrastingTextColor(modelData.color)
+                                        }
+
+                                        StyledText {
                                             text: {
                                                 let startHr = parseInt(modelData.start.split(":")[0]);
                                                 let startMin = parseInt(modelData.start.split(":")[1]);
@@ -464,23 +474,10 @@ Item {
                                                 return formatTime(startHr, startMin) + " - " + formatTime(endHr, endMin);
                                             }
                                             font.weight: Font.Medium
-                                            color: ColorUtils.getContrastingTextColor(modelData.color)
                                             width: parent.width
                                             wrapMode: Text.NoWrap
-                                            elide: Text.ElideRight
-                                            lineHeight: 1.2
-                                        }
-
-                                        Text {
-                                            id: eventTitle
-                                            text: modelData.title
-                                            font.weight: Font.Medium
-                                            wrapMode: Text.WordWrap
-                                            elide: Text.ElideRight
-                                            maximumLineCount: 2
-                                            width: parent.width
                                             color: ColorUtils.getContrastingTextColor(modelData.color)
-                                            lineHeight: 1.1
+                                            elide: Text.ElideRight
                                             visible: !truncated
                                         }
                                     }
@@ -493,7 +490,7 @@ Item {
 
             Rectangle {
                 id: currentTimeLine
-                width: contentRow.width
+                width: contentRow.width + 20
                 height: 3
                 color: Appearance.colors.colPrimary
                 y: root.currentTimeY

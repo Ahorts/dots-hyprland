@@ -101,6 +101,7 @@ Item {
             spacing: 5
 
             Repeater {
+                id: buttonRepeater
                 model: CalendarLayout.weekDays.map((_, i) => {
                     return CalendarLayout.weekDays[(i + Config.options.time.firstDayOfWeek) % 7];
                 })
