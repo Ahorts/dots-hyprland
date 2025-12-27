@@ -37,7 +37,7 @@ However there can (and will) be bugs **so don't expect stability here**. Use the
     <h2>• features i may open a pr later •</h2>
 </div>
 
-- Shell bar improvements _**// custom ordering, screen recording and screen sharing indicators**_
+- Bar rework  **_// security and timer indicators, custom ordering and more.._**
 - Background media widget
 - Overview widget position settings
 - Settings color scheme previes
