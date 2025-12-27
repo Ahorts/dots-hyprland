@@ -38,7 +38,8 @@ Item {
         "active_window": [activeWindowComp, activeWindowCompVert],
         "date": [dateCompVert, dateCompVert],
         "record_indicator": [recordIndicatorComp, recordIndicatorCompVert],
-        "screen_share_indicator": [screenshareIndicatorComp, screenshareIndicatorComp]
+        "screen_share_indicator": [screenshareIndicatorComp, screenshareIndicatorComp],
+        "timer": [timerComp, timerCompVert]
     })
 
     
@@ -86,6 +87,9 @@ Item {
             sourceComponent: compMap[modelData.id][vertical ? 1 : 0]
         }
     }
+
+    Component { id: timerComp; TimerWidget {} }
+    Component { id: timerCompVert; Vertical.VerticalTimerWidget {} }
 
     Component { id: screenshareIndicatorComp; ScreenShareIndicator {} }
 

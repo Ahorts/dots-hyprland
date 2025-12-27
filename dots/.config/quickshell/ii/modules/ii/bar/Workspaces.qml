@@ -120,7 +120,7 @@ Item {
 
             Rectangle {
                 z: 1
-                implicitWidth: root.vertical ? Appearance.sizes.baseVerticalBarWidth / 1.5 : 26
+                implicitWidth: root.vertical ? Appearance.sizes.baseVerticalBarWidth / 1.75 : 26
                 implicitHeight: root.vertical ? 26 : Appearance.sizes.baseBarHeight / 1.5
                 radius: (width / 2)
                 property var previousOccupied: (workspaceOccupied[index-1] && !(!activeWindow?.activated && monitor?.activeWorkspace?.id === index))

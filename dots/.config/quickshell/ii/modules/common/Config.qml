@@ -280,6 +280,10 @@ Singleton {
                     property int cpuWarningThreshold: 90
                 }
                 property list<string> screenList: [] // List of names, like "eDP-1", find out with 'hyprctl monitors' command
+                property JsonObject timers: JsonObject {
+                    property bool showPomodoro: true
+                    property bool showStopwatch: true
+                }
                 property JsonObject utilButtons: JsonObject {
                     property bool showScreenSnip: true
                     property bool showColorPicker: false
@@ -315,12 +319,12 @@ Singleton {
                     // And adding the dynamic components to leftover
                     property list<var> availableComps: [
                         {
-                            id: "record_indicator",
-                            icon: "screen_record",
-                            title: "Record indicator",
-                            centered: false,
-                            visible: false,
-                            scrollTo: ""
+                            id: "record_indicator", 
+                            icon: "screen_record", 
+                            title: "Record indicator", 
+                            centered: false, // centered or not (only in center section)
+                            visible: false, 
+                            scrollTo: "" // scroll to this component when clicked (has also to be configured in BarConfig)
                         },
                         {
                             id: "screen_share_indicator",
@@ -345,6 +349,14 @@ Singleton {
                             centered: false,
                             visible: true,
                             scrollTo: ""
+                        },
+                        {
+                            id: "timer",
+                            icon: "timer",
+                            title: "Timer & Pomodoro",
+                            centered: false,
+                            visible: true,
+                            scrollTo: "timerAndPomodoro"
                         }
                     ]
                     property list<var> left: [
