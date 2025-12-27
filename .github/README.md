@@ -6,9 +6,10 @@
 
 <div align="center"> 
      <h2>• screenshots •</h2>
-    <img width="1919" height="1078" alt="image" src="https://github.com/user-attachments/assets/9297bec7-63b4-47bf-8905-9a4baa8de4e9" />
-    <img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/daaa6c22-2004-4adc-abe0-a93cd594f5b6" />
-    <img width="1920" height="1078" alt="image" src="https://github.com/user-attachments/assets/56036681-cf01-4836-b003-4b53675a5240" />
+
+|  |  |  |
+| ----------- | ----------- | ----------- |
+| <img width="1919" height="1078" alt="image" src="https://github.com/user-attachments/assets/9297bec7-63b4-47bf-8905-9a4baa8de4e9" /> | <img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/daaa6c22-2004-4adc-abe0-a93cd594f5b6" /> |  <img width="1920" height="1078" alt="image" src="https://github.com/user-attachments/assets/56036681-cf01-4836-b003-4b53675a5240" /> |
 
 
 
