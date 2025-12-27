@@ -15,7 +15,8 @@ ContentPage {
         "music_player": musicPlayer,
         "utility_buttons": utilityButtons,
         "system_tray": systemTray,
-        "workspaces": workspaces
+        "workspaces": workspaces,
+        "timerAndPomodoro": timerAndPomodoro,
     })
 
     function scrollTo(stringId) {
@@ -326,6 +327,33 @@ ContentPage {
                 Config.options.tray.monochromeIcons = checked;
             }
         }
+    }
+
+    ContentSection {
+        id: timerAndPomodoro
+        icon: "timer_play"
+        title: Translation.tr("Timer & Pomodoro")
+
+        ConfigRow {
+            uniform: true
+            ConfigSwitch {
+                buttonIcon: "timer"
+                text: Translation.tr("Show stopwatch")
+                checked: Config.options.bar.timers.showStopwatch
+                onCheckedChanged: {
+                    Config.options.bar.timers.showStopwatch = checked;
+                }
+            }
+            ConfigSwitch {
+                buttonIcon: "search_activity"
+                text: Translation.tr("Show pomodoro")
+                checked: Config.options.bar.timers.showPomodoro
+                onCheckedChanged: {
+                    Config.options.bar.timers.showPomodoro = checked;
+                }
+            }
+        }
+
     }
 
     ContentSection {

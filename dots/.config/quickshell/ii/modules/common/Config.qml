@@ -248,6 +248,10 @@ Singleton {
                     property int cpuWarningThreshold: 90
                 }
                 property list<string> screenList: [] // List of names, like "eDP-1", find out with 'hyprctl monitors' command
+                property JsonObject timers: JsonObject {
+                    property bool showPomodoro: true
+                    property bool showStopwatch: true
+                }
                 property JsonObject utilButtons: JsonObject {
                     property bool showScreenSnip: true
                     property bool showColorPicker: false
@@ -313,6 +317,14 @@ Singleton {
                             centered: false,
                             visible: true,
                             scrollTo: ""
+                        },
+                        {
+                            id: "timer",
+                            icon: "timer",
+                            title: "Timer & Stopwatch",
+                            centered: false,
+                            visible: true,
+                            scrollTo: "timerAndPomodoro"
                         }
                     ]
                     property list<var> left: [
