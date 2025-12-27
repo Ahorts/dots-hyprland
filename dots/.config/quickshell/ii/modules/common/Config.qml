@@ -287,12 +287,12 @@ Singleton {
                     // And adding the dynamic components to leftover
                     property list<var> availableComps: [
                         {
-                            id: "record_indicator",
-                            icon: "screen_record",
-                            title: "Record indicator",
-                            centered: false,
-                            visible: false,
-                            scrollTo: ""
+                            id: "record_indicator", 
+                            icon: "screen_record", 
+                            title: "Record indicator", 
+                            centered: false, // centered or not (only in center section)
+                            visible: false, 
+                            scrollTo: "" // scroll to this component when clicked (has also to be configured in BarConfig)
                         },
                         {
                             id: "screen_share_indicator",

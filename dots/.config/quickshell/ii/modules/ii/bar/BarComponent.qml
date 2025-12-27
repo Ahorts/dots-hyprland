@@ -89,7 +89,7 @@ Item {
     }
 
     Component { id: timerComp; TimerWidget {} }
-    Component { id: timerCompVert; TimerWidget { vertical: true } }
+    Component { id: timerCompVert; Vertical.VerticalTimerWidget {} }
 
     Component { id: screenshareIndicatorComp; ScreenShareIndicator {} }
 

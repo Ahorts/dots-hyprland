@@ -17,8 +17,8 @@ Item {
     property bool showPomodoro: Config.options.bar.timers.showPomodoro
     property bool showStopwatch: Config.options.bar.timers.showStopwatch
 
-    implicitWidth: rowLayout.implicitWidth + rowLayout.spacing * 5
-    implicitHeight: Appearance.sizes.barHeight
+    implicitWidth: Appearance.sizes.verticalBarWidth
+    implicitHeight: columnLayout.implicitHeight + columnLayout.spacing * 4
 
     property bool compVisible: ((hasStop || sRunning) && root.showStopwatch) || ((pRunning || hasPomo) && root.showPomodoro)
 
@@ -31,21 +31,20 @@ Item {
 
     function formatTime(time) {
         const sec = Math.floor(time/100)
-        return Math.floor(sec/60).toString().padStart(2,'0') + ":" +
-        (sec%60).toString().padStart(2,'0') + "." +
+        return (sec%60).toString().padStart(2,'0') + "\n" +
         (time%100).toString().padStart(2,'0')
     }
 
-    RowLayout {
-        id: rowLayout
+    ColumnLayout {
+        id: columnLayout
         anchors.centerIn: parent
         spacing: 4
 
         Loader {
             active: hasStop && showStopwatch
             visible: active
-            Layout.preferredWidth: 90 // we have to enter a fixed size or else it will jitter as the time changes
-            sourceComponent: RowLayout {
+            Layout.alignment: Qt.AlignHCenter
+            sourceComponent: ColumnLayout {
                 MaterialSymbol {
                     text: root.sRunning ? "timer" : "timer_pause"
                     color: Appearance.colors.colOnPrimary
@@ -53,7 +52,7 @@ Item {
                 }
 
                 StyledText {
-                    Layout.topMargin: 3
+                    Layout.preferredWidth: 10 // we have to set a fixed size to prevent flickering
                     text: formatTime(TimerService.stopwatchTime)
                     color: Appearance.colors.colOnPrimary
                 }
@@ -70,15 +69,18 @@ Item {
 
         Item {
             visible: hasStop && hasPomo
-            Layout.preferredWidth: hasStop && hasPomo ? 2 : 0
+            Layout.preferredHeight: hasStop && hasPomo ? 2 : 0
         }
 
         Loader {
             active: hasPomo && showPomodoro
             visible: active
-            Layout.preferredWidth: 60
-            Layout.rightMargin: 5
-            sourceComponent: RowLayout {
+            Layout.preferredHeight: 50
+            Layout.bottomMargin: 10
+            Layout.alignment: Qt.AlignHCenter
+            Layout.leftMargin: 2
+            
+            sourceComponent: ColumnLayout {
                 MaterialSymbol {
                     text: root.pRunning ? "search_activity" : "pause_circle"
                     color: Appearance.colors.colOnPrimary
@@ -86,10 +88,9 @@ Item {
                 }
 
                 StyledText {
-                    Layout.topMargin: 3
                     text: {
                         const t = TimerService.pomodoroSecondsLeft
-                        return Math.floor(t/60).toString().padStart(2,'0') + ":" + (t%60).toString().padStart(2,'0')
+                        return Math.floor(t/60).toString().padStart(2,'0') + "\n" + (t%60).toString().padStart(2,'0')
                     }
                     color: Appearance.colors.colOnPrimary
                 }
