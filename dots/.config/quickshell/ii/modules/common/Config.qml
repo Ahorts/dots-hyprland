@@ -321,7 +321,7 @@ Singleton {
                         {
                             id: "timer",
                             icon: "timer",
-                            title: "Timer & Stopwatch",
+                            title: "Timer & Pomodoro",
                             centered: false,
                             visible: true,
                             scrollTo: "timerAndPomodoro"
