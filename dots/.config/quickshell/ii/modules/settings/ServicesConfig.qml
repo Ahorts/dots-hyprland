@@ -187,6 +187,15 @@ ContentPage {
                         Config.options.search.prefix.webSearch = text;
                     }
                 }
+                MaterialTextArea {
+                    Layout.fillWidth: true
+                    placeholderText: Translation.tr("File search")
+                    text: Config.options.search.prefix.fileSearch
+                    wrapMode: TextEdit.Wrap
+                    onTextChanged: {
+                        Config.options.search.prefix.fileSearch = text;
+                    }
+                }
             }
         }
         ContentSubsection {
@@ -198,6 +207,18 @@ ContentPage {
                 wrapMode: TextEdit.Wrap
                 onTextChanged: {
                     Config.options.search.engineBaseUrl = text;
+                }
+            }
+        }
+        ContentSubsection {
+            title: Translation.tr("File search")
+            MaterialTextArea {
+                Layout.fillWidth: true
+                placeholderText: Translation.tr("Search directory")
+                text: Config.options.search.fileSearchDirectory
+                wrapMode: TextEdit.Wrap
+                onTextChanged: {
+                    Config.options.search.fileSearchDirectory = text;
                 }
             }
         }
