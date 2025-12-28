@@ -5,7 +5,11 @@ import qs.modules.common
 import qs.modules.common.widgets
 
 ContentPage {
+    id: page
     forceWidth: true
+    
+    property bool allowHeavyLoads: false
+    Component.onCompleted: Qt.callLater(() => page.allowHeavyLoads = true)
 
     ContentSection {
         icon: "sync_alt"
@@ -297,18 +301,6 @@ ContentPage {
                 }
             }
 
-            ConfigSwitch {
-                buttonIcon: "airwave"
-                text: Translation.tr("Use old sine wave cookie implementation")
-                checked: Config.options.background.widgets.clock.cookie.useSineCookie
-                onCheckedChanged: {
-                    Config.options.background.widgets.clock.cookie.useSineCookie = checked;
-                }
-                StyledToolTip {
-                    text: "Looks a bit softer and more consistent with different number of sides,\nbut has less impressive morphing"
-                }
-            }
-
             ConfigSpinBox {
                 icon: "add_triangle"
                 text: Translation.tr("Sides")
@@ -547,6 +539,65 @@ ContentPage {
                 ]
             }
         }
+
+        ContentSubsection {
+            visible: settingsClock.cookiePresent
+            title: Translation.tr("Background style")
+
+            ConfigSelectionArray {
+                currentValue: Config.options.background.widgets.clock.cookie.backgroundStyle
+                onSelected: newValue => {
+                    Config.options.background.widgets.clock.cookie.backgroundStyle = newValue;
+                }
+                options: [
+                    {
+                        displayName: Translation.tr("Sine (old)"),
+                        icon: "waves",
+                        value: "sine"
+                    },
+                    {
+                        displayName: Translation.tr("Cookie"),
+                        icon: "cookie",
+                        value: "cookie"
+                    },
+                    {
+                        displayName: Translation.tr("Shape"),
+                        icon: "shape_line",
+                        value: "shape"
+                    },
+                ]
+            }
+        }
+
+        
+        Loader { 
+            id: backgroundShapeLoader
+            active: page.allowHeavyLoads && settingsClock.cookiePresent && Config.options.background.widgets.clock.cookie.backgroundStyle === "shape"
+            visible: active
+            Layout.fillWidth: true
+            sourceComponent: ContentSubsection {
+                title: Translation.tr("Background shape")
+                
+                ConfigSelectionArray {
+                    currentValue: Config.options.background.widgets.clock.cookie.backgroundShape
+                    onSelected: newValue => {
+                        Config.options.background.widgets.clock.cookie.backgroundShape = newValue;
+                    }
+                    options: ([
+                        "Circle", "Square", "Slanted", "Arch", "Arrow", "SemiCircle", "Oval", "Pill", "Triangle", "Diamond", "ClamShell", "Pentagon",
+                        "Gem", "Sunny", "VerySunny", "Cookie4Sided", "Cookie6Sided", "Cookie7Sided", "Cookie9Sided", "Cookie12Sided", "Ghostish", "Clover4Leaf", 
+                        "Clover8Leaf", "Burst", "SoftBurst", "Flower", "Puffy", "PuffyDiamond", "PixelCircle", "Bun", "Heart"
+                    ]).map(icon => { 
+                        return {
+                            displayName: "",
+                            shape: icon,
+                            value: icon
+                        }
+                    })
+                }
+            }
+        }
+        
 
         ContentSubsection {
             title: Translation.tr("Quote")
