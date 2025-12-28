@@ -14,7 +14,7 @@ Singleton {
     property string query: ""
 
     function ensurePrefix(prefix) {
-        if ([Config.options.search.prefix.action, Config.options.search.prefix.app, Config.options.search.prefix.clipboard, Config.options.search.prefix.emojis, Config.options.search.prefix.math, Config.options.search.prefix.shellCommand, Config.options.search.prefix.webSearch,].some(i => root.query.startsWith(i))) {
+        if ([Config.options.search.prefix.action, Config.options.search.prefix.app, Config.options.search.prefix.clipboard, Config.options.search.prefix.emojis, Config.options.search.prefix.math, Config.options.search.prefix.shellCommand, Config.options.search.prefix.webSearch, Config.options.search.prefix.fileSearch].some(i => root.query.startsWith(i))) {
             root.query = prefix + root.query.slice(1);
         } else {
             root.query = prefix + root.query;
@@ -148,6 +148,15 @@ Singleton {
         }
     }
 
+    onQueryChanged: {
+        let expr = root.query;
+        if (expr.startsWith(Config.options.search.prefix.fileSearch)) {
+            expr = expr.slice(Config.options.search.prefix.fileSearch.length);
+            fileProc.searchFiles(expr);
+        }
+    }
+
+
     Process {
         id: mathProc
         property list<string> baseCommand: ["qalc", "-t"]
@@ -161,6 +170,26 @@ Singleton {
                 root.mathResult = data;
             }
         }
+    }
+
+    property var fileResults: []
+    Process {
+        id: fileProc 
+        function searchFiles(expr) {
+            if (expr.length < 2) return
+            fileProc.running = false;
+            fileProc.command = ["fd", expr, Config.options.search.fileSearchDirectory]; 
+            fileProc.running = true;
+        }
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const rawResult = this.text
+                const result = rawResult.split('\n')
+                result.pop() // deleting the last empty line
+                root.fileResults = result
+            }
+        }
+
     }
 
     property list<var> results: {
@@ -225,6 +254,11 @@ Singleton {
             }).filter(Boolean);
         }
 
+        // A better way to reset file results? //
+        if (!root.query.startsWith(Config.options.search.prefix.fileSearch)) {
+            root.fileResults = [];
+        }
+
         ////////////////// Init ///////////////////
         nonAppResultsTimer.restart();
         const mathResultObject = resultComp.createObject(null, {
@@ -238,6 +272,18 @@ Singleton {
                 Quickshell.clipboardText = root.mathResult;
             }
         });
+        const fileResultsObject = root.fileResults.map(entry => {
+            return resultComp.createObject(null, {
+                type: Translation.tr("File"),
+                name: entry,
+                verb: Translation.tr("Open"),
+                iconName: 'file_open',
+                iconType: LauncherSearchResult.IconType.Material,
+                execute: () => {
+                    Quickshell.execDetached(["xdg-open", entry]);
+                }
+            });
+        })
         const appResultObjects = AppSearch.fuzzyQuery(StringUtils.cleanPrefix(root.query, Config.options.search.prefix.app)).map(entry => {
             return resultComp.createObject(null, {
                 type: Translation.tr("App"),
@@ -335,6 +381,9 @@ Singleton {
         } else if (startsWithWebSearchPrefix) {
             result.push(webSearchResultObject);
         }
+
+        //////////////// Files /////////////////
+        result = result.concat(fileResultsObject);
 
         //////////////// Apps //////////////////
         result = result.concat(appResultObjects);
