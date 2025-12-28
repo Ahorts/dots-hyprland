@@ -302,6 +302,7 @@ ContentPage {
             }
 
             ConfigSpinBox {
+                enabled: Config.options.background.widgets.clock.cookie.backgroundStyle !== "shape"
                 icon: "add_triangle"
                 text: Translation.tr("Sides")
                 value: Config.options.background.widgets.clock.cookie.sides
