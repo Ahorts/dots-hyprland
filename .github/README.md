@@ -42,6 +42,7 @@ However there can (and will) be bugs **so don't expect stability here**. Use the
 - Overview widget position settings
 - Settings color scheme previes
 - Cookie clock improvements
+- File search functionality in launcher
   
 <div align="center">
     <h2>• other features •</h2>
