@@ -122,7 +122,7 @@ Item {
         id: materialShapeCookieLoader
         z: 0
         visible: false // The DropShadow already draws it
-        active: backgroundStyle === "shape"
+        active: backgroundStyle === "shape" && Config.options.background.widgets.clock.cookie.backgroundShape !== "block"
         sourceComponent: MaterialShape {
             implicitSize: root.implicitSize
             color: root.colBackground
