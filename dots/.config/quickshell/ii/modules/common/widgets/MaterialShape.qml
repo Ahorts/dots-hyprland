@@ -1,5 +1,6 @@
 import qs.modules.common.widgets.shapes
 import "shapes/material-shapes.js" as MaterialShapes
+import QtQuick
 
 ShapeCanvas {
     id: root
@@ -40,11 +41,71 @@ ShapeCanvas {
         Bun,
         Heart
     }
-    required property var shape
+
+    readonly property var fromString: ({
+        "Circle": MaterialShape.Shape.Circle,
+        "Square": MaterialShape.Shape.Square,
+        "Slanted": MaterialShape.Shape.Slanted,
+        "Circle": MaterialShape.Shape.Circle,
+        "Square": MaterialShape.Shape.Square,
+        "Slanted": MaterialShape.Shape.Slanted,
+        "Arch": MaterialShape.Shape.Arch,
+        "Fan": MaterialShape.Shape.Fan,
+        "Arrow": MaterialShape.Shape.Arrow,
+        "SemiCircle": MaterialShape.Shape.SemiCircle,
+        "Oval": MaterialShape.Shape.Oval,
+        "Pill": MaterialShape.Shape.Pill,
+        "Triangle": MaterialShape.Shape.Triangle,
+        "Diamond": MaterialShape.Shape.Diamond,
+        "ClamShell": MaterialShape.Shape.ClamShell,
+        "Pentagon": MaterialShape.Shape.Pentagon,
+        "Gem": MaterialShape.Shape.Gem,
+        "Sunny": MaterialShape.Shape.Sunny,
+        "VerySunny": MaterialShape.Shape.VerySunny,
+        "Cookie4Sided": MaterialShape.Shape.Cookie4Sided,
+        "Cookie6Sided": MaterialShape.Shape.Cookie6Sided,
+        "Cookie7Sided": MaterialShape.Shape.Cookie7Sided,
+        "Cookie9Sided": MaterialShape.Shape.Cookie9Sided,
+        "Cookie12Sided": MaterialShape.Shape.Cookie12Sided,
+        "Ghostish": MaterialShape.Shape.Ghostish,
+        "Clover4Leaf": MaterialShape.Shape.Clover4Leaf,
+        "Clover8Leaf": MaterialShape.Shape.Clover8Leaf,
+        "Burst": MaterialShape.Shape.Burst,
+        "SoftBurst": MaterialShape.Shape.SoftBurst,
+        "Boom": MaterialShape.Shape.Boom,
+        "SoftBoom": MaterialShape.Shape.SoftBoom,
+        "Flower": MaterialShape.Shape.Flower,
+        "Puffy": MaterialShape.Shape.Puffy,
+        "PuffyDiamond": MaterialShape.Shape.PuffyDiamond,
+        "PixelCircle": MaterialShape.Shape.PixelCircle,
+        "PixelTriangle": MaterialShape.Shape.PixelTriangle,
+        "Bun": MaterialShape.Shape.Bun,
+        "Heart": MaterialShape.Shape.Heart
+    })
+
+    function getShape(str) {
+        return fromString[str] !== undefined
+            ? fromString[str]
+            : MaterialShape.Shape.Circle // fallback
+    }
+
+    
+
+    property string shapeString
+    property var shape
     property double implicitSize
     implicitHeight: implicitSize
     implicitWidth: implicitSize
     polygonIsNormalized: true
+
+    Component.onCompleted: updateShape()
+    onShapeStringChanged: updateShape()
+
+    function updateShape() {
+        if (!shapeString) return
+        shape = getShape(shapeString)
+    }
+
     roundedPolygon: {
         switch (root.shape) {
             case MaterialShape.Shape.Circle: return MaterialShapes.getCircle();

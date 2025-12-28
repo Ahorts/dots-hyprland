@@ -447,6 +447,68 @@ ContentPage {
         }
 
         ContentSubsection {
+            visible: settingsClock.cookiePresent
+            title: Translation.tr("Background style")
+
+            ConfigSelectionArray {
+                currentValue: Config.options.background.widgets.clock.cookie.backgroundStyle
+                onSelected: newValue => {
+                    Config.options.background.widgets.clock.cookie.backgroundStyle = newValue;
+                }
+                options: [
+                    {
+                        displayName: Translation.tr("Cookie"),
+                        icon: "cookie",
+                        value: "cookie"
+                    },
+                    {
+                        displayName: Translation.tr("Sine"),
+                        icon: "waves",
+                        value: "sine"
+                    },
+                    {
+                        displayName: Translation.tr("Shape"),
+                        icon: "shape_line",
+                        value: "shape"
+                    },
+                ]
+            }
+        }
+
+        // FIXME: flicker.content.y ile loadlamayı dene direk component.oncompleted kullanmak yerine
+        // It's heavy, so we load it after 1 frame
+        Component.onCompleted: Qt.callLater(() => backgroundShapeLoader.allowShapeLoad = true)
+        Loader { 
+            id: backgroundShapeLoader
+            property bool allowShapeLoad: false
+            active: allowShapeLoad && settingsClock.cookiePresent && Config.options.background.widgets.clock.cookie.backgroundStyle === "shape"
+            visible: active
+            Layout.fillWidth: true
+            sourceComponent: ContentSubsection {
+                title: Translation.tr("Background shape style")
+                
+                ConfigSelectionArray {
+                    currentValue: Config.options.background.widgets.clock.cookie.backgroundShapeStyle
+                    onSelected: newValue => {
+                        Config.options.background.widgets.clock.cookie.backgroundShapeStyle = newValue;
+                    }
+                    options: ([
+                        "Circle", "Square", "Slanted", "Arch", "Fan", "Arrow", "SemiCircle", "Oval", "Pill", "Triangle", "Diamond", "ClamShell", "Pentagon",
+                        "Gem", "Sunny", "VerySunny", "Cookie4Sided", "Cookie6Sided", "Cookie7Sided", "Cookie9Sided", "Cookie12Sided", "Ghostish", "Clover4Leaf", 
+                        "Clover8Leaf", "Burst", "SoftBurst", "Flower", "Puffy", "PuffyDiamond", "PixelCircle", "Bun", "Hearth"
+                    ]).map(icon => { 
+                        return {
+                            displayName: "",
+                            shape: icon,
+                            value: icon
+                        }
+                    })
+                }
+            }
+        }
+        
+
+        ContentSubsection {
             title: Translation.tr("Quote")
 
             ConfigSwitch {
