@@ -41,6 +41,7 @@ However there can (and will) be bugs **so don't expect stability here**. Use the
 - Background media widget
 - Overview widget position settings
 - Settings color scheme previes
+- Cookie clock improvements
   
 <div align="center">
     <h2>• other features •</h2>
