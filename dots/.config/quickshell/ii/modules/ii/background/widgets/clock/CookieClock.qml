@@ -125,8 +125,8 @@ Item {
         active: backgroundStyle === "shape"
         sourceComponent: MaterialShape {
             implicitSize: root.implicitSize
-            shapeString: Config.options.background.widgets.clock.cookie.backgroundShapeStyle
             color: root.colBackground
+            shapeString: Config.options.background.widgets.clock.cookie.backgroundShape
         }
     }
 

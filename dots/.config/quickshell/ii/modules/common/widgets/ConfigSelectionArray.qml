@@ -13,13 +13,13 @@ Flow {
         {
             "displayName": "Option 1",
             "icon": "check",
-            "shape": "Arch", // Optional
+            "shape": "Arch", // Optional (for material shape)
             "value": 1
         },
         {
             "displayName": "Option 2",
             "icon": "close",
-            "shape": "Circle", // Optional
+            "shape": "Circle", // Optional (for material shape)
             "value": 2
         },
     ]

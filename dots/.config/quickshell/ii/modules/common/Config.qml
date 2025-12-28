@@ -175,7 +175,7 @@ Singleton {
                             property bool aiStyling: false
                             property int sides: 14
                             property string backgroundStyle: "cookie"     // Options: "cookie", "sine", "shape" 
-                            property string backgroundShapeStyle: "Arch"  // Options: MaterialShape.Shape enum values as string
+                            property string backgroundShape: "Arch"  // Options: MaterialShape.Shape enum values as string
                             property string dialNumberStyle: "full"   // Options: "dots" , "numbers", "full" , "none"
                             property string hourHandStyle: "fill"     // Options: "classic", "fill", "hollow", "hide"
                             property string minuteHandStyle: "medium" // Options "classic", "thin", "medium", "bold", "hide"
@@ -185,7 +185,6 @@ Singleton {
                             property bool hourMarks: false
                             property bool dateInClock: true
                             property bool constantlyRotate: false
-                            property bool useSineCookie: false
                         }
                         property JsonObject digital: JsonObject {
                             property bool animateChange: true

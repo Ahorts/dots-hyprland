@@ -42,7 +42,7 @@ ShapeCanvas {
         Heart
     }
 
-    readonly property var fromString: ({
+    readonly property var shapeMap: ({
         "Circle": MaterialShape.Shape.Circle,
         "Square": MaterialShape.Shape.Square,
         "Slanted": MaterialShape.Shape.Slanted,
@@ -84,12 +84,10 @@ ShapeCanvas {
     })
 
     function getShape(str) {
-        return fromString[str] !== undefined
-            ? fromString[str]
+        return shapeMap[str] !== undefined
+            ? shapeMap[str]
             : MaterialShape.Shape.Circle // fallback
     }
-
-    
 
     property string shapeString
     property var shape
@@ -98,10 +96,7 @@ ShapeCanvas {
     implicitWidth: implicitSize
     polygonIsNormalized: true
 
-    Component.onCompleted: updateShape()
-    onShapeStringChanged: updateShape()
-
-    function updateShape() {
+    onShapeStringChanged: {
         if (!shapeString) return
         shape = getShape(shapeString)
     }

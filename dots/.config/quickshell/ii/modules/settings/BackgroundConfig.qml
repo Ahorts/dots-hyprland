@@ -5,7 +5,11 @@ import qs.modules.common
 import qs.modules.common.widgets
 
 ContentPage {
+    id: page
     forceWidth: true
+    
+    property bool allowHeavyLoads: false
+    Component.onCompleted: Qt.callLater(() => page.allowHeavyLoads = true)
 
     ContentSection {
         icon: "sync_alt"
@@ -192,18 +196,6 @@ ContentPage {
                 }
                 StyledToolTip {
                     text: Translation.tr("Uses Gemini to categorize the wallpaper then picks a preset based on it.\nYou'll need to set Gemini API key on the left sidebar first.\nImages are downscaled for performance, but just to be safe,\ndo not select wallpapers with sensitive information.")
-                }
-            }
-
-            ConfigSwitch {
-                buttonIcon: "airwave"
-                text: Translation.tr("Use old sine wave cookie implementation")
-                checked: Config.options.background.widgets.clock.cookie.useSineCookie
-                onCheckedChanged: {
-                    Config.options.background.widgets.clock.cookie.useSineCookie = checked;
-                }
-                StyledToolTip {
-                    text: "Looks a bit softer and more consistent with different number of sides,\nbut has less impressive morphing"
                 }
             }
 
@@ -457,14 +449,14 @@ ContentPage {
                 }
                 options: [
                     {
+                        displayName: Translation.tr("Sine (old)"),
+                        icon: "waves",
+                        value: "sine"
+                    },
+                    {
                         displayName: Translation.tr("Cookie"),
                         icon: "cookie",
                         value: "cookie"
-                    },
-                    {
-                        displayName: Translation.tr("Sine"),
-                        icon: "waves",
-                        value: "sine"
                     },
                     {
                         displayName: Translation.tr("Shape"),
@@ -475,27 +467,24 @@ ContentPage {
             }
         }
 
-        // FIXME: flicker.content.y ile loadlamayı dene direk component.oncompleted kullanmak yerine
-        // It's heavy, so we load it after 1 frame
-        Component.onCompleted: Qt.callLater(() => backgroundShapeLoader.allowShapeLoad = true)
+        
         Loader { 
             id: backgroundShapeLoader
-            property bool allowShapeLoad: false
-            active: allowShapeLoad && settingsClock.cookiePresent && Config.options.background.widgets.clock.cookie.backgroundStyle === "shape"
+            active: page.allowHeavyLoads && settingsClock.cookiePresent && Config.options.background.widgets.clock.cookie.backgroundStyle === "shape"
             visible: active
             Layout.fillWidth: true
             sourceComponent: ContentSubsection {
-                title: Translation.tr("Background shape style")
+                title: Translation.tr("Background shape")
                 
                 ConfigSelectionArray {
-                    currentValue: Config.options.background.widgets.clock.cookie.backgroundShapeStyle
+                    currentValue: Config.options.background.widgets.clock.cookie.backgroundShape
                     onSelected: newValue => {
-                        Config.options.background.widgets.clock.cookie.backgroundShapeStyle = newValue;
+                        Config.options.background.widgets.clock.cookie.backgroundShape = newValue;
                     }
                     options: ([
-                        "Circle", "Square", "Slanted", "Arch", "Fan", "Arrow", "SemiCircle", "Oval", "Pill", "Triangle", "Diamond", "ClamShell", "Pentagon",
+                        "Circle", "Square", "Slanted", "Arch", "Arrow", "SemiCircle", "Oval", "Pill", "Triangle", "Diamond", "ClamShell", "Pentagon",
                         "Gem", "Sunny", "VerySunny", "Cookie4Sided", "Cookie6Sided", "Cookie7Sided", "Cookie9Sided", "Cookie12Sided", "Ghostish", "Clover4Leaf", 
-                        "Clover8Leaf", "Burst", "SoftBurst", "Flower", "Puffy", "PuffyDiamond", "PixelCircle", "Bun", "Hearth"
+                        "Clover8Leaf", "Burst", "SoftBurst", "Flower", "Puffy", "PuffyDiamond", "PixelCircle", "Bun", "Heart"
                     ]).map(icon => { 
                         return {
                             displayName: "",
