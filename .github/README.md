@@ -29,7 +29,6 @@ However there can (and will) be bugs **so don't expect stability here**. Use the
     <h2>• prs •</h2>
 </div>
 
-- PR: https://github.com/end-4/dots-hyprland/pull/2593 -> Digital clock improvements (like A16 look) | Branch: [digital-clock-improvements](https://github.com/vaguesyntax/dots-hyprland/tree/digital-clock-improvements)
 - PR: https://github.com/end-4/dots-hyprland/pull/2539 -> Video wallpaper fixes | Branch: [video-wallpaper-fixes](https://github.com/vaguesyntax/dots-hyprland/tree/video-wallpaper-fixes)
 - PR: https://github.com/end-4/dots-hyprland/pull/2515 -> Config option for overview to show only on focused monitor | Branch  [overview-on-focused-monitor](https://github.com/vaguesyntax/dots-hyprland/tree/overview-on-focused-monitor)
 
