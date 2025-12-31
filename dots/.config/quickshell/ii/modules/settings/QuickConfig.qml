@@ -252,9 +252,6 @@ ContentPage {
             onCheckedChanged: {
                 Config.options.appearance.transparency.enable = checked;
             }
-            StyledToolTip {
-                text: Translation.tr("Might look ass. Unsupported.")
-            }
         }
         
     }

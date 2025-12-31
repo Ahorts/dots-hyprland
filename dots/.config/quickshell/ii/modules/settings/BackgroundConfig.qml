@@ -57,9 +57,9 @@ ContentPage {
     }
 
     ContentSection {
+        id: settingsClock
         icon: "clock_loader_40"
         title: Translation.tr("Widget: Clock")
-        id: settingsClock
 
         function stylePresent(styleName) {
             if (!Config.options.background.widgets.clock.showOnlyWhenLocked && Config.options.background.widgets.clock.style === styleName) {
@@ -176,7 +176,7 @@ ContentPage {
         ContentSubsection {
             visible: settingsClock.digitalPresent
             title: Translation.tr("Digital clock settings")
-            tooltip: Translation.tr("Font width and roundness settings are only available for some fonts like 'Google Sans Flex'")
+            tooltip: Translation.tr("Font width and roundness settings are only available for some fonts like Google Sans Flex")
 
             ConfigRow {
                 uniform: true
@@ -200,7 +200,6 @@ ContentPage {
 
             ConfigRow {
                 uniform: true
-                
 
                 ConfigSwitch {
                     buttonIcon: "date_range"
@@ -225,7 +224,7 @@ ContentPage {
 
             MaterialTextArea {
                 Layout.fillWidth: true
-                placeholderText: Translation.tr("Font family (e.g., Google Sans Flex)")
+                placeholderText: Translation.tr("Font family")
                 text: Config.options.background.widgets.clock.digital.font.family
                 wrapMode: TextEdit.Wrap
                 onTextChanged: {
@@ -233,7 +232,6 @@ ContentPage {
                 }
             }
 
-            
             ConfigSlider {
                 text: Translation.tr("Font weight")
                 value: Config.options.background.widgets.clock.digital.font.weight

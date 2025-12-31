@@ -18,7 +18,7 @@ Item { // Wrapper
     property bool showResults: searchingText != ""
     property string overviewPosition: Config.options.overview.position
     implicitWidth: searchWidgetContent.implicitWidth + Appearance.sizes.elevationMargin * 2
-    implicitHeight: searchBar.implicitHeight + searchBar.verticalPadding * 2 + Appearance.sizes.elevationMargin * 2
+    implicitHeight: searchWidgetContent.implicitHeight + searchBar.verticalPadding * 2 + Appearance.sizes.elevationMargin * 2
 
     function focusFirstItem() {
         appResults.currentIndex = 0;
