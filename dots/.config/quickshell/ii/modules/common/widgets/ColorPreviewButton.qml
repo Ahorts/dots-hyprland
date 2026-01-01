@@ -11,8 +11,6 @@ import qs.modules.common.functions
 
 RippleButton {
     id: root
-    //TODO: find a better way to represent colors instead of primary/secondary/tertiary
-
     readonly property string themeDirectory: Directories.defaultThemes
 
     property string colorScheme: "scheme-auto"
@@ -20,14 +18,14 @@ RippleButton {
 
     property bool customTheme: false
     readonly property string customThemeFilePath: themeDirectory + "/" + colorScheme + ".json"
-    readonly property string customThemeCommand: ` jq -r '.primary, .secondary, .tertiary' ${customThemeFilePath}`  
+    readonly property string customThemeCommand: ` jq -r '.primary, .primary_container, .secondary' ${customThemeFilePath}`  
 
     property color accentColor
     readonly property bool toggled: Config.options.appearance.palette.type === root.colorScheme
 
     readonly property string wallpaperPath: Config.options.background.wallpaperPath
     readonly property string scriptPath: FileUtils.trimFileProtocol(`${Directories.scriptPath}/colors/generate_colors_material.py`)
-    readonly property string grepCommand: "grep -E '^[[:space:]]*(primary|secondary|tertiary)[[:space:]]*:' | grep -oE '#[0-9A-Fa-f]{6}'" // some magic to extract hex colors from the script output
+    readonly property string grepCommand: "grep -E '^[[:space:]]*(primary|primaryContainer|secondary)[[:space:]]*:' | grep -oE '#[0-9A-Fa-f]{6}'" // some magic to extract hex colors from the script output
     property string scriptArguments: ` --scheme ${root.colorScheme} --debug | ${root.grepCommand}`
 
     property string fullCommand: `python3 ${root.scriptPath} --color "$(${root.accentColorCommand})" ${root.scriptArguments}`
@@ -58,37 +56,15 @@ RippleButton {
         }
     }
 
-    Component.onCompleted: fetchColors();
-    onWallpaperPathChanged: fetchColors();
+    property var effectiveCommand: root.customTheme ? root.customThemeCommand : root.fullCommand
 
-    function fetchColors() {
-        if (customTheme) {
-            customColorFetchProc.running = true;
-        } else {
-            colorFetchProc.running = true;
-        }
-    }
+    Component.onCompleted: colorFetchProccess.running = true
+    onWallpaperPathChanged: colorFetchProccess.running = true
 
     Process {
-        id: colorFetchProc
+        id: colorFetchProccess
         running: false
-        command: [ "bash", "-c", root.fullCommand ]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                const colors = this.text.split("\n")
-                root.primaryColor   = colors[0]?.trim()
-                root.secondaryColor = colors[1]?.trim()
-                root.tertiaryColor  = colors[2]?.trim()
-                root.loaded = true;
-                myCanvas.requestPaint()
-            }
-        }
-    }
-
-    Process {
-        id: customColorFetchProc
-        running: false
-        command: [ "bash", "-c", root.customThemeCommand ]
+        command: [ "bash", "-c", root.effectiveCommand ]
         stdout: StdioCollector {
             onStreamFinished: {
                 const colors = this.text.split("\n")
