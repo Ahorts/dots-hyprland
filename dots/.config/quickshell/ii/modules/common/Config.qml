@@ -208,7 +208,7 @@ Singleton {
                         }
                     }
                     property JsonObject media: JsonObject {
-                        property bool enable: false
+                        property bool enable: true
                         property string placementStrategy: "free" // "free", "leastBusy", "mostBusy"
                         property real x: 800
                         property real y: 100
@@ -216,8 +216,8 @@ Singleton {
                         property bool showPreviousToggle: true
                         property bool tintArtCover: false
                         property JsonObject glow: JsonObject {
-                            property bool enable: false
-                            property real brightness: 50
+                            property bool enable: true
+                            property real brightness: 10
                         }
                         property JsonObject visualizer: JsonObject {
                             property bool enable: false
@@ -356,7 +356,15 @@ Singleton {
                             centered: false,
                             visible: true,
                             scrollTo: "timerAndPomodoro"
-                        }
+                        },
+                        {
+                            id: "utility_buttons",
+                            icon: "build",
+                            title: "Utility buttons",
+                            centered: false,
+                            visible: true,
+                            scrollTo: "utility_buttons"
+                        },
                     ]
                     property list<var> left: [
                         {
@@ -381,7 +389,7 @@ Singleton {
                             id: "workspaces",
                             icon: "workspaces",
                             title: "Workspaces",
-                            centered: false,
+                            centered: true,
                             visible: true,
                             scrollTo: "workspaces"
                         },
@@ -395,14 +403,6 @@ Singleton {
                         }
                     ]
                     property list<var> right: [
-                        {
-                            id: "utility_buttons",
-                            icon: "build",
-                            title: "Utility buttons",
-                            centered: false,
-                            visible: true,
-                            scrollTo: "utility_buttons"
-                        },
                         {
                             id: "clock",
                             icon: "nest_clock_farsight_analog",
@@ -494,7 +494,7 @@ Singleton {
             }
 
             property JsonObject language: JsonObject {
-                property string ui: "auto" // UI language. "auto" for system locale, or specific language code like "zh_CN", "en_US"
+                property string ui: "en_US" // UI language. "auto" for system locale, or specific language code like "zh_CN", "en_US"
                 property JsonObject translator: JsonObject {
                     property string engine: "auto" // Run `trans -list-engines` for available engines. auto should use google
                     property string targetLanguage: "auto" // Run `trans -list-all` for available languages
@@ -576,7 +576,7 @@ Singleton {
                 property bool orderBottomUp: false
                 property bool centerIcons: true
                 property string position: "top" // Options: top, center, bottom
-                property bool showOnlyOnFocusedMonitor: false
+                property bool showOnlyOnFocusedMonitor: true
             }
 
             property JsonObject regionSelector: JsonObject {
@@ -661,7 +661,7 @@ Singleton {
                     }
                 }
                 property JsonObject cornerOpen: JsonObject {
-                    property bool enable: true
+                    property bool enable: false
                     property bool bottom: false
                     property bool valueScroll: true
                     property bool clickless: false
