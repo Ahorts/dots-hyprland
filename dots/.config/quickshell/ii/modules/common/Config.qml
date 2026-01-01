@@ -576,6 +576,7 @@ Singleton {
                 property bool orderBottomUp: false
                 property bool centerIcons: true
                 property string position: "top" // Options: top, center, bottom
+                property int centerTopPaddingRatio: 3
                 property bool showOnlyOnFocusedMonitor: true
             }
 
