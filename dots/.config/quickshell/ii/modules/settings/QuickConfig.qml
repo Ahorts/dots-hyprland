@@ -160,49 +160,13 @@ ContentPage {
                     ColumnLayout {
                         id: contentLayout
                         width: flickable.width
-                        RowLayout {
-                            ColorPreviewButton {
-                                colorScheme: "auto"
-                                colorSchemeDisplayName: Translation.tr("Auto")
-                            }
-                            ColorPreviewButton {
-                                colorScheme: "scheme-content"
-                                colorSchemeDisplayName: Translation.tr("Content")
-                            }
-                            ColorPreviewButton {
-                                colorScheme: "scheme-tonal-spot"
-                                colorSchemeDisplayName: Translation.tr("Tonal Spot")
-                            }
+                        
+                        ColorPreviewGrid {} // default wallpaper color schemes
+                        
+                        ColorPreviewGrid {  // custom color schemes
+                            customTheme: true
+                            colorSchemes: Config.options.appearance.customColorSchemes
                         }
-                        RowLayout {
-                            ColorPreviewButton {
-                                colorScheme: "scheme-fidelity"
-                                colorSchemeDisplayName: Translation.tr("Fidelity")
-                            }
-                            ColorPreviewButton {
-                                colorScheme: "scheme-fruit-salad"
-                                colorSchemeDisplayName: Translation.tr("Fruit Salad")
-                            }
-                            ColorPreviewButton {
-                                colorScheme: "scheme-expressive"
-                                colorSchemeDisplayName: Translation.tr("Expressive")
-                            }
-                        }
-                        RowLayout {
-                            ColorPreviewButton {
-                                colorScheme: "scheme-rainbow"
-                                colorSchemeDisplayName: Translation.tr("Rainbow")
-                            }
-                            ColorPreviewButton {
-                                colorScheme: "scheme-neutral"
-                                colorSchemeDisplayName: Translation.tr("Neutral")
-                            }
-                            ColorPreviewButton {
-                                colorScheme: "scheme-monochrome"
-                                colorSchemeDisplayName: Translation.tr("Monochrome")
-                            }
-                        }
-                    
                     }
                 }
             }
