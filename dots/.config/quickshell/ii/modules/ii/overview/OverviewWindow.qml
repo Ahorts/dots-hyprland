@@ -88,12 +88,13 @@ Item { // Window
     Behavior on y {
         animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
     }
-    Behavior on width {
+    //NOTE: disabled these to prevent annoying startup animation, TODO: find the cause of weird startup animation, then uncomment these
+    /* Behavior on width {
         animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
     }
     Behavior on height {
         animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
-    }
+    } */
 
     ScreencopyView {
         id: windowPreview
