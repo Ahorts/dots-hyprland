@@ -171,6 +171,7 @@ Item {
             implicitHeight: workspaceColumnLayout.implicitHeight
 
             Repeater { // Window repeater
+                id: windowRepeater
                 model: ScriptModel {
                     values: {
                         // console.log(JSON.stringify(ToplevelManager.toplevels.values.map(t => t), null, 2))
@@ -184,6 +185,7 @@ Item {
                 }
                 delegate: OverviewWindow {
                     id: window
+                    required property int index
                     required property var modelData
                     property int monitorId: windowData?.monitor
                     property var monitor: HyprlandData.monitors.find(m => m.id == monitorId)
@@ -193,6 +195,39 @@ Item {
                     scale: root.scale
                     widgetMonitor: HyprlandData.monitors.find(m => m.id == root.monitor.id)
                     windowData: windowByAddress[address]
+
+                    property int wsId: windowData?.workspace?.id
+
+                    property var wsWindowsSorted: {
+                        const arr = []
+                        const all = windowRepeater.model.values
+                        for (let i = 0; i < all.length; i++) {
+                            const t = all[i]
+                            const addr = `0x${t.HyprlandToplevel.address}`
+                            const w = windowByAddress[addr]
+                            if (w?.workspace?.id === wsId)
+                                arr.push(w)
+                        }
+
+                        arr.sort((a, b) => a.at[0] - b.at[0])
+                        return arr
+                    }
+
+                    property int wsIndex: {
+                        for (let i = 0; i < wsWindowsSorted.length; i++) {
+                            if (wsWindowsSorted[i].address === windowData.address)
+                                return i
+                        }
+                        return 0
+                    }
+
+                    property int wsCount: wsWindowsSorted.length || 1
+
+                    scrollWidth: root.workspaceImplicitWidth / wsCount
+                    scrollHeight: root.workspaceImplicitHeight
+
+                    scrollX: xOffset + scrollWidth * wsIndex
+                    scrollY: yOffset
 
                     property bool atInitPosition: (initX == x && initY == y)
 

@@ -778,6 +778,20 @@ ContentPage {
                 ]
             }
         }
+
+        ContentSubsection {
+            title: Translation.tr("Hyprscrolling overview (highly experimental)")
+            tooltip: Translation.tr("Changes the overview window placement and sizes to work with hyprscrolling plugin. Reordering windowses DOES NOT WORK! Just for better visuals.")
+
+            ConfigSwitch {
+                buttonIcon: "check"
+                text: Translation.tr("Enable")
+                checked: Config.options.overview.enableScrollingOverview
+                onCheckedChanged: {
+                    Config.options.overview.enableScrollingOverview = checked;
+                }
+            }
+        }
     }
 
     ContentSection {
