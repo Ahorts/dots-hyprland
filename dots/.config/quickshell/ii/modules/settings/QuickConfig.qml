@@ -26,13 +26,17 @@ ContentPage {
     component SmallLightDarkPreferenceButton: RippleButton {
         id: smallLightDarkPreferenceButton
         required property bool dark
-        property color colText: toggled ? Appearance.colors.colOnPrimary : Appearance.colors.colOnLayer2
+        property color colText: enabled ? toggled ? Appearance.colors.colOnPrimary : Appearance.colors.colOnLayer2 : Appearance.colors.colOnLayer3
         padding: 5
         Layout.fillWidth: true
         toggled: Appearance.m3colors.darkmode === dark
         colBackground: Appearance.colors.colLayer2
         onClicked: {
             Quickshell.execDetached(["bash", "-c", `${Directories.wallpaperSwitchScriptPath} --mode ${dark ? "dark" : "light"} --noswitch`]);
+        }
+        StyledToolTip {
+            extraVisibleCondition: !smallLightDarkPreferenceButton.enabled
+            text: Translation.tr("Custom color scheme has been selected")
         }
         contentItem: Item {
             anchors.centerIn: parent
@@ -141,10 +145,12 @@ ContentPage {
                     SmallLightDarkPreferenceButton {
                         Layout.preferredHeight: 60
                         dark: false
+                        enabled: Config.options.appearance.palette.type.startsWith("scheme")
                     }
                     SmallLightDarkPreferenceButton {
                         Layout.preferredHeight: 60
                         dark: true
+                        enabled: Config.options.appearance.palette.type.startsWith("scheme")
                     }
                 }
                 
