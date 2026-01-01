@@ -5,6 +5,11 @@ import qs.modules.common
 
 /*
     Almost all of the custom color schemes (latte.json, samurai.json etc.) are gotten from https://github.com/snowarch/quickshell-ii-niri/blob/main/modules/common/ThemePresets.qml
+
+    To add a new custom color scheme:
+
+    1. Get a proper color scheme (in the same format as the default ones) and put in to ~/.config/quickshell/ii/defaults (make sure to backup your theme files yourself, they may get overwritten)
+    2. Add the exact name of the json file to the config.json - appearance - customColorSchemes
 */
 
 GridLayout {
