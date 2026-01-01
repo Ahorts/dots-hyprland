@@ -29,7 +29,6 @@ Item {
     property real workspaceImplicitWidth: (monitorData?.transform % 2 === 1) ? 
         ((monitor.height - monitorData?.reserved[0] - monitorData?.reserved[2]) * root.scale / monitor.scale) :
         ((monitor.width - monitorData?.reserved[0] - monitorData?.reserved[2]) * root.scale / monitor.scale)
-    //property real workspaceImplicitWidth: computedWorkspaceWidth
     property real workspaceImplicitHeight: (monitorData?.transform % 2 === 1) ? 
         ((monitor.width - monitorData?.reserved[1] - monitorData?.reserved[3]) * root.scale / monitor.scale) :
         ((monitor.height - monitorData?.reserved[1] - monitorData?.reserved[3]) * root.scale / monitor.scale)
@@ -42,7 +41,7 @@ Item {
     property int workspaceZ: 0
     property int windowZ: 1
     property int windowDraggingZ: 99999
-    property real workspaceSpacing: 20
+    property real workspaceSpacing: 10
 
     property int draggingFromWorkspace: -1
     property int draggingTargetWorkspace: -1
@@ -258,7 +257,8 @@ Item {
                     }
 
                     Component.onCompleted: {
-                        if (!hyprscrollingEnabled) return
+                        if (!hyprscrollingEnabled || workspaceTotalWindowWidth <= 0) return
+                        console.log(workspaceTotalWindowWidth)
                         root.workspaceImplicitWidth = Math.min(workspaceTotalWindowWidth,750) // a config option for 750 maybe?
                     }
 
