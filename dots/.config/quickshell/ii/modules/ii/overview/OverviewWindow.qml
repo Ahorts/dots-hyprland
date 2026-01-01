@@ -62,7 +62,7 @@ Item { // Window
     x: hyprscrollingEnabled ? scrollX : initX
     y: hyprscrollingEnabled ? scrollY : initY
     width: hyprscrollingEnabled ? scrollWidth : targetWindowWidth
-    height: hyprscrollingEnabled ? scrollHeight : targetWindowHeight
+    height: !windowData.floating && hyprscrollingEnabled ? scrollHeight : targetWindowHeight
     opacity: windowData.monitor == widgetMonitorId ? 1 : 0.4
 
     property real topLeftRadius

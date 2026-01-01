@@ -196,22 +196,30 @@ Item {
                     widgetMonitor: HyprlandData.monitors.find(m => m.id == root.monitor.id)
                     windowData: windowByAddress[address]
 
+                    property bool hyprscrollingEnabled: Config.options.overview.enableScrollingOverview 
+
                     property int wsId: windowData?.workspace?.id
 
                     property var wsWindowsSorted: {
                         const arr = []
                         const all = windowRepeater.model.values
+
                         for (let i = 0; i < all.length; i++) {
                             const t = all[i]
                             const addr = `0x${t.HyprlandToplevel.address}`
                             const w = windowByAddress[addr]
-                            if (w?.workspace?.id === wsId)
-                                arr.push(w)
+
+                            if (!w) continue
+                            if (w.floating) continue
+                            if (w.workspace?.id !== wsId) continue
+
+                            arr.push(w)
                         }
 
                         arr.sort((a, b) => a.at[0] - b.at[0])
                         return arr
                     }
+
 
                     property int wsIndex: {
                         for (let i = 0; i < wsWindowsSorted.length; i++) {
@@ -248,6 +256,7 @@ Item {
                     }
 
                     Component.onCompleted: {
+                        if (!hyprscrollingEnabled) return
                         root.workspaceImplicitWidth = Math.min(workspaceTotalWindowWidth,750)
                     }
 
@@ -256,8 +265,8 @@ Item {
                     scrollWidth: root.workspaceImplicitWidth * windowWidthRatio
                     scrollHeight: root.workspaceImplicitHeight
 
-                    scrollX: calculateXPos()
-                    scrollY: yOffset
+                    scrollX: windowData.floating ? xOffset + xWithinWorkspaceWidget : calculateXPos()
+                    scrollY: windowData.floating ? yOffset + yWithinWorkspaceWidget : yOffset
 
                     property bool atInitPosition: (initX == x && initY == y)
 
