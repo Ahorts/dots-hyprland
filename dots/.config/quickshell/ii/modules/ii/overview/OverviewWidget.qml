@@ -171,6 +171,7 @@ Item {
             implicitHeight: workspaceColumnLayout.implicitHeight
 
             Repeater { // Window repeater
+                id: windowRepeater
                 model: ScriptModel {
                     values: {
                         // console.log(JSON.stringify(ToplevelManager.toplevels.values.map(t => t), null, 2))
@@ -184,6 +185,7 @@ Item {
                 }
                 delegate: OverviewWindow {
                     id: window
+                    required property int index
                     required property var modelData
                     property int monitorId: windowData?.monitor
                     property var monitor: HyprlandData.monitors.find(m => m.id == monitorId)
@@ -193,6 +195,69 @@ Item {
                     scale: root.scale
                     widgetMonitor: HyprlandData.monitors.find(m => m.id == root.monitor.id)
                     windowData: windowByAddress[address]
+
+                    property int wsId: windowData?.workspace?.id
+
+                    property var wsWindowsSorted: {
+                        const arr = []
+                        const all = windowRepeater.model.values
+                        for (let i = 0; i < all.length; i++) {
+                            const t = all[i]
+                            const addr = `0x${t.HyprlandToplevel.address}`
+                            const w = windowByAddress[addr]
+                            if (w?.workspace?.id === wsId)
+                                arr.push(w)
+                        }
+
+                        arr.sort((a, b) => a.at[0] - b.at[0])
+                        return arr
+                    }
+
+                    property int wsIndex: {
+                        for (let i = 0; i < wsWindowsSorted.length; i++) {
+                            if (wsWindowsSorted[i].address === windowData.address)
+                                return i
+                        }
+                        return 0
+                    }
+
+                    property real workspaceTotalWindowWidth: {
+                        let sum = 0
+                        for (let i = 0; i < wsWindowsSorted.length; i++) {
+                            const w = wsWindowsSorted[i]
+                            sum += w.size?.[0] ?? 0
+                        }
+                        return sum * root.scale
+                    }
+
+                    property real windowWidthRatio: {
+                        if (!windowData?.size?.[0] || workspaceTotalWindowWidth === 0)
+                            return 1 / wsCount
+
+                        return (windowData.size[0] * root.scale) / workspaceTotalWindowWidth
+                    }
+
+                    function calculateXPos() {
+                        let x = xOffset
+                        for (let i = 0; i < wsIndex; i++) {
+                            const w = wsWindowsSorted[i]
+                            const wRatio = (w.size?.[0] ?? 0) * root.scale / workspaceTotalWindowWidth
+                            x += root.workspaceImplicitWidth * wRatio
+                        }
+                        return x
+                    }
+
+                    Component.onCompleted: {
+                        root.workspaceImplicitWidth = Math.min(workspaceTotalWindowWidth,750)
+                    }
+
+                    property int wsCount: wsWindowsSorted.length || 1
+
+                    scrollWidth: root.workspaceImplicitWidth * windowWidthRatio
+                    scrollHeight: root.workspaceImplicitHeight
+
+                    scrollX: calculateXPos()
+                    scrollY: yOffset
 
                     property bool atInitPosition: (initX == x && initY == y)
 
@@ -233,8 +298,8 @@ Item {
                         repeat: false
                         running: false
                         onTriggered: {
-                            window.x = Math.round(xWithinWorkspaceWidget + xOffset)
-                            window.y = Math.round(yWithinWorkspaceWidget + yOffset)
+                            window.x = calculateXPos()
+                            window.y = yOffset
                         }
                     }
 

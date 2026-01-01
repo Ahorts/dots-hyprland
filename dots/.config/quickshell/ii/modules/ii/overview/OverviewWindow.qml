@@ -53,10 +53,16 @@ Item { // Window
 
     property bool indicateXWayland: windowData?.xwayland ?? false
 
-    x: initX
-    y: initY
-    width: targetWindowWidth
-    height: targetWindowHeight
+    property bool hyprscrollingEnabled: Config.options.overview.enableScrollingOverview
+    property int scrollWidth
+    property int scrollHeight
+    property int scrollX
+    property int scrollY
+
+    x: hyprscrollingEnabled ? scrollX : initX
+    y: hyprscrollingEnabled ? scrollY : initY
+    width: hyprscrollingEnabled ? scrollWidth : targetWindowWidth
+    height: hyprscrollingEnabled ? scrollHeight : targetWindowHeight
     opacity: windowData.monitor == widgetMonitorId ? 1 : 0.4
 
     property real topLeftRadius
@@ -82,12 +88,13 @@ Item { // Window
     Behavior on y {
         animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
     }
-    Behavior on width {
+    //NOTE: disabled these to prevent annoying startup animation, TODO: find the cause of weird startup animation, then uncomment these
+    /* Behavior on width {
         animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
     }
     Behavior on height {
         animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
-    }
+    } */
 
     ScreencopyView {
         id: windowPreview
