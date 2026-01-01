@@ -39,7 +39,7 @@ However there can (and will) be bugs **so don't expect stability here**. Use the
 - Bar rework  **_// security and timer indicators, custom ordering and more.._**
 - Background media widget
 - Overview widget position settings
-- Settings color scheme previes
+- Settings color scheme previews **_// custom color schemes_**
 - Cookie clock improvements
 - File search functionality in launcher
   
