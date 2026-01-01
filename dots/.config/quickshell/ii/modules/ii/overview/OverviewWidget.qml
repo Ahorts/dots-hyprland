@@ -29,18 +29,20 @@ Item {
     property real workspaceImplicitWidth: (monitorData?.transform % 2 === 1) ? 
         ((monitor.height - monitorData?.reserved[0] - monitorData?.reserved[2]) * root.scale / monitor.scale) :
         ((monitor.width - monitorData?.reserved[0] - monitorData?.reserved[2]) * root.scale / monitor.scale)
+    //property real workspaceImplicitWidth: computedWorkspaceWidth
     property real workspaceImplicitHeight: (monitorData?.transform % 2 === 1) ? 
         ((monitor.width - monitorData?.reserved[1] - monitorData?.reserved[3]) * root.scale / monitor.scale) :
         ((monitor.height - monitorData?.reserved[1] - monitorData?.reserved[3]) * root.scale / monitor.scale)
     property real largeWorkspaceRadius: Appearance.rounding.large
     property real smallWorkspaceRadius: Appearance.rounding.verysmall
 
+
     property real workspaceNumberMargin: 80
     property real workspaceNumberSize: 250 * monitor.scale
     property int workspaceZ: 0
     property int windowZ: 1
     property int windowDraggingZ: 99999
-    property real workspaceSpacing: 5
+    property real workspaceSpacing: 20
 
     property int draggingFromWorkspace: -1
     property int draggingTargetWorkspace: -1
@@ -257,7 +259,7 @@ Item {
 
                     Component.onCompleted: {
                         if (!hyprscrollingEnabled) return
-                        root.workspaceImplicitWidth = Math.min(workspaceTotalWindowWidth,750)
+                        root.workspaceImplicitWidth = Math.min(workspaceTotalWindowWidth,750) // a config option for 750 maybe?
                     }
 
                     property int wsCount: wsWindowsSorted.length || 1
@@ -307,6 +309,7 @@ Item {
                         repeat: false
                         running: false
                         onTriggered: {
+                            if (windowData?.floating) return
                             window.x = calculateXPos()
                             window.y = yOffset
                         }
@@ -367,7 +370,7 @@ Item {
                         StyledToolTip {
                             extraVisibleCondition: false
                             alternativeVisibleCondition: dragArea.containsMouse && !window.Drag.active
-                            text: `${windowData?.title}\n[${windowData?.class}] ${windowData?.xwayland ? "[XWayland] " : ""}`
+                            text: `${windowData?.title}${windowData?.xwayland ? "[XWayland] " : ""}`
                         }
                     }
                 }

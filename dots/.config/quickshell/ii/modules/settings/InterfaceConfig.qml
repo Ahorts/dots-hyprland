@@ -780,8 +780,8 @@ ContentPage {
         }
 
         ContentSubsection {
-            title: Translation.tr("Hyprscrolling overview (highly experimental)")
-            tooltip: Translation.tr("Changes the overview window placement and sizes to work with hyprscrolling plugin. Reordering windowses DOES NOT WORK! Just for better visuals.")
+            title: Translation.tr("Hyprscrolling overview")
+            tooltip: Translation.tr("Changes the overview window placement and sizes to work with hyprscrolling plugin | Using with 1 column is recommended")
 
             ConfigSwitch {
                 buttonIcon: "check"
