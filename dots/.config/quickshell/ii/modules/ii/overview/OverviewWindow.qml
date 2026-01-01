@@ -61,8 +61,8 @@ Item { // Window
 
     x: hyprscrollingEnabled ? scrollX : initX
     y: hyprscrollingEnabled ? scrollY : initY
-    width: hyprscrollingEnabled ? scrollWidth : targetWindowWidth
-    height: hyprscrollingEnabled ? scrollHeight : targetWindowHeight
+    width: !windowData.floating && hyprscrollingEnabled ? scrollWidth : targetWindowWidth
+    height: !windowData.floating && hyprscrollingEnabled ? scrollHeight : targetWindowHeight
     opacity: windowData.monitor == widgetMonitorId ? 1 : 0.4
 
     property real topLeftRadius
@@ -89,6 +89,7 @@ Item { // Window
         animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
     }
     //NOTE: disabled these to prevent annoying startup animation, TODO: find the cause of weird startup animation, then uncomment these
+    //NOTE: and there is also hyprland's default window animations when you resize them
     /* Behavior on width {
         animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
     }
