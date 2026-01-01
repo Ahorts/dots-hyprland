@@ -420,6 +420,7 @@ Singleton {
                 property real columns: 5
                 property bool centerIcons: true
                 property string position: "top" // Options: top, center, bottom
+                property int centerTopPaddingRatio: 3
             }
 
             property JsonObject regionSelector: JsonObject {

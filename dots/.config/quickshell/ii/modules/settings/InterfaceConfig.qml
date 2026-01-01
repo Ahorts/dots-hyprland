@@ -725,6 +725,18 @@ ContentPage {
                 ]
             }
         }
+
+        ConfigSpinBox {
+            icon: "border_top"
+            text: Translation.tr("Center top padding ration")
+            value: Config.options.overview.centerTopPaddingRatio
+            from: 1
+            to: 10
+            stepSize: 1
+            onValueChanged: {
+                Config.options.overview.centerTopPaddingRatio = value;
+            }
+        }
         
         ConfigSwitch {
             buttonIcon: "center_focus_strong"

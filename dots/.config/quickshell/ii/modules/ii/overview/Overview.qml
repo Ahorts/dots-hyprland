@@ -93,7 +93,7 @@ Scope {
                 visible: GlobalStates.overviewOpen
                 anchors {
                     horizontalCenter: parent.horizontalCenter
-                    margins: overviewScope.position == "center" ? root.implicitHeight / 1.2 : 0
+                    margins: overviewScope.position == "center" ? root.implicitHeight / Config.options.overview.centerTopPaddingRatio : 0
                 }
                 columns: 1
 
