@@ -27,6 +27,8 @@ alias q 'qs -c ii'
 alias vim nvim
 alias pn=pnpm
 
+source ~/.config/fish/auto-Hypr.fish
+
 # function fish_prompt
 #   set_color cyan; echo (pwd)
 #   set_color green; echo '> '
