@@ -3,6 +3,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Hyprland
 import qs.modules.ii.onScreenDisplay
+import qs.modules.common.widgets
 
 OsdValueIndicator {
     id: root
@@ -14,4 +15,5 @@ OsdValueIndicator {
     scaleIcon: true
     name: Translation.tr("Brightness")
     value: root.brightnessMonitor?.brightness ?? 50
+    shape: MaterialShape.Shape.Ghostish
 }

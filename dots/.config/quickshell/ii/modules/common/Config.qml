@@ -392,7 +392,7 @@ Singleton {
             }
 
             property JsonObject osd: JsonObject {
-                property int timeout: 1000
+                property int timeout: 2500
             }
 
             property JsonObject osk: JsonObject {
