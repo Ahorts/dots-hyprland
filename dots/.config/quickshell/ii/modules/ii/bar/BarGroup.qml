@@ -12,7 +12,8 @@ Item {
     property var startRadius // left - top
     property var endRadius // right - bottom
 
-    property color colBackground: Appearance.colors.colLayer2
+    property bool accentComponentBackground: Config.options.bar.componentBackgroundStyle == 1
+    property color colBackground: accentComponentBackground ? Appearance.m3colors.m3surfaceContainerHighest : Appearance.colors.colLayer2
 
     Rectangle {
         id: background

@@ -11,7 +11,7 @@ import qs.modules.common.widgets
 Scope {
     id: bar
     
-    property bool showBarBackground: Config.options.bar.backgroundStyle == 1
+    property bool showBarBackground: Config.options.bar.barBackgroundStyle == 1
 
     Variants {
         // For each monitor

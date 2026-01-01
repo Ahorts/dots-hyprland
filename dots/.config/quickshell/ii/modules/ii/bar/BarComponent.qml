@@ -17,6 +17,8 @@ Item {
     property var originalIndex: index
     property bool vertical: false
 
+    readonly property int backgroundStyle: Config.options.bar.componentBackgroundStyle
+
     implicitWidth: wrapper.implicitWidth
     implicitHeight: wrapper.implicitHeight
 
@@ -79,7 +81,7 @@ Item {
         
         startRadius: rootItem.startRadius
         endRadius: rootItem.endRadius
-        colBackground: itemLoader.item.colBackground ?? Appearance.colors.colLayer2
+        colBackground: itemLoader.item.colBackground ?? backgroundStyle == 0 ? Appearance.colors.colLayer2 : Appearance.m3colors.m3surfaceContainerHighest
 
         items: Loader {
             id: itemLoader
