@@ -11,9 +11,17 @@ import qs.modules.common.functions
 
 RippleButton {
     id: root
+    //TODO: find a better way to represent colors instead of primary/secondary/tertiary
+
+    readonly property string themeDirectory: Directories.defaultThemes
 
     property string colorScheme: "scheme-auto"
     property string colorSchemeDisplayName: ""
+
+    property bool customTheme: false
+    readonly property string customThemeFilePath: themeDirectory + "/" + colorScheme + ".json"
+    readonly property string customThemeCommand: ` jq -r '.primary, .secondary, .tertiary' ${customThemeFilePath}`  
+
     property color accentColor
     readonly property bool toggled: Config.options.appearance.palette.type === root.colorScheme
 
@@ -41,17 +49,46 @@ RippleButton {
     implicitHeight: 64
 
     onClicked: {
-        Config.options.appearance.palette.type = root.colorScheme;
-        Quickshell.execDetached(["bash", "-c", `${Directories.wallpaperSwitchScriptPath} --noswitch`]);
+        if (customTheme) {
+            Config.options.appearance.palette.type = root.colorScheme;
+            Quickshell.execDetached(["bash", "-c", `cp ${root.customThemeFilePath} ${Directories.generatedMaterialThemePath}`]);
+        } else {
+            Config.options.appearance.palette.type = root.colorScheme;
+            Quickshell.execDetached(["bash", "-c", `${Directories.wallpaperSwitchScriptPath} --noswitch`]);
+        }
     }
 
-    Component.onCompleted: colorFetchProc.running = true;
-    onWallpaperPathChanged: colorFetchProc.running = true;
+    Component.onCompleted: fetchColors();
+    onWallpaperPathChanged: fetchColors();
+
+    function fetchColors() {
+        if (customTheme) {
+            customColorFetchProc.running = true;
+        } else {
+            colorFetchProc.running = true;
+        }
+    }
 
     Process {
         id: colorFetchProc
         running: false
         command: [ "bash", "-c", root.fullCommand ]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                const colors = this.text.split("\n")
+                root.primaryColor   = colors[0]?.trim()
+                root.secondaryColor = colors[1]?.trim()
+                root.tertiaryColor  = colors[2]?.trim()
+                root.loaded = true;
+                myCanvas.requestPaint()
+            }
+        }
+    }
+
+    Process {
+        id: customColorFetchProc
+        running: false
+        command: [ "bash", "-c", root.customThemeCommand ]
         stdout: StdioCollector {
             onStreamFinished: {
                 const colors = this.text.split("\n")
