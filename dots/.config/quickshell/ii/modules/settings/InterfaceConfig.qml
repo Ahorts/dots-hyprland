@@ -737,7 +737,7 @@ ContentPage {
 
         ConfigSpinBox {
             icon: "border_top"
-            text: Translation.tr("Center top padding ration")
+            text: Translation.tr("Center top padding ratio")
             value: Config.options.overview.centerTopPaddingRatio
             from: 1
             to: 10
