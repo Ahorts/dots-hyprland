@@ -208,7 +208,6 @@ Item {
 
                     property bool hyprscrollingEnabled: Config.options.overview.enableScrollingOverview 
                     property int maxWorkspaceWidth: Config.options.overview.maxWorkspaceWidth
-                    property bool isActiveWindow: window.address == root.activeWindow?.address
 
                     property int wsId: windowData?.workspace?.id
 
@@ -247,7 +246,10 @@ Item {
                             const w = wsWindowsSorted[i]
                             sum += w.size?.[0] ?? 0
                         }
-                        return sum * root.scale
+                        let resultValue = sum * root.scale
+                        if (!hyprscrollingEnabled || resultValue <= 0) return 0
+                        root.workspaceImplicitWidth = Math.min(resultValue,maxWorkspaceWidth)
+                        return resultValue
                     }
 
                     property real windowWidthRatio: {
@@ -275,17 +277,17 @@ Item {
                     scrollX: windowData.floating ? xOffset + xWithinWorkspaceWidget : calculateXPos()
                     scrollY: windowData.floating ? yOffset + yWithinWorkspaceWidget : yOffset
 
-                    Component.onCompleted: {
-                        if (!hyprscrollingEnabled || workspaceTotalWindowWidth <= 0) return
-                        root.workspaceImplicitWidth = Math.min(workspaceTotalWindowWidth,maxWorkspaceWidth)
-                        if (!isActiveWindow) return
-                        root.activeWindowData = {
-                            x: scrollX,
-                            y: scrollY,
-                            width: scrollWidth,
-                            height: scrollHeight
+                    property bool isActiveWindow: { // we have to set root.activeWindowData here instead of component.oncompleted
+                        if (window.address == root.activeWindow?.address) {
+                            root.activeWindowData = {
+                                x: scrollX,
+                                y: scrollY,
+                                width: scrollWidth,
+                                height: scrollHeight
+                            }
+                            return true
                         }
-                        //console.log(JSON.stringify(root.activeWindowData))
+                        return false
                     }
 
                     property bool atInitPosition: (initX == x && initY == y)
