@@ -64,6 +64,12 @@ And copy `dots/.config/quickshell/ii` folder to your `.config/quickshell/ii` fol
 
 - Extended calendar functionality from this PR: https://github.com/end-4/dots-hyprland/pull/1887 _**// in sync with google calendar, tweaked**_
 
+<div align="center">
+    <h2>• hyprscrolling implementation •</h2>
+</div>
+
+You have to use my hyprscrolling plugin inorder to make shell communicate with plugin.
+Follow the documentation on [my hyprscrolling plugin](https://github.com/vaguesyntax/hyprscrolling) to install and configure it.
 
 <div align="center">
     <h2>• credits •</h2>
