@@ -378,8 +378,18 @@ Item {
                             if (!windowData) return;
 
                             if (event.button === Qt.LeftButton) {
-                                GlobalStates.overviewOpen = false
-                                Hyprland.dispatch(`focuswindow address:${windowData.address}`)
+                                const sameWorkspaceWithTarget = windowData?.workspace.id === root.activeWindow?.workspace?.id
+
+                                if (sameWorkspaceWithTarget) {
+                                    Hyprland.dispatch(`layoutmsg focusaddr ${windowData.address}`)
+                                } else {
+                                    Hyprland.dispatch(`focuswindow address:${windowData.address}`)
+                                    Qt.callLater(() => {
+                                        Hyprland.dispatch(`layoutmsg focusaddr ${windowData.address}`);
+                                        GlobalStates.overviewOpen = false;
+                                    });
+
+                                }
                                 event.accepted = true
                             } else if (event.button === Qt.MiddleButton) {
                                 Hyprland.dispatch(`closewindow address:${windowData.address}`)
