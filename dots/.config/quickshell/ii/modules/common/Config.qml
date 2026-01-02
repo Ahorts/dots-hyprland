@@ -570,14 +570,14 @@ Singleton {
             property JsonObject overview: JsonObject {
                 property bool enable: true
                 property real scale: 0.18 // Relative to screen size
-                property real rows: 2
-                property real columns: 5
+                property real rows: 3
+                property real columns: 1
                 property bool orderRightLeft: false
                 property bool orderBottomUp: false
                 property bool centerIcons: true
-                property bool enableScrollingOverview: false // changes the overview window placement and sizes to work with hyprscrolling plugin. Reordering windowses DOES NOT WORK!. Just for better visuals 
-                property int maxWorkspaceWidth: 800
-                property string position: "top" // Options: top, center, bottom
+                property bool enableScrollingOverview: true // changes the overview window placement and sizes to work with hyprscrolling plugin. Reordering windowses DOES NOT WORK!. Just for better visuals 
+                property int maxWorkspaceWidth: 1200
+                property string position: "center" // Options: top, center, bottom
                 property int centerTopPaddingRatio: 3
                 property bool showOnlyOnFocusedMonitor: true
             }
