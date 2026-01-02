@@ -18,12 +18,26 @@
 
 <div align="center">
     <h2>• warning •</h2>
+</div>
+
 These dots are not mine! You can access original dots from : https://github.com/end-4/dots-hyprland. 
 
 This repo contains my PRs and tweaks to original dots. (mostly up to date with original dots). This is my daily driver when I am not coding.
 However there can (and will) be bugs **so don't expect stability here**. Use these dots if you know what you are doing.
 
+
+
+<div align="center">
+    <h2>• installation •</h2>
 </div>
+
+**Install the [original dots](https://github.com/end-4/dots-hyprland)** and clone the repo like this after that:
+ 
+```
+git clone https://github.com/vaguesyntax/ii-vynx.git --recurse-submodules
+```
+
+And copy `dots/.config/quickshell/ii` folder to your `.config/quickshell/ii` folder.
 
 <div align="center">
     <h2>• prs •</h2>
@@ -42,6 +56,7 @@ However there can (and will) be bugs **so don't expect stability here**. Use the
 - Settings color scheme previews **_// custom color schemes_**
 - Cookie clock improvements
 - File search functionality in launcher
+- Overview changes for [hyprscrolling](https://github.com/vaguesyntax/hyprscrolling) plugin
   
 <div align="center">
     <h2>• other features •</h2>
@@ -56,6 +71,8 @@ However there can (and will) be bugs **so don't expect stability here**. Use the
 
 - [@end-4](https://github.com/end-4) ofc
 - screenshot wallpaper from [exo](https://github.com/debuggyo/Exo)
+
+**Since you scrolled all the way down here, can I get your star? ⭐**
 
 
 
