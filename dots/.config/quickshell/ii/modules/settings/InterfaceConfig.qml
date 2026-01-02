@@ -791,6 +791,19 @@ ContentPage {
                     Config.options.overview.enableScrollingOverview = checked;
                 }
             }
+            ConfigSpinBox {
+                enabled: Config.options.overview.enableScrollingOverview
+                icon: "width"
+                text: Translation.tr("Max workspace width")
+                value: Config.options.overview.maxWorkspaceWidth
+                from: 100
+                to: 1900
+                stepSize: 100
+                onValueChanged: {
+                    Config.options.overview.maxWorkspaceWidth = value;
+                }
+            }
+            
         }
     }
 
