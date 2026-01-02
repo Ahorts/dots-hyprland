@@ -51,6 +51,15 @@ Item {
 
     property Component windowComponent: OverviewWindow {}
     property list<OverviewWindow> windowWidgets: []
+
+    property var activeWindow: windows.find(w =>
+        w.focusHistoryID === 0 &&
+        w.workspace?.id === monitor.activeWorkspace?.id &&
+        w.monitor === monitor.id
+    )
+
+    property var activeWindowData
+
     
     function getWsRow(ws) {
         // 1-indexed workspace, 0-indexed row
@@ -199,6 +208,7 @@ Item {
 
                     property bool hyprscrollingEnabled: Config.options.overview.enableScrollingOverview 
                     property int maxWorkspaceWidth: Config.options.overview.maxWorkspaceWidth
+                    property bool isActiveWindow: window.address == root.activeWindow?.address
 
                     property int wsId: windowData?.workspace?.id
 
@@ -257,11 +267,6 @@ Item {
                         return x
                     }
 
-                    Component.onCompleted: {
-                        if (!hyprscrollingEnabled || workspaceTotalWindowWidth <= 0) return
-                        root.workspaceImplicitWidth = Math.min(workspaceTotalWindowWidth,maxWorkspaceWidth)
-                    }
-
                     property int wsCount: wsWindowsSorted.length || 1
 
                     scrollWidth: root.workspaceImplicitWidth * windowWidthRatio
@@ -269,6 +274,19 @@ Item {
 
                     scrollX: windowData.floating ? xOffset + xWithinWorkspaceWidget : calculateXPos()
                     scrollY: windowData.floating ? yOffset + yWithinWorkspaceWidget : yOffset
+
+                    Component.onCompleted: {
+                        if (!hyprscrollingEnabled || workspaceTotalWindowWidth <= 0) return
+                        root.workspaceImplicitWidth = Math.min(workspaceTotalWindowWidth,maxWorkspaceWidth)
+                        if (!isActiveWindow) return
+                        root.activeWindowData = {
+                            x: scrollX,
+                            y: scrollY,
+                            width: scrollWidth,
+                            height: scrollHeight
+                        }
+                        //console.log(JSON.stringify(root.activeWindowData))
+                    }
 
                     property bool atInitPosition: (initX == x && initY == y)
 
@@ -380,11 +398,15 @@ Item {
                 id: focusedWorkspaceIndicator
                 property int rowIndex: getWsRow(monitor.activeWorkspace?.id)
                 property int colIndex: getWsColumn(monitor.activeWorkspace?.id)
-                x: (root.workspaceImplicitWidth + workspaceSpacing) * colIndex
-                y: (root.workspaceImplicitHeight + workspaceSpacing) * rowIndex
-                z: root.windowZ
-                width: root.workspaceImplicitWidth
-                height: root.workspaceImplicitHeight
+                property bool hyprscrollingEnabled: Config.options.overview.enableScrollingOverview
+
+                z: 999
+
+                x: hyprscrollingEnabled ? root.activeWindowData?.x ?? 0 : (root.workspaceImplicitWidth + workspaceSpacing) * colIndex
+                y: hyprscrollingEnabled ? root.activeWindowData?.y ?? 0 : (root.workspaceImplicitHeight + workspaceSpacing) * rowIndex
+                width: hyprscrollingEnabled ? root.activeWindowData?.width ?? 0 : root.workspaceImplicitWidth + 4
+                height: hyprscrollingEnabled ? root.activeWindowData?.height ?? 0 : root.workspaceImplicitHeight
+
                 color: "transparent"
                 property bool workspaceAtLeft: colIndex === 0
                 property bool workspaceAtRight: colIndex === Config.options.overview.columns - 1
