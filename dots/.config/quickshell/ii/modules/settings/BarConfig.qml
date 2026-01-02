@@ -463,6 +463,18 @@ ContentPage {
                 Config.options.bar.workspaces.monochromeIcons = checked;
             }
         }
+        
+        ConfigSwitch {
+            buttonIcon: "grid_3x3"
+            text: Translation.tr('Use workspace map')
+            checked: Config.options.bar.workspaces.useWorkspaceMap
+            onCheckedChanged: {
+                Config.options.bar.workspaces.useWorkspaceMap = checked;
+            }
+            StyledToolTip {
+                text: Translation.tr('Edit the workspace start index for monitors in the config file')
+            }
+        }
 
         ConfigSpinBox {
             icon: "view_column"
@@ -485,18 +497,6 @@ ContentPage {
             stepSize: 50
             onValueChanged: {
                 Config.options.bar.workspaces.showNumberDelay = value;
-            }
-        }
-        ContentSubsection {
-            title: Translation.tr("Workspace map")
-            tooltip: Translation.tr("Edit the workspace map in config file")
-            ConfigSwitch {
-                buttonIcon: "grid_3x3"
-                text: Translation.tr('Use workspace map')
-                checked: Config.options.bar.workspaces.useWorkspaceMap
-                onCheckedChanged: {
-                    Config.options.bar.workspaces.useWorkspaceMap = checked;
-                }
             }
         }
 
