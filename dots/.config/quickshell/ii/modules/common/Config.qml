@@ -420,6 +420,8 @@ Singleton {
                 property bool centerIcons: true
                 property bool enableScrollingOverview: false // changes the overview window placement and sizes to work with hyprscrolling plugin. Reordering windowses DOES NOT WORK!. Just for better visuals 
                 property int maxWorkspaceWidth: 800
+                property bool useWorkspaceMap: false
+                property list<var> workspaceMap: [0,10]
             }
 
             property JsonObject regionSelector: JsonObject {
