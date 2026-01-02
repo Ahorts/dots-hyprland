@@ -119,20 +119,5 @@ Item {
 
     Component { id: dateCompVert; Vertical.VerticalDateWidget {} }
 
-    Component {
-        id: workspaceComp
-        Workspaces {
-            vertical: rootItem.vertical
-            MouseArea {
-                anchors.fill: parent
-                acceptedButtons: Qt.RightButton
-
-                onPressed: event => {
-                    if (event.button === Qt.RightButton) {
-                        GlobalStates.overviewOpen = !GlobalStates.overviewOpen;
-                    }
-                }
-            }
-        }
-    }
+    Component { id: workspaceComp; Workspaces { vertical: rootItem.vertical } }
 }

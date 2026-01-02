@@ -269,7 +269,7 @@ Singleton {
                     property int showNumberDelay: 300 // milliseconds
                     property list<string> numberMap: ["1", "2"] // Characters to show instead of numbers on workspace indicator
                     property bool useWorkspaceMap: false
-                    property list<int> workspaceMap: [0, 10] 
+                    property list<var> workspaceMap: [0, 10] 
                     property bool useNerdFont: false
                 }
                 property JsonObject weather: JsonObject {
