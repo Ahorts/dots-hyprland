@@ -198,6 +198,7 @@ Item {
                     windowData: windowByAddress[address]
 
                     property bool hyprscrollingEnabled: Config.options.overview.enableScrollingOverview 
+                    property int maxWorkspaceWidth: Config.options.overview.maxWorkspaceWidth
 
                     property int wsId: windowData?.workspace?.id
 
@@ -258,8 +259,7 @@ Item {
 
                     Component.onCompleted: {
                         if (!hyprscrollingEnabled || workspaceTotalWindowWidth <= 0) return
-                        console.log(workspaceTotalWindowWidth)
-                        root.workspaceImplicitWidth = Math.min(workspaceTotalWindowWidth,750) // a config option for 750 maybe?
+                        root.workspaceImplicitWidth = Math.min(workspaceTotalWindowWidth,maxWorkspaceWidth)
                     }
 
                     property int wsCount: wsWindowsSorted.length || 1

@@ -576,6 +576,7 @@ Singleton {
                 property bool orderBottomUp: false
                 property bool centerIcons: true
                 property bool enableScrollingOverview: false // changes the overview window placement and sizes to work with hyprscrolling plugin. Reordering windowses DOES NOT WORK!. Just for better visuals 
+                property int maxWorkspaceWidth: 800
                 property string position: "top" // Options: top, center, bottom
                 property int centerTopPaddingRatio: 3
                 property bool showOnlyOnFocusedMonitor: true
