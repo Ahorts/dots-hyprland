@@ -13,6 +13,7 @@ import Quickshell.Hyprland
 
 Item {
     id: root
+    property bool hyprscrollingEnabled: Config.options.overview.enableScrollingOverview
     required property var panelWindow
     readonly property HyprlandMonitor monitor: Hyprland.monitorFor(panelWindow.screen)
     readonly property var toplevels: ToplevelManager.toplevels
@@ -206,7 +207,7 @@ Item {
                     widgetMonitor: HyprlandData.monitors.find(m => m.id == root.monitor.id)
                     windowData: windowByAddress[address]
 
-                    property bool hyprscrollingEnabled: Config.options.overview.enableScrollingOverview 
+                     
                     property int maxWorkspaceWidth: Config.options.overview.maxWorkspaceWidth
 
                     property int wsId: windowData?.workspace?.id
@@ -247,7 +248,7 @@ Item {
                             sum += w.size?.[0] ?? 0
                         }
                         let resultValue = sum * root.scale
-                        if (!hyprscrollingEnabled || resultValue <= 0) return 0
+                        if (!root.hyprscrollingEnabled || resultValue <= 0) return 0
                         root.workspaceImplicitWidth = Math.min(resultValue,maxWorkspaceWidth)
                         return resultValue
                     }
@@ -380,8 +381,15 @@ Item {
                             if (event.button === Qt.LeftButton) {
                                 const sameWorkspaceWithTarget = windowData?.workspace.id === root.activeWindow?.workspace?.id
 
+                                if (!root.hyprscrollingEnabled) {
+                                    Hyprland.dispatch(`focuswindow address:${windowData.address}`)
+                                    GlobalStates.overviewOpen = false; 
+                                    return
+                                }
+
                                 if (sameWorkspaceWithTarget) {
                                     Hyprland.dispatch(`layoutmsg focusaddr ${windowData.address}`)
+                                    GlobalStates.overviewOpen = false;
                                 } else {
                                     Hyprland.dispatch(`focuswindow address:${windowData.address}`)
                                     Qt.callLater(() => {
@@ -410,14 +418,13 @@ Item {
                 id: focusedWorkspaceIndicator
                 property int rowIndex: getWsRow(monitor.activeWorkspace?.id)
                 property int colIndex: getWsColumn(monitor.activeWorkspace?.id)
-                property bool hyprscrollingEnabled: Config.options.overview.enableScrollingOverview
 
                 z: 999
 
-                x: hyprscrollingEnabled ? root.activeWindowData?.x ?? 0 : (root.workspaceImplicitWidth + workspaceSpacing) * colIndex
-                y: hyprscrollingEnabled ? root.activeWindowData?.y ?? 0 : (root.workspaceImplicitHeight + workspaceSpacing) * rowIndex
-                width: hyprscrollingEnabled ? root.activeWindowData?.width ?? 0 : root.workspaceImplicitWidth + 4
-                height: hyprscrollingEnabled ? root.activeWindowData?.height ?? 0 : root.workspaceImplicitHeight
+                x: root.hyprscrollingEnabled ? root.activeWindowData?.x ?? 0 : (root.workspaceImplicitWidth + workspaceSpacing) * colIndex
+                y: root.hyprscrollingEnabled ? root.activeWindowData?.y ?? 0 : (root.workspaceImplicitHeight + workspaceSpacing) * rowIndex
+                width: root.hyprscrollingEnabled ? root.activeWindowData?.width ?? 0 : root.workspaceImplicitWidth + 4
+                height: root.hyprscrollingEnabled ? root.activeWindowData?.height ?? 0 : root.workspaceImplicitHeight
 
                 color: "transparent"
                 property bool workspaceAtLeft: colIndex === 0
