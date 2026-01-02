@@ -21,9 +21,27 @@ import qs.modules.ii.sidebarRight
 import qs.modules.ii.overlay
 import qs.modules.ii.verticalBar
 import qs.modules.ii.wallpaperSelector
+import qs.modules.ii.wrappedFrame
 
 Scope {
-    PanelLoader { extraCondition: !Config.options.bar.vertical; component: Bar {} }
+    property bool barExtraCondition: true
+    readonly property bool usingWrappedFrame: Config.options.appearance.fakeScreenRounding === 3
+    readonly property bool barBot: Config.options.bar.bottom
+    readonly property bool barVert: Config.options.bar.vertical
+
+    Component.onCompleted: Qt.callLater(() => updateBarExtraCondition())
+    onUsingWrappedFrameChanged: updateBarExtraCondition()
+    onBarBotChanged: updateBarExtraCondition()
+    onBarVertChanged: updateBarExtraCondition()
+
+    function updateBarExtraCondition() {
+        if (!usingWrappedFrame) return
+
+        barExtraCondition = false
+        Qt.callLater(() => barExtraCondition = true)
+    }
+
+    PanelLoader { extraCondition: !Config.options.bar.vertical && barExtraCondition; component: Bar {} }
     PanelLoader { component: Background {} }
     PanelLoader { component: Cheatsheet {} }
     PanelLoader { extraCondition: Config.options.dock.enable; component: Dock {} }
@@ -40,6 +58,7 @@ Scope {
     PanelLoader { component: SessionScreen {} }
     PanelLoader { component: SidebarLeft {} }
     PanelLoader { component: SidebarRight {} }
-    PanelLoader { extraCondition: Config.options.bar.vertical; component: VerticalBar {} }
+    PanelLoader { extraCondition: Config.options.bar.vertical && barExtraCondition; component: VerticalBar {} }
     PanelLoader { component: WallpaperSelector {} }
+    PanelLoader { component: WrappedFrame {} }
 }
