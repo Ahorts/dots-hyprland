@@ -774,6 +774,17 @@ ContentPage {
                 Config.options.overview.scale = value / 100;
             }
         }
+        ConfigSwitch {
+            buttonIcon: "grid_3x3"
+            text: Translation.tr("Use workspace map")
+            checked: Config.options.overview.useWorkspaceMap
+            onCheckedChanged: {
+                Config.options.overview.useWorkspaceMap = checked;
+            }
+            StyledToolTip {
+                text: Translation.tr("Edit the workspace start index for monitors in the config file")
+            }
+        }
         ConfigRow {
             uniform: true
             ConfigSpinBox {

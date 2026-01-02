@@ -24,6 +24,7 @@ Scope {
             property string searchingText: ""
             readonly property HyprlandMonitor monitor: Hyprland.monitorFor(root.screen)
             property bool monitorIsFocused: (Hyprland.focusedMonitor?.id == monitor?.id)
+            property int monitorIndex: Quickshell.screens.indexOf(modelData)
             screen: modelData
             visible: GlobalStates.overviewOpen && (!Config.options.overview.showOnlyOnFocusedMonitor || monitorIsFocused)
 
@@ -138,6 +139,7 @@ Scope {
                     sourceComponent: OverviewWidget {
                         panelWindow: root
                         visible: (root.searchingText == "")
+                        monitorIndex: root.monitorIndex
                     }
                 }
             }

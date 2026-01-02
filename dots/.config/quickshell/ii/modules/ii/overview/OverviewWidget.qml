@@ -18,7 +18,13 @@ Item {
     readonly property HyprlandMonitor monitor: Hyprland.monitorFor(panelWindow.screen)
     readonly property var toplevels: ToplevelManager.toplevels
     readonly property int workspacesShown: Config.options.overview.rows * Config.options.overview.columns
-    readonly property int workspaceGroup: Math.floor((monitor.activeWorkspace?.id - 1) / workspacesShown)
+
+    readonly property bool useWorkspaceMap: Config.options.overview.useWorkspaceMap
+    readonly property list<int> workspaceMap: Config.options.overview.workspaceMap
+    property int monitorIndex // to be set by parent
+    property int workspaceOffset: useWorkspaceMap ? workspaceMap[monitorIndex] : 0
+    
+    readonly property int workspaceGroup: Math.floor((monitor.activeWorkspace?.id - workspaceOffset - 1) / workspacesShown)
     property bool monitorIsFocused: (Hyprland.focusedMonitor?.name == monitor.name)
     property var windows: HyprlandData.windowList
     property var windowByAddress: HyprlandData.windowByAddress
@@ -63,19 +69,26 @@ Item {
 
     
     function getWsRow(ws) {
-        // 1-indexed workspace, 0-indexed row
-        var normalRow = Math.floor((ws - 1) / Config.options.overview.columns) % Config.options.overview.rows;
+        var wsAdjusted = ws - root.workspaceOffset
+        var normalRow = Math.floor((wsAdjusted - 1) / Config.options.overview.columns) % Config.options.overview.rows;
         return (Config.options.overview.orderBottomUp ? Config.options.overview.rows - normalRow - 1 : normalRow);
     }
+
     function getWsColumn(ws) {
-        // 1-indexed workspace, 0-indexed column
-        var normalCol = (ws - 1) % Config.options.overview.columns;
+        var wsAdjusted = ws - root.workspaceOffset
+        var normalCol = (wsAdjusted - 1) % Config.options.overview.columns;
         return (Config.options.overview.orderRightLeft ? Config.options.overview.columns - normalCol - 1 : normalCol);
     }
+
     function getWsInCell(ri, ci) {
-        // 1-indexed workspace, 0-indexed row and column index
-        return (Config.options.overview.orderBottomUp ? Config.options.overview.rows - ri - 1 : ri) * Config.options.overview.columns + (Config.options.overview.orderRightLeft ? Config.options.overview.columns - ci - 1 : ci) + 1
+        var wsInCell = (Config.options.overview.orderBottomUp ? Config.options.overview.rows - ri - 1 : ri) 
+                    * Config.options.overview.columns 
+                    + (Config.options.overview.orderRightLeft ? Config.options.overview.columns - ci - 1 : ci) 
+                    + 1
+        return wsInCell + root.workspaceOffset
     }
+
+
 
     StyledRectangularShadow {
         target: overviewBackground
@@ -189,7 +202,8 @@ Item {
                         return ToplevelManager.toplevels.values.filter((toplevel) => {
                             const address = `0x${toplevel.HyprlandToplevel?.address}`
                             var win = windowByAddress[address]
-                            const inWorkspaceGroup = (root.workspaceGroup * root.workspacesShown < win?.workspace?.id && win?.workspace?.id <= (root.workspaceGroup + 1) * root.workspacesShown)
+                            const inWorkspaceGroup = (root.workspaceGroup * root.workspacesShown + root.workspaceOffset < win?.workspace?.id &&
+                                                    win?.workspace?.id <= (root.workspaceGroup + 1) * root.workspacesShown + root.workspaceOffset)
                             return inWorkspaceGroup;
                         })
                     }
