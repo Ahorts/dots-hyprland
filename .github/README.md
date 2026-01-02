@@ -68,8 +68,20 @@ And copy `dots/.config/quickshell/ii` folder to your `.config/quickshell/ii` fol
     <h2>• hyprscrolling implementation •</h2>
 </div>
 
+
+A [Niri](https://github.com/YaLTeR/niri) like scrollable tiling layout.
 You have to use my hyprscrolling plugin inorder to make shell communicate with plugin.
+
+- Realtime windows position and size communication with plugin
+- You can move windowses in **different** workspaces
+- **WIP**: You can swap the places of windowses **in the same row** 
+
 Follow the documentation on [my hyprscrolling plugin](https://github.com/vaguesyntax/hyprscrolling) to install and configure it.
+
+
+https://github.com/user-attachments/assets/81f18b69-5ad1-485b-a5e2-7fd1b1a433a6
+
+
 
 <div align="center">
     <h2>• credits •</h2>
