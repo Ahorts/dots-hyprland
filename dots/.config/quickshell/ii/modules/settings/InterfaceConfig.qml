@@ -841,7 +841,6 @@ ContentPage {
 
         ContentSubsection {
             title: Translation.tr("Hyprscrolling overview")
-            tooltip: Translation.tr("Changes the overview window placement and sizes to work with hyprscrolling plugin | Using with 1 column is recommended")
 
             ConfigSwitch {
                 buttonIcon: "check"
@@ -863,7 +862,29 @@ ContentPage {
                     Config.options.overview.maxWorkspaceWidth = value;
                 }
             }
-            
+        }
+        RowLayout {
+            Layout.topMargin: 10
+            StyledText {
+                Layout.leftMargin: 10
+                color: Appearance.colors.colSubtext
+                font.pixelSize: Appearance.font.pixelSize.smallie
+                text: Translation.tr("Plese refer to documentation for more information about how to\nimplement hyprscrolling plugin to properly work with this shell")
+            }
+            Item {
+                Layout.fillWidth: true
+            }
+            RippleButtonWithIcon {
+                buttonRadius: Appearance.rounding.full
+                materialIcon: "open_in_new"
+                mainText: Translation.tr("Open docs")
+                onClicked: {
+                    Qt.openUrlExternally(`https://github.com/vaguesyntax/ii-vynx?tab=readme-ov-file#-hyprscrolling-implementation-`);
+                }
+                StyledToolTip {
+                    text: "github.com/vaguesyntax/ii-vynx"
+                }
+            }
         }
     }
 
