@@ -223,53 +223,27 @@ ContentPage {
             }
         }
 
-        RowLayout {
-            Layout.fillHeight: true
-            ContentSubsection {
-                title: Translation.tr("Component background style")
-                Layout.fillWidth: true
+        ContentSubsection {
+            title: Translation.tr("Bar background style")
+            Layout.fillWidth: false
 
-                ConfigSelectionArray {
-                    currentValue: Config.options.bar.componentBackgroundStyle
-                    onSelected: newValue => {
-                        Config.options.bar.componentBackgroundStyle = newValue;
-                    }
-                    options: [          
-                        {
-                            displayName: Translation.tr("Surface"),
-                            icon: "texture",
-                            value: 0
-                        },
-                        {
-                            displayName: Translation.tr("Surface high"),
-                            icon: "format_color_fill",
-                            value: 1
-                        }
-                    ]
+            ConfigSelectionArray {
+                currentValue: Config.options.bar.barBackgroundStyle
+                onSelected: newValue => {
+                    Config.options.bar.barBackgroundStyle = newValue;
                 }
-            }
-            ContentSubsection {
-                title: Translation.tr("Bar background style")
-                Layout.fillWidth: false
-
-                ConfigSelectionArray {
-                    currentValue: Config.options.bar.barBackgroundStyle
-                    onSelected: newValue => {
-                        Config.options.bar.barBackgroundStyle = newValue;
+                options: [          
+                    {
+                        displayName: Translation.tr("Transparent"),
+                        icon: "opacity",
+                        value: 0
+                    },
+                    {
+                        displayName: Translation.tr("Visible"),
+                        icon: "visibility",
+                        value: 1
                     }
-                    options: [          
-                        {
-                            displayName: Translation.tr("Transparent"),
-                            icon: "opacity",
-                            value: 0
-                        },
-                        {
-                            displayName: Translation.tr("Visible"),
-                            icon: "visibility",
-                            value: 1
-                        }
-                    ]
-                }
+                ]
             }
         }
         

@@ -234,7 +234,6 @@ Singleton {
                 property bool borderless: false // true for no grouping of items
                 property string topLeftIcon: "spark" // Options: "distro" or any icon name in ~/.config/quickshell/ii/assets/icons
                 property int barBackgroundStyle: 1 // 0: Transparent | 1: Visible | 2: Adaptive
-                property int componentBackgroundStyle: 1 // 0: Layer color | 1: Primary container
                 property bool verbose: true
                 property bool vertical: false
                 property JsonObject mediaPlayer: JsonObject {
