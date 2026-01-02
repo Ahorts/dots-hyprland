@@ -23,7 +23,8 @@ Item {
     readonly property list<int> workspaceMap: Config.options.bar.workspaces.workspaceMap 
     readonly property int monitorIndex: barLoader.monitorIndex
     property int workspaceOffset: useWorkspaceMap ? workspaceMap[monitorIndex] : 0 // not sure if this works for more than 2 monitors
-    
+
+
     readonly property int workspacesShown: Config.options.bar.workspaces.shown
     readonly property int workspaceGroup: Math.floor((monitor?.activeWorkspace?.id - root.workspaceOffset - 1) / root.workspacesShown)
     property list<bool> workspaceOccupied: []
