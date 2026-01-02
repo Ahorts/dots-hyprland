@@ -26,8 +26,16 @@ However there can (and will) be bugs **so don't expect stability here**. Use the
 </div>
 
 <div align="center">
-     <h4> Installation scripts are not tested!  Just copy .config/quickshell/ii folder to yours to use these dots</h4>
+    <h2>• installation •</h2>
 </div>
+
+**Install the [original dots](https://github.com/end-4/dots-hyprland)** and clone the repo like this:
+ 
+```
+git clone https://github.com/vaguesyntax/ii-vynx.git --recurse-submodules
+```
+
+And copy `dots/.config/quickshell/ii` folder to your `.config/quickshell/ii` folder.
 
 <div align="center">
     <h2>• prs •</h2>
