@@ -18,9 +18,14 @@ Item {
     property bool borderless: Config.options.bar.borderless
     readonly property HyprlandMonitor monitor: Hyprland.monitorFor(root.QsWindow.window?.screen)
     readonly property Toplevel activeWindow: ToplevelManager.activeToplevel
+
+    readonly property bool useWorkspaceMap: Config.options.bar.workspaces.useWorkspaceMap
+    readonly property list<int> workspaceMap: Config.options.bar.workspaces.workspaceMap 
+    readonly property int monitorIndex: barLoader.monitorIndex
+    property int workspaceOffset: useWorkspaceMap ? workspaceMap[monitorIndex] : 0 // not sure if this works for more than 2 monitors
     
     readonly property int workspacesShown: Config.options.bar.workspaces.shown
-    readonly property int workspaceGroup: Math.floor((monitor?.activeWorkspace?.id - 1) / root.workspacesShown)
+    readonly property int workspaceGroup: Math.floor((monitor?.activeWorkspace?.id - root.workspaceOffset - 1) / root.workspacesShown)
     property list<bool> workspaceOccupied: []
     property int widgetPadding: 4
     property int workspaceButtonWidth: 26
@@ -29,8 +34,7 @@ Item {
     property real workspaceIconSizeShrinked: workspaceButtonWidth * 0.55
     property real workspaceIconOpacityShrinked: 1
     property real workspaceIconMarginShrinked: -4
-    property int workspaceIndexInGroup: (monitor?.activeWorkspace?.id - 1) % root.workspacesShown
-
+    property int workspaceIndexInGroup: (monitor?.activeWorkspace?.id - root.workspaceOffset - 1) % root.workspacesShown    
 
     property bool showNumbers: false
     Timer {
@@ -59,9 +63,10 @@ Item {
     // Function to update workspaceOccupied
     function updateWorkspaceOccupied() {
         workspaceOccupied = Array.from({ length: root.workspacesShown }, (_, i) => {
-            return Hyprland.workspaces.values.some(ws => ws.id === workspaceGroup * root.workspacesShown + i + 1);
+            return Hyprland.workspaces.values.some(ws => ws.id === workspaceOffset + workspaceGroup * root.workspacesShown + i + 1);
         })
     }
+
 
     // Occupied workspace updates
     Component.onCompleted: updateWorkspaceOccupied()
@@ -196,7 +201,7 @@ Item {
 
             Button {
                 id: button
-                property int workspaceValue: workspaceGroup * root.workspacesShown + index + 1
+                property int workspaceValue: root.workspaceOffset + workspaceGroup * root.workspacesShown + index + 1
                 implicitHeight: vertical ? Appearance.sizes.verticalBarWidth : Appearance.sizes.barHeight
                 implicitWidth: vertical ? Appearance.sizes.verticalBarWidth : Appearance.sizes.verticalBarWidth
                 onPressed: Hyprland.dispatch(`workspace ${workspaceValue}`)

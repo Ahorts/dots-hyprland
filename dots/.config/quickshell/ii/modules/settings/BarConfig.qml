@@ -487,6 +487,18 @@ ContentPage {
                 Config.options.bar.workspaces.showNumberDelay = value;
             }
         }
+        ContentSubsection {
+            title: Translation.tr("Workspace map")
+            tooltip: Translation.tr("Edit the workspace map in config file")
+            ConfigSwitch {
+                buttonIcon: "grid_3x3"
+                text: Translation.tr('Use workspace map')
+                checked: Config.options.bar.workspaces.useWorkspaceMap
+                onCheckedChanged: {
+                    Config.options.bar.workspaces.useWorkspaceMap = checked;
+                }
+            }
+        }
 
         ContentSubsection {
             title: Translation.tr("Number style")
