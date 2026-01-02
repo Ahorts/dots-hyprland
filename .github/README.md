@@ -42,6 +42,7 @@ However there can (and will) be bugs **so don't expect stability here**. Use the
 - Settings color scheme previews **_// custom color schemes_**
 - Cookie clock improvements
 - File search functionality in launcher
+- Overview changes for [hyprscrolling](https://github.com/vaguesyntax/hyprscrolling) plugin
   
 <div align="center">
     <h2>• other features •</h2>
