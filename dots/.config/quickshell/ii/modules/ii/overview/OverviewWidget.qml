@@ -273,7 +273,7 @@ Item {
                     property int wsCount: wsWindowsSorted.length || 1
 
                     scrollWidth: root.workspaceImplicitWidth * windowWidthRatio
-                    scrollHeight: root.workspaceImplicitHeight
+                    scrollHeight: windowData.floating ? windowData.size[1] * root.scale : root.workspaceImplicitHeight
 
                     scrollX: windowData.floating ? xOffset + xWithinWorkspaceWidget : calculateXPos()
                     scrollY: windowData.floating ? yOffset + yWithinWorkspaceWidget : yOffset
