@@ -26,6 +26,10 @@ However there can (and will) be bugs **so don't expect stability here**. Use the
 </div>
 
 <div align="center">
+     <h4> Don't use installation scripts! They may broke your quickshell setup. Just copy .config/quickshell/ii folder to yours to use these dots </h4>
+</div>
+
+<div align="center">
     <h2>• prs •</h2>
 </div>
 
