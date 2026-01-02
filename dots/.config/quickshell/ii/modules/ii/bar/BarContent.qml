@@ -32,7 +32,7 @@ Item { // Bar content region
 
 
 
-    property bool showBarBackground: Config.options.bar.backgroundStyle === 1
+    property bool showBarBackground: Config.options.bar.barBackgroundStyle === 1
 
     ////// Definning places of center modules //////
     property var fullModel: Config.options.bar.layouts.center

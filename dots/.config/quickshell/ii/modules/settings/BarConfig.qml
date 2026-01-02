@@ -224,13 +224,13 @@ ContentPage {
         }
 
         ContentSubsection {
-            title: Translation.tr("Background style")
+            title: Translation.tr("Bar background style")
             Layout.fillWidth: false
 
             ConfigSelectionArray {
-                currentValue: Config.options.bar.backgroundStyle
+                currentValue: Config.options.bar.barBackgroundStyle
                 onSelected: newValue => {
-                    Config.options.bar.backgroundStyle = newValue;
+                    Config.options.bar.barBackgroundStyle = newValue;
                 }
                 options: [          
                     {
@@ -246,6 +246,7 @@ ContentPage {
                 ]
             }
         }
+        
     }
     
     ContentSection {
@@ -460,6 +461,18 @@ ContentPage {
             checked: Config.options.bar.workspaces.monochromeIcons
             onCheckedChanged: {
                 Config.options.bar.workspaces.monochromeIcons = checked;
+            }
+        }
+        
+        ConfigSwitch {
+            buttonIcon: "grid_3x3"
+            text: Translation.tr('Use workspace map')
+            checked: Config.options.bar.workspaces.useWorkspaceMap
+            onCheckedChanged: {
+                Config.options.bar.workspaces.useWorkspaceMap = checked;
+            }
+            StyledToolTip {
+                text: Translation.tr('Edit the workspace start index for monitors in the config file')
             }
         }
 

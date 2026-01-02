@@ -264,7 +264,7 @@ Singleton {
                 property bool floatStyleShadow: true // Show shadow behind bar when cornerStyle == 1 (Float)
                 property bool borderless: false // true for no grouping of items
                 property string topLeftIcon: "spark" // Options: "distro" or any icon name in ~/.config/quickshell/ii/assets/icons
-                property int backgroundStyle: 1 // 0: Transparent | 1: Visible | 2: Adaptive
+                property int barBackgroundStyle: 1 // 0: Transparent | 1: Visible | 2: Adaptive
                 property bool verbose: true
                 property bool vertical: false
                 property JsonObject mediaPlayer: JsonObject {
@@ -299,6 +299,8 @@ Singleton {
                     property bool alwaysShowNumbers: false
                     property int showNumberDelay: 300 // milliseconds
                     property list<string> numberMap: ["1", "2"] // Characters to show instead of numbers on workspace indicator
+                    property bool useWorkspaceMap: false
+                    property list<int> workspaceMap: [0, 10] 
                     property bool useNerdFont: false
                 }
                 property JsonObject weather: JsonObject {

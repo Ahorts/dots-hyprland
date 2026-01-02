@@ -12,7 +12,7 @@ Item {
     property var startRadius // left - top
     property var endRadius // right - bottom
 
-    property color colBackground: Appearance.colors.colLayer2
+    property color colBackground:  Appearance.colors.colLayer2
 
     Rectangle {
         id: background

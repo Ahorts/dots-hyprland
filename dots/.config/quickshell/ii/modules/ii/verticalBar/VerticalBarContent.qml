@@ -15,7 +15,8 @@ Item { // Bar content region
 
     property var screen: root.QsWindow.window?.screen
     property var brightnessMonitor: Brightness.getMonitorForScreen(screen)
-    property bool showBarBackground: Config.options.bar.backgroundStyle === 1 //!FIXME
+    property bool showBarBackground: Config.options.bar.barBackgroundStyle === 1
+    
 
     component HorizontalBarSeparator: Rectangle {
         Layout.leftMargin: Appearance.sizes.baseBarHeight / 3

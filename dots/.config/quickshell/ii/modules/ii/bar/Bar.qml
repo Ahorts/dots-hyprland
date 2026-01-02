@@ -11,23 +11,26 @@ import qs.modules.common.widgets
 Scope {
     id: bar
     
-    property bool showBarBackground: Config.options.bar.backgroundStyle == 1
+    property bool showBarBackground: Config.options.bar.barBackgroundStyle == 1
 
     Variants {
         // For each monitor
-        
+        id: barVariant
 
-        model: {
+        readonly property var variantModel: {
             const screens = Quickshell.screens;
             const list = Config.options.bar.screenList;
             if (!list || list.length === 0)
                 return screens;
             return screens.filter(screen => list.includes(screen.name));
         }
+
+        model: variantModel
         LazyLoader {
             id: barLoader
             active: GlobalStates.barOpen && !GlobalStates.screenLocked
             required property ShellScreen modelData
+            property int monitorIndex: barVariant.variantModel.indexOf(modelData)
             component: PanelWindow { // Bar window
                 id: barRoot
                 screen: barLoader.modelData
