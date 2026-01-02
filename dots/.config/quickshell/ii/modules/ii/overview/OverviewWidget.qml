@@ -443,6 +443,12 @@ Item {
                 Behavior on y {
                     animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
                 }
+                Behavior on width {
+                    animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+                }
+                Behavior on height {
+                    animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+                }
                 Behavior on topLeftRadius {
                     animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
                 }
