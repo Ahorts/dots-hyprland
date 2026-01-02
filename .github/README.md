@@ -31,7 +31,7 @@ However there can (and will) be bugs **so don't expect stability here**. Use the
     <h2>• installation •</h2>
 </div>
 
-**Install the [original dots](https://github.com/end-4/dots-hyprland)** and clone the repo like this:
+**Install the [original dots](https://github.com/end-4/dots-hyprland)** and clone the repo like this after that:
  
 ```
 git clone https://github.com/vaguesyntax/ii-vynx.git --recurse-submodules
@@ -71,6 +71,8 @@ And copy `dots/.config/quickshell/ii` folder to your `.config/quickshell/ii` fol
 
 - [@end-4](https://github.com/end-4) ofc
 - screenshot wallpaper from [exo](https://github.com/debuggyo/Exo)
+
+**Since you scrolled all the way down here, can I get your star? ⭐**
 
 
 
