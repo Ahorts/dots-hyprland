@@ -88,13 +88,17 @@ Scope {
                 searchWidget.focusFirstItem();
             }
 
+            SearchWidget {
+                id: searchWidget
+                anchors.horizontalCenter: parent.horizontalCenter
+                Synchronizer on searchingText {
+                    property alias source: root.searchingText
+                }
+            }
+
             Column {
                 id: columnLayout
                 visible: GlobalStates.overviewOpen
-                anchors {
-                    horizontalCenter: parent.horizontalCenter
-                    top: parent.top
-                }
                 spacing: -8
 
                 Keys.onPressed: event => {
@@ -109,18 +113,12 @@ Scope {
                     }
                 }
 
-                SearchWidget {
-                    id: searchWidget
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    Synchronizer on searchingText {
-                        property alias source: root.searchingText
-                    }
-                }
+                
 
                 Loader {
                     id: overviewLoader
-                    anchors.horizontalCenter: parent.horizontalCenter
                     active: GlobalStates.overviewOpen && (Config?.options.overview.enable ?? true)
+                    //x: item.x
                     sourceComponent: OverviewWidget {
                         panelWindow: root
                         visible: (root.searchingText == "")
