@@ -134,7 +134,7 @@ Item {
         property real indicatorMargin: 7 // to make a perfect round in one windowed-workspaces
 
         property real offset: root.vertical ? contentLayout.children[root.workspaceIndexInGroup]?.height - baseHeight : contentLayout.children[root.workspaceIndexInGroup]?.width - baseHeight
-        property real indicatorPosition: ((Math.min(idxPair.idx1, idxPair.idx2) * root.iconBoxWrapperSize + offsetFor(root.workspaceIndexInGroup + 1) - offset / 2) - offset / 2) + indicatorMargin / 2 - 1 
+        property real indicatorPosition: ((Math.min(idxPair.idx1, idxPair.idx2) * root.iconBoxWrapperSize + offsetFor(root.workspaceIndexInGroup + 1) - offset / 2) - offset / 2) + indicatorMargin / 2 
         property real indicatorLength: (Math.abs(idxPair.idx1 - idxPair.idx2) * root.iconBoxWrapperSize + root.iconBoxWrapperSize) + offset - indicatorMargin 
 
         y: root.vertical ? indicatorPosition : 0
