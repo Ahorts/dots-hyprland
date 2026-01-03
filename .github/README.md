@@ -37,6 +37,8 @@ However there can (and will) be bugs **so don't expect stability here**. Use the
 git clone https://github.com/vaguesyntax/ii-vynx.git --recurse-submodules
 ```
 
+Remove the old `.config/quickshell/ii` folder.
+
 And copy `dots/.config/quickshell/ii` folder to your `.config/quickshell/ii` folder.
 
 <div align="center">
@@ -51,6 +53,7 @@ And copy `dots/.config/quickshell/ii` folder to your `.config/quickshell/ii` fol
 </div>
 
 - Bar rework  **_// security and timer indicators, custom ordering and more.._**
+- Workspaces widget rework **_// ability to show multiple windows in one workspace_**
 - Background media widget
 - Overview widget position settings
 - Settings color scheme previews **_// custom color schemes_**
