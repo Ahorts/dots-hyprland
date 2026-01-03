@@ -51,6 +51,7 @@ And copy `dots/.config/quickshell/ii` folder to your `.config/quickshell/ii` fol
 </div>
 
 - Bar rework  **_// security and timer indicators, custom ordering and more.._**
+- Workspaces widget rework **_// ability to show multiple windows in one workspace_**
 - Background media widget
 - Overview widget position settings
 - Settings color scheme previews **_// custom color schemes_**
