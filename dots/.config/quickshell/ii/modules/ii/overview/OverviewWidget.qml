@@ -15,7 +15,9 @@ Item {
     id: root
     property bool hyprscrollingEnabled: Config.options.overview.hyprscrollingImplementation.enable
     property int maxWorkspaceWidth: Config.options.overview.hyprscrollingImplementation.maxWorkspaceWidth
-    property int minWorkspaceWidth: 400
+    property int minWorkspaceWidth: (monitorData?.transform % 2 === 1) ? 
+        ((monitor.height - monitorData?.reserved[0] - monitorData?.reserved[2]) * root.scale / monitor.scale) :
+        ((monitor.width - monitorData?.reserved[0] - monitorData?.reserved[2]) * root.scale / monitor.scale)
     required property var panelWindow
     readonly property HyprlandMonitor monitor: Hyprland.monitorFor(panelWindow.screen)
     readonly property var toplevels: ToplevelManager.toplevels
@@ -35,9 +37,7 @@ Item {
     property real scale: Config.options.overview.scale
     property color activeBorderColor: Appearance.colors.colSecondary
 
-    property real workspaceImplicitWidth: (monitorData?.transform % 2 === 1) ? 
-        ((monitor.height - monitorData?.reserved[0] - monitorData?.reserved[2]) * root.scale / monitor.scale) :
-        ((monitor.width - monitorData?.reserved[0] - monitorData?.reserved[2]) * root.scale / monitor.scale)
+    property real workspaceImplicitWidth: minWorkspaceWidth
     property real workspaceImplicitHeight: (monitorData?.transform % 2 === 1) ? 
         ((monitor.width - monitorData?.reserved[1] - monitorData?.reserved[3]) * root.scale / monitor.scale) :
         ((monitor.height - monitorData?.reserved[1] - monitorData?.reserved[3]) * root.scale / monitor.scale)
@@ -370,27 +370,32 @@ Item {
                     property int hoveringDir: 0 // 0: none, 1: right, 2: left
                     property bool hovering: false
 
-                    Rectangle {
+                    Loader { // Hover indicator (only works with hyprscrolling)
+                        active: root.hyprscrollingEnabled
                         anchors.verticalCenter: parent.verticalCenter
+                        sourceComponent: Rectangle {
+                            anchors.verticalCenter: parent.verticalCenter
 
-                        x: hoveringDir == 1 ? parent.width / 2 : 0
-                        implicitWidth: parent.hovering ? window.width / 2 : 0
-                        implicitHeight: parent.height
+                            x: hoveringDir == 1 ? window.width / 2 : 0
+                            implicitWidth: window.hovering ? window.width / 2 : 0
+                            implicitHeight: window.height
 
-                        color: ColorUtils.transparentize(Appearance.colors.colOnLayer1, 0.8)
-                        opacity: parent.hovering ? 1 : 0
-                        topRightRadius: parent.topLeftRadius
-                        bottomRightRadius: parent.topLeftRadius
-                        topLeftRadius: parent.topLeftRadius
-                        bottomLeftRadius: parent.topLeftRadius
+                            color: ColorUtils.transparentize(Appearance.colors.colOnLayer1, 0.8)
+                            opacity: window.hovering ? 1 : 0
+                            topRightRadius: window.topLeftRadius
+                            bottomRightRadius: window.topLeftRadius
+                            topLeftRadius: window.topLeftRadius
+                            bottomLeftRadius: window.topLeftRadius
 
-                        Behavior on x {
-                            animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
-                        }
-                        Behavior on opacity {
-                            animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+                            Behavior on x {
+                                animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+                            }
+                            Behavior on opacity {
+                                animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+                            }
                         }
                     }
+                    
 
                     DropArea { // Window drop
                         anchors.fill:  parent 
