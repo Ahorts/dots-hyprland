@@ -796,21 +796,21 @@ ContentPage {
             ConfigSwitch {
                 buttonIcon: "check"
                 text: Translation.tr("Enable")
-                checked: Config.options.overview.enableScrollingOverview
+                checked: Config.options.overview.hyprscrollingImplementation.enable
                 onCheckedChanged: {
-                    Config.options.overview.enableScrollingOverview = checked;
+                    Config.options.overview.hyprscrollingImplementation.enable = checked;
                 }
             }
             ConfigSpinBox {
-                enabled: Config.options.overview.enableScrollingOverview
+                enabled: Config.options.overview.hyprscrollingImplementation.enable
                 icon: "width"
                 text: Translation.tr("Max workspace width")
-                value: Config.options.overview.maxWorkspaceWidth
+                value: Config.options.overview.hyprscrollingImplementation.maxWorkspaceWidth
                 from: 100
                 to: 1900
                 stepSize: 100
                 onValueChanged: {
-                    Config.options.overview.maxWorkspaceWidth = value;
+                    Config.options.overview.hyprscrollingImplementation.maxWorkspaceWidth = value;
                 }
             }
         }

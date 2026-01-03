@@ -13,7 +13,7 @@ import Quickshell.Hyprland
 
 Item {
     id: root
-    property bool hyprscrollingEnabled: Config.options.overview.enableScrollingOverview
+    property bool hyprscrollingEnabled: Config.options.overview.hyprscrollingImplementation.enable
     required property var panelWindow
     readonly property HyprlandMonitor monitor: Hyprland.monitorFor(panelWindow.screen)
     readonly property var toplevels: ToplevelManager.toplevels
@@ -233,7 +233,7 @@ Item {
                     widgetMonitor: HyprlandData.monitors.find(m => m.id == root.monitor.id)
                     windowData: windowByAddress[address]
 
-                    property int maxWorkspaceWidth: Config.options.overview.maxWorkspaceWidth
+                    property int maxWorkspaceWidth: Config.options.overview.hyprscrollingImplementation.maxWorkspaceWidth
 
                     property int wsId: windowData?.workspace?.id
 
@@ -466,7 +466,7 @@ Item {
                                     } else { // different workspace
                                         Hyprland.dispatch(`movetoworkspacesilent ${targetWorkspace}, address:${window.windowData?.address}`)
                                         Qt.callLater(() => {
-                                            Hyprland.dispatch(`layoutmsg swapaddrdir ${targetWindowAdress} ${root.draggingDirection} ${window.windowData?.address}`)
+                                            Hyprland.dispatch(`layoutmsg swapaddrdir ${targetWindowAdress} ${root.draggingDirection} ${window.windowData?.address} true`)
                                         })
                                     }
                                 }

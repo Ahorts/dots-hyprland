@@ -48,7 +48,7 @@ Item { // Window
 
     property bool indicateXWayland: windowData?.xwayland ?? false
 
-    property bool hyprscrollingEnabled: Config.options.overview.enableScrollingOverview
+    property bool hyprscrollingEnabled: Config.options.overview.hyprscrollingImplementation.enable
     property int scrollWidth
     property int scrollHeight
     property int scrollX
