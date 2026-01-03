@@ -77,7 +77,7 @@ You have to use my hyprscrolling plugin inorder to make shell communicate with p
 
 - Realtime windows position and size communication with plugin
 - You can move windowses in **different** workspaces
-- **WIP**: You can swap the places of windowses **in the same row** 
+- You can swap the places of windowses **in the same row** 
 
 Follow the documentation on [my hyprscrolling plugin](https://github.com/vaguesyntax/hyprscrolling) to install and configure it.
 
