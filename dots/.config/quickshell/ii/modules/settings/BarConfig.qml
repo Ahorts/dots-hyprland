@@ -489,6 +489,18 @@ ContentPage {
         }
 
         ConfigSpinBox {
+            icon: "select_window"
+            text: Translation.tr("Maximum window count per workspace")
+            value: Config.options.bar.workspaces.maxWindowCount
+            from: 1
+            to: 20
+            stepSize: 1
+            onValueChanged: {
+                Config.options.bar.workspaces.maxWindowCount = value;
+            }
+        }
+
+        ConfigSpinBox {
             icon: "touch_long"
             text: Translation.tr("Number show delay when pressing Super (ms)")
             value: Config.options.bar.workspaces.showNumberDelay

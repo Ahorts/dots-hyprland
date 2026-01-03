@@ -222,7 +222,7 @@ Item {
                     rows: root.vertical ? 99 : 1
 
                     Repeater {
-                        model: root.showIcons ? root.monitorWindows?.filter(win => win.workspace === workspaceOffset + workspaceGroup * workspacesShown + index + 1) : []
+                        model: root.showIcons ? root.monitorWindows?.filter(win => win.workspace === workspaceOffset + workspaceGroup * workspacesShown + index + 1).splice(0, Config.options.bar.workspaces.maxWindowCount) : []
                         delegate: Item {
                             Layout.alignment: Qt.AlignHCenter
                             width: root.individualIconBoxHeight
