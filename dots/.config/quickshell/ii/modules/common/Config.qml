@@ -301,6 +301,7 @@ Singleton {
                     property list<string> numberMap: ["1", "2"] // Characters to show instead of numbers on workspace indicator
                     property bool useWorkspaceMap: false
                     property list<var> workspaceMap: [0, 10] 
+                    property int maxWindowCount: 5 // Maximum windows to show in one workspace
                     property bool useNerdFont: false
                 }
                 property JsonObject weather: JsonObject {
