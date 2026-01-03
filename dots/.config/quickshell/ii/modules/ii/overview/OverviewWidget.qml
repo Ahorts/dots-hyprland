@@ -68,6 +68,8 @@ Item {
     property string draggingTargetWindowAdress
     property string draggingDirection  // options: 'l' or 'r' // only for window dragging
 
+    property bool draggingWindowsFloating
+
     property int draggingFromWorkspace: -1
     property int draggingTargetWorkspace: -1
 
@@ -315,7 +317,7 @@ Item {
 
                     property int wsCount: wsWindowsSorted.length || 1
 
-                    scrollWidth: root.workspaceImplicitWidth * windowWidthRatio
+                    scrollWidth: windowData.floating ? windowData.size[0] * root.scale : root.workspaceImplicitWidth * windowWidthRatio
                     scrollHeight: windowData.floating ? windowData.size[1] * root.scale : root.workspaceImplicitHeight
 
                     scrollX: windowData.floating ? xOffset + xWithinWorkspaceWidget : calculateXPos()
@@ -371,10 +373,10 @@ Item {
                     property bool hovering: false
 
                     Loader { // Hover indicator (only works with hyprscrolling)
-                        active: root.hyprscrollingEnabled
+                        active: root.hyprscrollingEnabled && !root.draggingWindowsFloating
                         anchors.verticalCenter: parent.verticalCenter
                         sourceComponent: Rectangle {
-                            anchors.verticalCenter: parent.verticalCenter
+                            anchors.verticalCenter: parent.verticalCenter            
 
                             x: hoveringDir == 1 ? window.width / 2 : 0
                             implicitWidth: window.hovering ? window.width / 2 : 0
@@ -448,6 +450,7 @@ Item {
                         onPressed: (mouse) => {
                             root.draggingFromWorkspace = windowData?.workspace.id
                             root.draggingFromWindowAddress = windowData?.address
+                            root.draggingWindowsFloating = windowData?.floating
                             window.pressed = true
                             window.Drag.active = true
                             window.Drag.source = window
@@ -546,18 +549,11 @@ Item {
 
                 x: root.hyprscrollingEnabled ? root.activeWindowData?.x ?? 0 : (root.workspaceImplicitWidth + workspaceSpacing) * colIndex
                 y: root.hyprscrollingEnabled ? root.activeWindowData?.y ?? 0 : (root.workspaceImplicitHeight + workspaceSpacing) * rowIndex
-                width: root.hyprscrollingEnabled ? root.activeWindowData?.width ?? 0 : root.workspaceImplicitWidth + 4
+                width: root.hyprscrollingEnabled ?  root.activeWindowData?.width ?? 0 : root.workspaceImplicitWidth + 4
                 height: root.hyprscrollingEnabled ? root.activeWindowData?.height ?? 0 : root.workspaceImplicitHeight
 
+                radius: Appearance.rounding.normal
                 color: "transparent"
-                property bool workspaceAtLeft: colIndex === 0
-                property bool workspaceAtRight: colIndex === Config.options.overview.columns - 1
-                property bool workspaceAtTop: rowIndex === 0
-                property bool workspaceAtBottom: rowIndex === Config.options.overview.rows - 1
-                topLeftRadius: (workspaceAtLeft && workspaceAtTop) ? root.largeWorkspaceRadius : root.smallWorkspaceRadius
-                topRightRadius: (workspaceAtRight && workspaceAtTop) ? root.largeWorkspaceRadius : root.smallWorkspaceRadius
-                bottomLeftRadius: (workspaceAtLeft && workspaceAtBottom) ? root.largeWorkspaceRadius : root.smallWorkspaceRadius
-                bottomRightRadius: (workspaceAtRight && workspaceAtBottom) ? root.largeWorkspaceRadius : root.smallWorkspaceRadius
                 border.width: 2
                 border.color: root.activeBorderColor
                 Behavior on x {
