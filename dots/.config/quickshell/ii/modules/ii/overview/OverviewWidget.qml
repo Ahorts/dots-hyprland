@@ -14,6 +14,8 @@ import Quickshell.Hyprland
 Item {
     id: root
     property bool hyprscrollingEnabled: Config.options.overview.hyprscrollingImplementation.enable
+    property int maxWorkspaceWidth: Config.options.overview.hyprscrollingImplementation.maxWorkspaceWidth
+    property int minWorkspaceWidth: 400
     required property var panelWindow
     readonly property HyprlandMonitor monitor: Hyprland.monitorFor(panelWindow.screen)
     readonly property var toplevels: ToplevelManager.toplevels
@@ -42,6 +44,16 @@ Item {
     property real largeWorkspaceRadius: Appearance.rounding.large
     property real smallWorkspaceRadius: Appearance.rounding.verysmall
 
+    // we are using a width map to get all windows width and settings workspaceImplicitWidth to the maximum item of this list/map
+    property list<int> widthMap: [] 
+
+    onWidthMapChanged: root.workspaceImplicitWidth = getMaxWidth()
+
+    function getMaxWidth() {
+        if (widthMap.length === 0) return minWorkspaceWidth;
+        const max = Math.max(...widthMap);
+        return Math.min(max, maxWorkspaceWidth);
+    }
 
     property real workspaceNumberMargin: 80
     property real workspaceNumberSize: 250 * monitor.scale
@@ -233,7 +245,7 @@ Item {
                     widgetMonitor: HyprlandData.monitors.find(m => m.id == root.monitor.id)
                     windowData: windowByAddress[address]
 
-                    property int maxWorkspaceWidth: Config.options.overview.hyprscrollingImplementation.maxWorkspaceWidth
+                    
 
                     property int wsId: windowData?.workspace?.id
 
@@ -272,10 +284,13 @@ Item {
                             const w = wsWindowsSorted[i]
                             sum += w.size?.[0] ?? 0
                         }
-                        let resultValue = sum * root.scale
-                        if (!root.hyprscrollingEnabled || resultValue <= 0) return 0
-                        root.workspaceImplicitWidth = Math.min(resultValue,maxWorkspaceWidth)
-                        return resultValue
+                        return sum * root.scale
+                    }
+
+                    onWorkspaceTotalWindowWidthChanged: { // we have to update widthMap here to prevent 'Binding Loop' error
+                        if (workspaceTotalWindowWidth > 0 && root.hyprscrollingEnabled) {
+                            root.widthMap.push(workspaceTotalWindowWidth)
+                        }
                     }
 
                     property real windowWidthRatio: {
