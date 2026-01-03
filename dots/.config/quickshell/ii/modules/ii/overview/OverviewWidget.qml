@@ -186,7 +186,7 @@ Item {
                                 }
                             }
 
-                            DropArea { // Workspacedrop type
+                            DropArea { // Workspace drop
                                 anchors.fill: parent
                                 onEntered: {
                                     root.dragDropType = 0
@@ -244,8 +244,6 @@ Item {
                     scale: root.scale
                     widgetMonitor: HyprlandData.monitors.find(m => m.id == root.monitor.id)
                     windowData: windowByAddress[address]
-
-                    
 
                     property int wsId: windowData?.workspace?.id
 
@@ -390,12 +388,13 @@ Item {
                         }
                     }
 
-                    DropArea { // Workspacedrop type
-                        anchors.fill:  parent // disabling workspace drop area when there are windows in the workspace
+                    DropArea { // Window drop
+                        anchors.fill:  parent 
                         onEntered: {
                             parent.hovering = true
                             root.dragDropType = 1 // window
                             root.draggingTargetWindowAdress = windowData?.address
+                            root.draggingTargetWorkspace = window?.wsId
                             const localX = drag.x
                             const half = width / 2
 
@@ -406,9 +405,6 @@ Item {
                                 root.draggingDirection = "r"
                                 hoveringDir = 1
                             }
-
-                            
-                            if (root.draggingFromWindowAddress == root.draggingTargetWindowAdress) return;
                         }
                         onExited: {
                             parent.hovering = false
@@ -477,9 +473,9 @@ Item {
                                 window.Drag.active = false
                                 if (targetWindowAdress !== "" && targetWindowAdress !== windowData?.address) {
                                     if (root.draggingTargetWorkspace === root.draggingFromWorkspace) { // plugin directly supports same workspace switch
-                                        Hyprland.dispatch(`layoutmsg swapaddrdir ${targetWindowAdress} ${root.draggingDirection} ${window.windowData?.address}`)
+                                        Hyprland.dispatch(`layoutmsg swapaddrdir ${targetWindowAdress} ${root.draggingDirection} ${window.windowData?.address} true`)
                                     } else { // different workspace
-                                        Hyprland.dispatch(`movetoworkspacesilent ${targetWorkspace}, address:${window.windowData?.address}`)
+                                        Hyprland.dispatch(`movetoworkspacesilent ${targetWorkspace}, address:${root.draggingFromWindowAddress}`)
                                         Qt.callLater(() => {
                                             Hyprland.dispatch(`layoutmsg swapaddrdir ${targetWindowAdress} ${root.draggingDirection} ${window.windowData?.address} true`)
                                         })
