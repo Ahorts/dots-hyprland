@@ -33,7 +33,7 @@ Item {
 
     property int individualIconBoxHeight: 24
     property int iconBoxWrapperSize: 28
-    property int workspaceDotSize: 5
+    property int workspaceDotSize: 4
     property real iconRatio: 0.8
     property bool showIcons: Config.options.bar.workspaces.showAppIcons
 
@@ -108,6 +108,7 @@ Item {
     }
 
 
+    // Active workspace indicator
     Rectangle {
         z: 2
         anchors.horizontalCenter: root.vertical ? parent.horizontalCenter : undefined
@@ -130,12 +131,11 @@ Item {
             index: root.workspaceIndexInGroup
         }
 
-        property int fromIndex: Math.min(idxPair.idx1, idxPair.idx2)
-        property int toIndex: Math.max(idxPair.idx1, idxPair.idx2)
+        property real indicatorMargin: 7 // to make a perfect round in one windowed-workspaces
 
         property real offset: root.vertical ? contentLayout.children[root.workspaceIndexInGroup]?.height - baseHeight : contentLayout.children[root.workspaceIndexInGroup]?.width - baseHeight
-        property real indicatorPosition: (Math.min(idxPair.idx1, idxPair.idx2) * root.iconBoxWrapperSize + offsetFor(root.workspaceIndexInGroup + 1) - offset / 2) - offset / 2
-        property real indicatorLength: (Math.abs(idxPair.idx1 - idxPair.idx2) * root.iconBoxWrapperSize + root.iconBoxWrapperSize) + offset
+        property real indicatorPosition: ((Math.min(idxPair.idx1, idxPair.idx2) * root.iconBoxWrapperSize + offsetFor(root.workspaceIndexInGroup + 1) - offset / 2) - offset / 2) + indicatorMargin / 2 - 1 
+        property real indicatorLength: (Math.abs(idxPair.idx1 - idxPair.idx2) * root.iconBoxWrapperSize + root.iconBoxWrapperSize) + offset - indicatorMargin 
 
         y: root.vertical ? indicatorPosition : 0
         x: root.vertical ? 0 : indicatorPosition
