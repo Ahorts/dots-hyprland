@@ -3,9 +3,33 @@ import QtQuick.Layouts
 import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
+import Quickshell
+import Quickshell.Io
 
 ContentPage {
+    id: page
     forceWidth: true
+
+    property bool hyprscrollingPluginEnabled: false
+    property bool pluginStateFetched: false
+
+    Process {
+        running: page.contentY > 500 && !pluginStateFetched // fetching the content when scrolled a little to prevent lags
+        command: [ "hyprpm", "list"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                let rawOutput = this.text;
+        
+                let cleanOutput = rawOutput.replace(/\x1B\[[0-9;]*[JKmsu]/g, '');
+                let flatText = cleanOutput.replace(/[│└─→]/g, ' ').replace(/\s+/g, ' ');
+
+                let pluginEnabled = flatText.includes("Plugin hyprscrolling enabled: true")
+                page.hyprscrollingPluginEnabled = pluginEnabled
+                page.pluginStateFetched = true
+            }
+        } 
+    }
+
 
     ContentSection {
         icon: "keyboard"
@@ -591,16 +615,6 @@ ContentPage {
                     onValueChanged: {
                         Config.options.sidebar.cornerOpen.clicklessCornerVerticalOffset = value;
                     }
-                    MouseArea {
-                        id: mouseArea
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        acceptedButtons: Qt.NoButton
-                        StyledToolTip {
-                            extraVisibleCondition: mouseArea.containsMouse
-                            text: Translation.tr("Why this is cool:\nFor non-0 values, it won't trigger when you reach the\nscreen corner along the horizontal edge, but it will when\nyou do along the vertical edge")
-                        }
-                    }
                 }
             }
             
@@ -794,8 +808,8 @@ ContentPage {
             title: Translation.tr("Hyprscrolling overview")
 
             ConfigSwitch {
-                buttonIcon: "check"
-                text: Translation.tr("Enable")
+                buttonIcon: "view_carousel"
+                text: Translation.tr("Use hyprscrolling implementation")
                 checked: Config.options.overview.hyprscrollingImplementation.enable
                 onCheckedChanged: {
                     Config.options.overview.hyprscrollingImplementation.enable = checked;
@@ -814,13 +828,20 @@ ContentPage {
                 }
             }
         }
+
         RowLayout {
             Layout.topMargin: 10
             StyledText {
+                property bool firstError: page.hyprscrollingPluginEnabled && !configEnabled
+                property bool secondError: !page.hyprscrollingPluginEnabled & configEnabled
+                property bool configEnabled: Config.options.overview.hyprscrollingImplementation.enable
                 Layout.leftMargin: 10
-                color: Appearance.colors.colSubtext
+                color: firstError || secondError ? Appearance.colors.colError : Appearance.colors.colSubtext
                 font.pixelSize: Appearance.font.pixelSize.smallie
-                text: Translation.tr("Plese refer to documentation for more information about how to\nimplement hyprscrolling plugin to properly work with this shell")
+                text: firstError ? Translation.tr("Hyprscrolling plugin is installed. To ensure a better experience\nplease enable the ‘implementation’ option.") :
+                    secondError ? Translation.tr("Hyprscrolling plugin is not installed. To ensure a better experience\nplease disable the ‘implementation’ option.") :
+                    Translation.tr("Plese refer to documentation for more information about how to\nimplement hyprscrolling plugin to properly work with this shell")
+                    
             }
             Item {
                 Layout.fillWidth: true
