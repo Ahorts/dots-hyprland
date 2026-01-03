@@ -37,6 +37,8 @@ However there can (and will) be bugs **so don't expect stability here**. Use the
 git clone https://github.com/vaguesyntax/ii-vynx.git --recurse-submodules
 ```
 
+Remove the old `.config/quickshell/ii` folder.
+
 And copy `dots/.config/quickshell/ii` folder to your `.config/quickshell/ii` folder.
 
 <div align="center">
