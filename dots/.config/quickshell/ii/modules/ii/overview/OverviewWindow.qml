@@ -26,20 +26,15 @@ Item { // Window
         const monitorHeight = monitorData.transform & 1 ? monitorData.width : monitorData.height;
         return (widgetHeight * monitorData.scale) / (monitorHeight * widgetMonitor.scale);
     }
-    property real initX: {
-        return Math.max((windowData?.at[0] - (monitorData?.x ?? 0) - monitorData?.reserved[0]) * widthRatio * root.scale, 0) + xOffset;
-    }
-
-    property real initY: {
-        return Math.max((windowData?.at[1] - (monitorData?.y ?? 0) - monitorData?.reserved[1]) * heightRatio * root.scale, 0) + yOffset;
-    }
+    property real initX: Math.max(((windowData ? windowData.at[0] : 0) - (monitorData ? monitorData.x : 0) - (monitorData ? monitorData.reserved[0] : 0)) * widthRatio * root.scale, 0) + xOffset
+    property real initY: Math.max(((windowData ? windowData.at[1] : 0) - (monitorData ? monitorData.y : 0) - (monitorData ? monitorData.reserved[1] : 0)) * heightRatio * root.scale, 0) + yOffset
     property real xOffset: 0
     property real yOffset: 0
     property var widgetMonitor
     property int widgetMonitorId: widgetMonitor.id
 
-    property var targetWindowWidth: windowData?.size[0] * scale * widthRatio
-    property var targetWindowHeight: windowData?.size[1] * scale * heightRatio
+    property real targetWindowWidth: (windowData ? windowData.size[0] : 0) * scale * widthRatio
+    property real targetWindowHeight: (windowData ? windowData.size[1] : 0) * scale * heightRatio
     property bool hovered: false
     property bool pressed: false
 
@@ -53,7 +48,7 @@ Item { // Window
 
     property bool indicateXWayland: windowData?.xwayland ?? false
 
-    property bool hyprscrollingEnabled: Config.options.overview.enableScrollingOverview
+    property bool hyprscrollingEnabled: Config.options.overview.hyprscrollingImplementation.enable
     property int scrollWidth
     property int scrollHeight
     property int scrollX
