@@ -39,6 +39,7 @@ Item { // Window
     property bool pressed: false
 
     property bool centerIcons: Config.options.overview.centerIcons
+    property bool showIcons: Config.options.overview.showIcons
     property real iconGapRatio: 0.06
     property real iconToWindowRatio: centerIcons ? 0.35 : 0.15
     property real xwaylandIndicatorToIconRatio: 0.35
@@ -112,35 +113,39 @@ Item { // Window
             border.width : 1
         }
 
-        Image {
-            id: windowIcon
-            property real baseSize: Math.min(root.targetWindowWidth, root.targetWindowHeight)
-            anchors {
-                top: root.centerIcons ? undefined : parent.top
-                left: root.centerIcons ? undefined : parent.left
-                centerIn: root.centerIcons ? parent : undefined
-                margins: baseSize * root.iconGapRatio
-            }
-            property var iconSize: {
-                // console.log("-=-=-", root.toplevel.title, "-=-=-")
-                // console.log("Target window size:", targetWindowWidth, targetWindowHeight)
-                // console.log("Icon ratio:", root.compactMode ? root.iconToWindowRatioCompact : root.iconToWindowRatio)
-                // console.log("Scale:", root.monitorData.scale)
-                // console.log("Final:", Math.min(targetWindowWidth, targetWindowHeight) * (root.compactMode ? root.iconToWindowRatioCompact : root.iconToWindowRatio) / root.monitorData.scale)
-                return baseSize * (root.compactMode ? root.iconToWindowRatioCompact : root.iconToWindowRatio);
-            }
-            // mipmap: true
-            Layout.alignment: Qt.AlignHCenter
-            source: root.iconPath
-            width: iconSize
-            height: iconSize
-            sourceSize: Qt.size(iconSize, iconSize)
+        Loader {
+            active: root.showIcons
+            anchors.centerIn: root.centerIcons ? parent : undefined
+            sourceComponent: Image {
+                id: windowIcon
+                property real baseSize: Math.min(root.targetWindowWidth, root.targetWindowHeight)
+                anchors {
+                    top: root.centerIcons ? undefined : parent.top
+                    left: root.centerIcons ? undefined : parent.left
+                    centerIn: root.centerIcons ? parent : undefined
+                    margins: baseSize * root.iconGapRatio
+                }
+                property var iconSize: {
+                    // console.log("-=-=-", root.toplevel.title, "-=-=-")
+                    // console.log("Target window size:", targetWindowWidth, targetWindowHeight)
+                    // console.log("Icon ratio:", root.compactMode ? root.iconToWindowRatioCompact : root.iconToWindowRatio)
+                    // console.log("Scale:", root.monitorData.scale)
+                    // console.log("Final:", Math.min(targetWindowWidth, targetWindowHeight) * (root.compactMode ? root.iconToWindowRatioCompact : root.iconToWindowRatio) / root.monitorData.scale)
+                    return baseSize * (root.compactMode ? root.iconToWindowRatioCompact : root.iconToWindowRatio);
+                }
+                // mipmap: true
+                Layout.alignment: Qt.AlignHCenter
+                source: root.iconPath
+                width: iconSize
+                height: iconSize
+                sourceSize: Qt.size(iconSize, iconSize)
 
-            Behavior on width {
-                animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
-            }
-            Behavior on height {
-                animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
+                Behavior on width {
+                    animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
+                }
+                Behavior on height {
+                    animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
+                }
             }
         }
     }

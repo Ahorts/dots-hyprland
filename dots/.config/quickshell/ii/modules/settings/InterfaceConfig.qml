@@ -709,14 +709,27 @@ ContentPage {
                 Config.options.overview.enable = checked;
             }
         }
-        ConfigSwitch {
-            buttonIcon: "center_focus_strong"
-            text: Translation.tr("Center icons")
-            checked: Config.options.overview.centerIcons
-            onCheckedChanged: {
-                Config.options.overview.centerIcons = checked;
+        ConfigRow {
+            uniform: true
+            ConfigSwitch {
+                buttonIcon: "visibility"
+                text: Translation.tr("Show icons")
+                checked: Config.options.overview.showIcons
+                onCheckedChanged: {
+                    Config.options.overview.showIcons = checked;
+                }
+            }
+            ConfigSwitch {
+                enabled: Config.options.overview.showIcons
+                buttonIcon: "center_focus_strong"
+                text: Translation.tr("Center icons")
+                checked: Config.options.overview.centerIcons
+                onCheckedChanged: {
+                    Config.options.overview.centerIcons = checked;
+                }
             }
         }
+        
         ConfigSpinBox {
             icon: "loupe"
             text: Translation.tr("Scale (%)")

@@ -417,6 +417,7 @@ Singleton {
                 property real columns: 5
                 property bool orderRightLeft: false
                 property bool orderBottomUp: false
+                property bool showIcons: true
                 property bool centerIcons: true
                 property bool useWorkspaceMap: false
                 property list<var> workspaceMap: [0,10]
