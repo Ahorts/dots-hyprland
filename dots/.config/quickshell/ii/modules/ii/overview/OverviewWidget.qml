@@ -75,6 +75,10 @@ Item {
     implicitWidth: overviewBackground.implicitWidth + Appearance.sizes.elevationMargin * 2
     implicitHeight: overviewBackground.implicitHeight + Appearance.sizes.elevationMargin * 2
 
+    Behavior on workspaceImplicitWidth {
+        animation: Appearance.animation.elementResize.numberAnimation.createObject(this)
+    }
+
     property Component windowComponent: OverviewWindow {}
     property list<OverviewWindow> windowWidgets: []
 
