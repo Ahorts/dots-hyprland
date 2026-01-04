@@ -863,15 +863,6 @@ ContentPage {
                 }
             }
             ConfigSwitch {
-                buttonIcon: "texture"
-                text: Translation.tr("Darken screen")
-                enabled: Config.options.overview.style === "scrolling"
-                checked: Config.options.overview.scrollingStyle.dimBackground
-                onCheckedChanged: {
-                    Config.options.overview.scrollingStyle.dimBackground = checked;
-                }
-            }
-            ConfigSwitch {
                 buttonIcon: "wallpaper"
                 text: Translation.tr("Show wallpaper")
                 enabled: Config.options.overview.style === "scrolling"
@@ -880,17 +871,29 @@ ContentPage {
                     Config.options.overview.scrollingStyle.showWallpaper = checked;
                 }
             }
-            ConfigSpinBox {
-                enabled: Config.options.overview.hyprscrollingImplementation.enable
-                icon: "width"
-                text: Translation.tr("Dim level (%)")
-                value: Config.options.overview.scrollingStyle.dimLevelPercentage
-                from: 0
-                to: 100
-                stepSize: 10
-                onValueChanged: {
-                    Config.options.overview.scrollingStyle.dimLevelPercentage = value;
+            ConfigSelectionArray {
+                enabled: Config.options.overview.style === "scrolling"
+                currentValue: Config.options.overview.scrollingStyle.backgroundStyle
+                onSelected: newValue => {
+                    Config.options.overview.scrollingStyle.backgroundStyle = newValue
                 }
+                options: [
+                    {
+                        displayName: Translation.tr("Transparent"),
+                        icon: "opacity",
+                        value: "transparent"
+                    },
+                    {
+                        displayName: Translation.tr("Blur"),
+                        icon: "blur_on",
+                        value: "blur"
+                    },
+                    {
+                        displayName: Translation.tr("Dim"),
+                        icon: "ev_shadow",
+                        value: "dim"
+                    }
+                ]
             }
         }
 

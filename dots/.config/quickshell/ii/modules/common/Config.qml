@@ -430,9 +430,8 @@ Singleton {
                 }
                 property JsonObject scrollingStyle: JsonObject {
                     property bool showOpenningAnimation: true
-                    property bool dimBackground: true
-                    property int dimLevelPercentage: 30 // in percentage
                     property bool showWallpaper: false
+                    property string backgroundStyle: "blur" // Options: transparent, blur, dim
                 }
                 
             }

@@ -166,14 +166,15 @@ Item {
         }
     }
 
+    property string backgroundStyle: Config.options.overview.scrollingStyle.backgroundStyle
+
     Rectangle { // Background
         id: overviewBackground
         anchors.fill: parent
         color: "transparent"
         Component.onCompleted: {
-            if (!Config.options.overview.scrollingStyle.dimBackground) return; 
-            const dimLevelPercentage = Config.options.overview.scrollingStyle.dimLevelPercentage
-            color = Qt.rgba(0,0,0,dimLevelPercentage/100)
+            const opacity = backgroundStyle == "dim" ? 0.4 : backgroundStyle == "blur" ? 0.8 : 0 // blur has to 0.8 or more
+            color = Qt.rgba(0,0,0,opacity)
         }
         Behavior on color {
             animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
