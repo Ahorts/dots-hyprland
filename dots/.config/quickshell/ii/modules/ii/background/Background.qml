@@ -69,7 +69,7 @@ Variants {
         }
         
         property bool showWallpaper: Config.options.overview.scrollingStyle.showWallpaper
-        property bool showOnTop: Config.options.overview.style === "scrolling" && overviewOpen && showWallpaper
+        property bool showOnTop: Config.options.overview.style === "scrolling" && overviewOpen && showWallpaper && Config.options.overview.scrollingStyle.backgroundStyle != "blur" 
 
         property real zoomRatio: Config.options.overview.scrollingStyle.showOpenningAnimation  ? 1.08 : 1.0001
         

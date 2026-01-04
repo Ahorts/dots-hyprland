@@ -904,29 +904,32 @@ ContentPage {
                     Config.options.overview.scrollingStyle.showWallpaper = checked;
                 }
             }
-            ConfigSelectionArray {
-                enabled: Config.options.overview.style === "scrolling"
-                currentValue: Config.options.overview.scrollingStyle.backgroundStyle
-                onSelected: newValue => {
-                    Config.options.overview.scrollingStyle.backgroundStyle = newValue
-                }
-                options: [
-                    {
-                        displayName: Translation.tr("Transparent"),
-                        icon: "opacity",
-                        value: "transparent"
-                    },
-                    {
-                        displayName: Translation.tr("Blur"),
-                        icon: "blur_on",
-                        value: "blur"
-                    },
-                    {
-                        displayName: Translation.tr("Dim"),
-                        icon: "ev_shadow",
-                        value: "dim"
+            ContentSubsection {
+                title: Translation.tr("Background style")
+                ConfigSelectionArray {
+                    enabled: Config.options.overview.style === "scrolling"
+                    currentValue: Config.options.overview.scrollingStyle.backgroundStyle
+                    onSelected: newValue => {
+                        Config.options.overview.scrollingStyle.backgroundStyle = newValue
                     }
-                ]
+                    options: [
+                        {
+                            displayName: Translation.tr("Blur"),
+                            icon: "blur_on",
+                            value: "blur"
+                        },
+                        {
+                            displayName: Translation.tr("Transparent"),
+                            icon: "opacity",
+                            value: "transparent"
+                        },
+                        {
+                            displayName: Translation.tr("Dim"),
+                            icon: "ev_shadow",
+                            value: "dim"
+                        }
+                    ]
+                }
             }
         }
 
