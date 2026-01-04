@@ -798,9 +798,9 @@ ContentPage {
                 }
                 options: [
                     {
-                        displayName: Translation.tr("Original"),
+                        displayName: Translation.tr("Classic"),
                         icon: "grid_view",
-                        value: "original"
+                        value: "classic"
                     },
                     {
                         displayName: Translation.tr("Scrolling"),
@@ -812,11 +812,11 @@ ContentPage {
         }
         
         ContentSubsection {
-            title: Translation.tr("Original overview style")
+            title: Translation.tr("Classic overview style")
             ConfigRow {
                 uniform: true
                 ConfigSpinBox {
-                    enabled: Config.options.overview.style === "original"
+                    enabled: Config.options.overview.style === "classic"
                     icon: "splitscreen_bottom"
                     text: Translation.tr("Rows")
                     value: Config.options.overview.rows
@@ -828,7 +828,7 @@ ContentPage {
                     }
                 }
                 ConfigSpinBox {
-                    enabled: Config.options.overview.style === "original"
+                    enabled: Config.options.overview.style === "classic"
                     icon: "splitscreen_right"
                     text: Translation.tr("Columns")
                     value: Config.options.overview.columns
@@ -843,7 +843,7 @@ ContentPage {
             ConfigRow {
                 uniform: true
                 ConfigSelectionArray {
-                    enabled: Config.options.overview.style === "original"
+                    enabled: Config.options.overview.style === "classic"
                     currentValue: Config.options.overview.orderRightLeft
                     onSelected: newValue => {
                         Config.options.overview.orderRightLeft = newValue
@@ -862,7 +862,7 @@ ContentPage {
                     ]
                 }
                 ConfigSelectionArray {
-                    enabled: Config.options.overview.style === "original"
+                    enabled: Config.options.overview.style === "classic"
                     currentValue: Config.options.overview.orderBottomUp
                     onSelected: newValue => {
                         Config.options.overview.orderBottomUp = newValue
@@ -904,6 +904,15 @@ ContentPage {
                     Config.options.overview.scrollingStyle.dimBackground = checked;
                 }
             }
+            ConfigSwitch {
+                buttonIcon: "wallpaper"
+                text: Translation.tr("Show wallpaper")
+                enabled: Config.options.overview.style === "scrolling"
+                checked: Config.options.overview.scrollingStyle.showWallpaper
+                onCheckedChanged: {
+                    Config.options.overview.scrollingStyle.showWallpaper = checked;
+                }
+            }
         }
 
         ContentSubsection {
@@ -917,16 +926,30 @@ ContentPage {
                     Config.options.overview.hyprscrollingImplementation.enable = checked;
                 }
             }
-            ConfigSpinBox {
-                enabled: Config.options.overview.hyprscrollingImplementation.enable
-                icon: "width"
-                text: Translation.tr("Max workspace width")
-                value: Config.options.overview.hyprscrollingImplementation.maxWorkspaceWidth
-                from: 100
-                to: 1900
-                stepSize: 100
-                onValueChanged: {
-                    Config.options.overview.hyprscrollingImplementation.maxWorkspaceWidth = value;
+            ConfigRow {
+                ConfigSpinBox {
+                    enabled: Config.options.overview.hyprscrollingImplementation.enable
+                    icon: "width"
+                    text: Translation.tr("Max workspace width")
+                    value: Config.options.overview.hyprscrollingImplementation.maxWorkspaceWidth
+                    from: 100
+                    to: 1900
+                    stepSize: 100
+                    onValueChanged: {
+                        Config.options.overview.hyprscrollingImplementation.maxWorkspaceWidth = value;
+                    }
+                }
+                ConfigSpinBox {
+                    enabled: Config.options.overview.hyprscrollingImplementation.enable
+                    icon: "width"
+                    text: Translation.tr("Dim level (%)")
+                    value: Config.options.overview.scrollingStyle.dimLevelPercentage
+                    from: 0
+                    to: 100
+                    stepSize: 10
+                    onValueChanged: {
+                        Config.options.overview.scrollingStyle.dimLevelPercentage = value;
+                    }
                 }
             }
         }

@@ -67,11 +67,19 @@ Variants {
         Behavior on colText {
             animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
         }
+        
+        property bool showWallpaper: Config.options.overview.scrollingStyle.showWallpaper
+        property bool showOnTop: Config.options.overview.style === "scrolling" && overviewOpen && showWallpaper
+
+        property real zoomRatio: Config.options.overview.scrollingStyle.showOpenningAnimation  ? 1.08 : 1.0001
+        
+        property bool overviewOpen: GlobalStates.overviewOpen
+        onOverviewOpenChanged: wallpaperItem.scale = overviewOpen && Config.options.overview.style === "scrolling" ? 1 : zoomRatio
 
         // Layer props
         screen: modelData
         exclusionMode: ExclusionMode.Ignore
-        WlrLayershell.layer: (GlobalStates.screenLocked && !scaleAnim.running) ? WlrLayer.Overlay : WlrLayer.Bottom
+        WlrLayershell.layer: (showOnTop || GlobalStates.screenLocked && !scaleAnim.running) ? WlrLayer.Top : WlrLayer.Bottom
         // WlrLayershell.layer: WlrLayer.Bottom
         WlrLayershell.namespace: "quickshell:background"
         anchors {
@@ -123,9 +131,16 @@ Variants {
             }
         }
 
+
+
         Item {
+            id: wallpaperItem
             anchors.fill: parent
             clip: true
+
+            Behavior on scale {
+                animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
+            }
 
             // Wallpaper
             StyledImage {

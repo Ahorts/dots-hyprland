@@ -590,7 +590,7 @@ Singleton {
                 property bool useWorkspaceMap: false
                 property list<var> workspaceMap: [0,10]
 
-                property string style: "original" // Options: original, scrolling
+                property string style: "classic" // Options: classic, scrolling
 
                 property JsonObject hyprscrollingImplementation: JsonObject {
                     property bool enable: false
@@ -599,6 +599,8 @@ Singleton {
                 property JsonObject scrollingStyle: JsonObject {
                     property bool showOpenningAnimation: true
                     property bool dimBackground: true
+                    property int dimLevelPercentage: 30 // in percentage
+                    property bool showWallpaper: false
                 }
                 
                 property string position: "center" // Options: top, center, bottom

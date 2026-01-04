@@ -65,7 +65,7 @@ Item {
         w.monitor === monitor.id
     )
 
-    property real scaleRatio: Config.options.overview.scale
+    property real scaleRatio: Config.options.overview.scale * 1.25 // 1.25 to make it almost same size as classic overview
     
     property int currentWorkspace: monitor.activeWorkspace?.id - root.workspaceOffset
     property var focusedXPerWorkspace: []
@@ -166,20 +166,14 @@ Item {
         }
     }
 
-    // Openning animation
-    property real initScale: Config.options.overview.scrollingStyle.showOpenningAnimation ? 1.08 : 1.0001
-    scale: initScale
-    Behavior on scale {
-        animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
-    }
-
     Rectangle { // Background
         id: overviewBackground
         anchors.fill: parent
         color: "transparent"
         Component.onCompleted: {
             if (!Config.options.overview.scrollingStyle.dimBackground) return; 
-            color = ColorUtils.transparentize("black", 0.5)
+            const dimLevelPercentage = Config.options.overview.scrollingStyle.dimLevelPercentage
+            color = Qt.rgba(0,0,0,dimLevelPercentage/100)
         }
         Behavior on color {
             animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)

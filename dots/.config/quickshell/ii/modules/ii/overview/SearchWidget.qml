@@ -93,6 +93,19 @@ Item { // Wrapper
         }
     }
 
+    required property real zoomRatio
+    property bool overviewOpen: GlobalStates.overviewOpen
+    property real initScale: zoomRatio
+    onOverviewOpenChanged: {
+        initScale = overviewOpen ? 1 : zoomRatio
+    }
+
+    scale: initScale
+
+    Behavior on scale {
+        animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
+    }
+
     StyledRectangularShadow {
         target: searchWidgetContent
     }
