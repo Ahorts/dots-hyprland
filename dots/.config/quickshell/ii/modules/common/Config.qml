@@ -361,13 +361,21 @@ Singleton {
                             scrollTo: "timerAndPomodoro"
                         },
                         {
+                            id: "weather",
+                            icon: "weather_mix",
+                            title: "Weather",
+                            centered: false,
+                            visible: true,
+                            scrollTo: ""
+                        },
+                        {
                             id: "utility_buttons",
                             icon: "build",
                             title: "Utility buttons",
                             centered: false,
                             visible: true,
                             scrollTo: "utility_buttons"
-                        },
+                        }
                     ]
                     property list<var> left: [
                         {
