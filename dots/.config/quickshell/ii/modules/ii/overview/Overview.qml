@@ -110,6 +110,7 @@ Scope {
 
             Loader {
                 id: overviewLoader
+                anchors.topMargin: margin
                 anchors.top: searchWidget.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
                 active: GlobalStates.overviewOpen && (Config?.options.overview.enable ?? true) && overviewStyle == "classic"
