@@ -114,7 +114,7 @@ Item { // Wrapper
         anchors {
             top: parent.top
             horizontalCenter: parent.horizontalCenter
-            topMargin: Appearance.sizes.elevationMargin * 2
+            topMargin: 50 + Appearance.sizes.elevationMargin //FIXME: Fix magic number
         }
         clip: true
         implicitWidth: columnLayout.implicitWidth
