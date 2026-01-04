@@ -422,7 +422,7 @@ Singleton {
                 property bool useWorkspaceMap: false
                 property list<var> workspaceMap: [0,10]
 
-                property string style: "original" // Options: original, scrolling
+                property string style: "classic" // Options: classic, scrolling
 
                 property JsonObject hyprscrollingImplementation: JsonObject {
                     property bool enable: false

@@ -18,6 +18,7 @@ Item { // Wrapper
     property bool showResults: searchingText != ""
     implicitWidth: searchWidgetContent.implicitWidth + Appearance.sizes.elevationMargin * 2
     implicitHeight: searchBar.implicitHeight + searchBar.verticalPadding * 2 + Appearance.sizes.elevationMargin * 2
+    
 
     function focusFirstItem() {
         appResults.currentIndex = 0;
@@ -92,6 +93,19 @@ Item { // Wrapper
         }
     }
 
+    required property real zoomRatio
+    property bool overviewOpen: GlobalStates.overviewOpen
+    property real initScale: zoomRatio
+    onOverviewOpenChanged: {
+        initScale = overviewOpen ? 1 : zoomRatio
+    }
+
+    scale: initScale
+
+    Behavior on scale {
+        animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
+    }
+
     StyledRectangularShadow {
         target: searchWidgetContent
     }
@@ -100,7 +114,7 @@ Item { // Wrapper
         anchors {
             top: parent.top
             horizontalCenter: parent.horizontalCenter
-            topMargin: Appearance.sizes.elevationMargin
+            topMargin: Appearance.sizes.elevationMargin * 2
         }
         clip: true
         implicitWidth: columnLayout.implicitWidth

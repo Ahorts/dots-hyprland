@@ -37,13 +37,23 @@ Scope {
                 item: GlobalStates.overviewOpen ? columnLayout : null
             } */
 
+            property bool showOpenningAnimation: Config.options.overview.scrollingStyle.showOpenningAnimation
+            property real zoomRatio: showOpenningAnimation ? 1.08 : 1.0001
+            property real initScale: zoomRatio
+
             anchors {
                 top: true
                 bottom: true
                 left: true
                 right: true
             }
-            margins.left: -50
+            property int margin: 50
+            margins { //TODO: properly implement these according to bar position
+                top: -margin
+                bottom: -margin
+                left: -margin
+                right: -margin
+            }
 
             HyprlandFocusGrab {
                 id: grab
@@ -90,6 +100,7 @@ Scope {
             SearchWidget {
                 z: 999
                 id: searchWidget
+                zoomRatio: overviewStyle == "scrolling" ? root.zoomRatio : 1
                 anchors.horizontalCenter: parent.horizontalCenter
                 Synchronizer on searchingText {
                     property alias source: root.searchingText
@@ -100,7 +111,7 @@ Scope {
                 id: overviewLoader
                 anchors.top: searchWidget.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
-                active: GlobalStates.overviewOpen && (Config?.options.overview.enable ?? true) && overviewStyle == "original"
+                active: GlobalStates.overviewOpen && (Config?.options.overview.enable ?? true) && overviewStyle == "classic"
                 sourceComponent: OverviewWidget {
                     panelWindow: root
                     visible: (root.searchingText == "")
@@ -113,10 +124,14 @@ Scope {
                 anchors.fill: parent
                 active: GlobalStates.overviewOpen && (Config?.options.overview.enable ?? true) && overviewStyle == "scrolling"
                 sourceComponent: ScrollingOverviewWidget {
+                    scale: initScale
                     anchors.fill: parent
                     panelWindow: root
                     visible: (root.searchingText == "")
                     monitorIndex: root.monitorIndex
+                    Behavior on scale {
+                        animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
+                    }
                 }
             }
         }

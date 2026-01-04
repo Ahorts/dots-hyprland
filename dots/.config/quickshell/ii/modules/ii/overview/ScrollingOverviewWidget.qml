@@ -65,7 +65,7 @@ Item {
         w.monitor === monitor.id
     )
 
-    property real scaleRatio: Config.options.overview.scale
+    property real scaleRatio: Config.options.overview.scale * 1.25 // 1.25 to make it almost same size as classic overview
     
     property int currentWorkspace: monitor.activeWorkspace?.id - root.workspaceOffset
     property var focusedXPerWorkspace: []
@@ -164,13 +164,6 @@ Item {
                 focusedXPerWorkspace.push(localX);
             }
         }
-    }
-
-    // Openning animation
-    property real initScale: Config.options.overview.scrollingStyle.showOpenningAnimation ? 1.08 : 1.0001
-    scale: initScale
-    Behavior on scale {
-        animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
     }
 
     Rectangle { // Background
