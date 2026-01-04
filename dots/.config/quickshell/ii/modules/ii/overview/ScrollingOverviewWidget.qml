@@ -70,7 +70,7 @@ Item {
     property int currentWorkspace: monitor.activeWorkspace?.id - root.workspaceOffset
     property var focusedXPerWorkspace: []
     property var lastFocusedPerWorkspace: []
-    property int scrollWorkspace: 0
+    property int scrollWorkspace: 0 // y scrolling workspace
     property int scrollWindow: 0 // for x scrolling
     property real scrollY: 0
     property real scrollX: 0
@@ -117,10 +117,13 @@ Item {
 
         onWheel: function(wheel) {
             const shiftPressed = wheel.modifiers & Qt.ShiftModifier
-
+            
+            
             if (shiftPressed && wheel.angleDelta.y > 0) {
+                if (root.scrollWindow > 2) return
                 root.scrollWindow += 1
             } else if (shiftPressed && wheel.angleDelta.y < 0) {
+                if (root.scrollWindow < -2) return
                 root.scrollWindow -= 1
             } else {
                 if (wheel.angleDelta.y > 0) {
@@ -133,7 +136,6 @@ Item {
             }
         }
     }
-
 
     onWindowsChanged: {
         lastFocusedPerWorkspace = []; focusedXPerWorkspace = [];
@@ -201,7 +203,7 @@ Item {
                     property bool hovering: false
                     anchors.horizontalCenter: parent.horizontalCenter
 
-                    y: (root.workspaceImplicitHeight + root.workspaceSpacing) * rowIndex
+                    y: (root.workspaceImplicitHeight + root.workspaceSpacing) * rowIndex - 3
                     implicitWidth: root.workspaceImplicitWidth
                     implicitHeight: root.workspaceImplicitHeight
                     color: hovering ? ColorUtils.transparentize(Appearance.colors.colLayer1Hover, 0.7) : ColorUtils.transparentize(Appearance.colors.colLayer1, 0.5)
@@ -210,6 +212,10 @@ Item {
                     Behavior on color {
                         animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
                     }
+                    // for scrolling indicator
+                    property bool isScrolledWorkspace: wsId - 1 === root.scrollWorkspace
+                    border.width: isScrolledWorkspace ? 2 : 0
+                    border.color: Appearance.colors.colPrimary
 
                     StyledText {
                         text: wsId
@@ -346,7 +352,7 @@ Item {
                         return false
                     }
 
-                    property bool isActiveWorkspace: wsId == monitor.activeWorkspace?.id
+                    property bool isActiveWorkspace: wsId == root.scrollWorkspace + 1
                     property real extraScrollX: isActiveWorkspace ? root.scrollX : 0
                     
                     property int wsCount: wsWindowsSorted.length || 1
