@@ -16,9 +16,10 @@ Item {
     required property int monitorIndex 
     required property var panelWindow
 
-    property bool hyprscrollingEnabled: Config.options.overview.hyprscrollingImplementation.enable
+    readonly property bool hyprscrollingEnabled: Config.options.overview.hyprscrollingImplementation.enable
     readonly property bool useWorkspaceMap: Config.options.overview.useWorkspaceMap
     readonly property list<int> workspaceMap: Config.options.overview.workspaceMap
+    readonly property string backgroundStyle: Config.options.overview.scrollingStyle.backgroundStyle
 
     property int workspaceOffset: useWorkspaceMap ? workspaceMap[monitorIndex] : 0
 
@@ -166,8 +167,6 @@ Item {
         }
     }
 
-    property string backgroundStyle: Config.options.overview.scrollingStyle.backgroundStyle
-
     Rectangle { // Background
         id: overviewBackground
         anchors.fill: parent
@@ -196,10 +195,11 @@ Item {
                     property int rowIndex: getWsRow(wsId)
                     property int colIndex: getWsColumn(wsId)
                     property bool hovering: false
+                    property bool isScrolledWorkspace: wsId - 1 === root.scrollWorkspace
                     anchors.horizontalCenter: parent.horizontalCenter
 
                     y: (root.workspaceImplicitHeight + root.workspaceSpacing) * rowIndex - 3
-                    implicitWidth: root.workspaceImplicitWidth
+                    implicitWidth: isScrolledWorkspace ? root.workspaceImplicitWidth * 1.5 : root.workspaceImplicitWidth
                     implicitHeight: root.workspaceImplicitHeight
                     color: hovering ? ColorUtils.transparentize(Appearance.colors.colLayer1Hover, 0.7) : ColorUtils.transparentize(Appearance.colors.colLayer1, 0.5)
                     radius: root.windowRounding
@@ -207,10 +207,9 @@ Item {
                     Behavior on color {
                         animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
                     }
-                    // for scrolling indicator
-                    property bool isScrolledWorkspace: wsId - 1 === root.scrollWorkspace
-                    border.width: isScrolledWorkspace ? 2 : 0
-                    border.color: Appearance.colors.colPrimary
+                    Behavior on implicitWidth {
+                        animation: Appearance.animation.elementResize.numberAnimation.createObject(this)
+                    }
 
                     StyledText {
                         text: wsId
