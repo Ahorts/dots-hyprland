@@ -32,9 +32,9 @@ Scope {
             // WlrLayershell.keyboardFocus: GlobalStates.overviewOpen ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
             color: "transparent"
 
-            mask: Region {
+            /* mask: Region {
                 item: GlobalStates.overviewOpen ? columnLayout : null
-            }
+            } */
 
             anchors {
                 top: true
@@ -80,9 +80,6 @@ Scope {
                 }
             }
 
-            implicitWidth: columnLayout.implicitWidth
-            implicitHeight: columnLayout.implicitHeight
-
             function setSearchingText(text) {
                 searchWidget.setSearchingText(text);
                 searchWidget.focusFirstItem();
@@ -96,34 +93,15 @@ Scope {
                 }
             }
 
-            Column {
-                id: columnLayout
-                visible: GlobalStates.overviewOpen
-                spacing: -8
-
-                Keys.onPressed: event => {
-                    if (event.key === Qt.Key_Escape) {
-                        GlobalStates.overviewOpen = false;
-                    } else if (event.key === Qt.Key_Left) {
-                        if (!root.searchingText)
-                            Hyprland.dispatch("workspace r-1");
-                    } else if (event.key === Qt.Key_Right) {
-                        if (!root.searchingText)
-                            Hyprland.dispatch("workspace r+1");
-                    }
-                }
-
-                
-
-                Loader {
-                    id: overviewLoader
-                    active: GlobalStates.overviewOpen && (Config?.options.overview.enable ?? true)
-                    //x: item.x
-                    sourceComponent: OverviewWidget {
-                        panelWindow: root
-                        visible: (root.searchingText == "")
-                        monitorIndex: root.monitorIndex
-                    }
+            Loader {
+                id: overviewLoader
+                anchors.fill: parent
+                active: GlobalStates.overviewOpen && (Config?.options.overview.enable ?? true)
+                sourceComponent: OverviewWidget {
+                    anchors.fill: parent
+                    panelWindow: root
+                    visible: (root.searchingText == "")
+                    monitorIndex: root.monitorIndex
                 }
             }
         }

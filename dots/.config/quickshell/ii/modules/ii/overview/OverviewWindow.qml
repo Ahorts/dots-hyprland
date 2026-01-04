@@ -11,6 +11,7 @@ import Quickshell.Wayland
 
 Item { // Window
     id: root
+    property int windowRounding
     property var toplevel
     property var windowData
     property var monitorData
@@ -61,37 +62,36 @@ Item { // Window
     height: !windowData.floating && hyprscrollingEnabled ? scrollHeight : targetWindowHeight
     opacity: windowData.monitor == widgetMonitorId ? 1 : 0.4
 
-    property real topLeftRadius
-    property real topRightRadius
-    property real bottomLeftRadius
-    property real bottomRightRadius
-
     layer.enabled: true
     layer.effect: OpacityMask {
         maskSource: Rectangle {
             width: root.width
             height: root.height
-            topLeftRadius: root.topLeftRadius
-            topRightRadius: root.topRightRadius
-            bottomRightRadius: root.bottomRightRadius
-            bottomLeftRadius: root.bottomLeftRadius
+            radius: root.windowRounding
         }
     }
 
+
+    // We have to disable animations in the first frame or else some strange animations shows up
+    property bool initialized: false
+    Component.onCompleted: Qt.callLater(() => root.initialized = true)
+
     Behavior on x {
+        enabled: root.initialized
         animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
     }
     Behavior on y {
+        enabled: root.initialized
         animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
     }
-    //NOTE: disabled these to prevent annoying startup animation, TODO: find the cause of weird startup animation, then uncomment these
-    //NOTE: and there is also hyprland's default window animations when you resize them
-    /* Behavior on width {
+    Behavior on width {
+        enabled: root.initialized
         animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
     }
     Behavior on height {
+        enabled: root.initialized
         animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
-    } */
+    }
 
     ScreencopyView {
         id: windowPreview
@@ -102,10 +102,7 @@ Item { // Window
         // Color overlay for interactions
         Rectangle {
             anchors.fill: parent
-            topLeftRadius: root.topLeftRadius
-            topRightRadius: root.topRightRadius
-            bottomRightRadius: root.bottomRightRadius
-            bottomLeftRadius: root.bottomLeftRadius
+            radius: root.windowRounding
             color: pressed ? ColorUtils.transparentize(Appearance.colors.colLayer2Active, 0.5) : 
                 hovered ? ColorUtils.transparentize(Appearance.colors.colLayer2Hover, 0.7) : 
                 ColorUtils.transparentize(Appearance.colors.colLayer2)

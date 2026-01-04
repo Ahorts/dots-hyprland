@@ -15,12 +15,8 @@ Item {
     id: root
     property bool hyprscrollingEnabled: Config.options.overview.hyprscrollingImplementation.enable
     property int maxWorkspaceWidth: Config.options.overview.hyprscrollingImplementation.maxWorkspaceWidth
-    property int minWorkspaceWidth: (monitorData?.transform % 2 === 1) ? 
-        ((monitor.height - monitorData?.reserved[0] - monitorData?.reserved[2]) * root.scale / monitor.scale) :
-        ((monitor.width - monitorData?.reserved[0] - monitorData?.reserved[2]) * root.scale / monitor.scale)
     required property var panelWindow
     readonly property HyprlandMonitor monitor: Hyprland.monitorFor(panelWindow.screen)
-    readonly property var toplevels: ToplevelManager.toplevels
     readonly property int rows: 10
     readonly property int columns: 1
     readonly property int workspacesShown: root.rows * root.columns
@@ -34,31 +30,22 @@ Item {
     property bool monitorIsFocused: (Hyprland.focusedMonitor?.name == monitor.name)
     property var windows: HyprlandData.windowList
     property var windowByAddress: HyprlandData.windowByAddress
-    property var windowAddresses: HyprlandData.addresses
     property var monitorData: HyprlandData.monitors.find(m => m.id === root.monitor?.id)
     property real scale: 0.25 // to be changed later
     property color activeBorderColor: Appearance.colors.colSecondary
 
-    property real workspaceImplicitWidth: minWorkspaceWidth
+    property real workspaceImplicitWidth: (monitorData?.transform % 2 === 1) ? 
+        ((monitor.height - monitorData?.reserved[0] - monitorData?.reserved[2]) * root.scale / monitor.scale) :
+        ((monitor.width - monitorData?.reserved[0] - monitorData?.reserved[2]) * root.scale / monitor.scale)
     property real workspaceImplicitHeight: (monitorData?.transform % 2 === 1) ? 
         ((monitor.width - monitorData?.reserved[1] - monitorData?.reserved[3]) * root.scale / monitor.scale) :
         ((monitor.height - monitorData?.reserved[1] - monitorData?.reserved[3]) * root.scale / monitor.scale)
-    property real largeWorkspaceRadius: Appearance.rounding.large
-    property real smallWorkspaceRadius: Appearance.rounding.verysmall
 
     // we are using a width map to get all windows width and settings workspaceImplicitWidth to the maximum item of this list/map
     property list<int> widthMap: [] 
 
-    onWidthMapChanged: root.workspaceImplicitWidth = getMaxWidth()
+    property int windowRounding: Appearance.rounding.normal
 
-    function getMaxWidth() {
-        if (widthMap.length === 0) return minWorkspaceWidth;
-        const max = Math.max(...widthMap);
-        return Math.min(max, maxWorkspaceWidth);
-    }
-
-    property real workspaceNumberMargin: 80
-    property real workspaceNumberSize: 250 * monitor.scale
     property int workspaceZ: 0
     property int windowZ: 1
     property int windowDraggingZ: 99999
@@ -78,12 +65,6 @@ Item {
     implicitWidth: monitor.width 
     implicitHeight: monitor.height
 
-    Behavior on workspaceImplicitWidth {
-        animation: Appearance.animation.elementResize.numberAnimation.createObject(this)
-    }
-
-    property Component windowComponent: OverviewWindow {}
-    property list<OverviewWindow> windowWidgets: []
 
     property var activeWindow: windows.find(w =>
         w.focusHistoryID === 0 &&
@@ -113,8 +94,13 @@ Item {
         return wsInCell + root.workspaceOffset
     }
 
-    property int currentWorkspace: monitor.activeWorkspace?.id
+    property int currentWorkspace: monitor.activeWorkspace?.id - root.workspaceOffset
     property int scrollWorkspace: 0
+
+    onCurrentWorkspaceChanged: {
+        scrollWorkspace = currentWorkspace - 1
+        scrollY = (scrollWorkspace - 1) * workspaceImplicitHeight // actually we dont have to decrease 1 here, but I want active workspace row to be in center of the screen
+    }
 
     Component.onCompleted: {
         scrollWorkspace = currentWorkspace - 1
@@ -123,16 +109,17 @@ Item {
     }
 
     onScrollWorkspaceChanged: {
-        scrollY = (scrollWorkspace - 1) * workspaceImplicitHeight
+        scrollY = (scrollWorkspace - 1) * workspaceImplicitHeight // same as line114
     }
 
     property real scrollY: 0
     property var focusedXPerWorkspace: []
+    property var lastFocusedPerWorkspace: []
 
     MouseArea {
         anchors.fill: parent
         hoverEnabled: true
-        onWheel: {
+        onWheel: function(wheel) {
             if (wheel.angleDelta.y > 0) { // up
                 if (root.scrollWorkspace === 0) return
                 root.scrollWorkspace -= 1
@@ -145,44 +132,74 @@ Item {
     }
 
     onWindowsChanged: {
-        // Dizileri temizle
-        for (var ws = 1; ws <= 10; ws++) {  // <= 10 olmalı
+        lastFocusedPerWorkspace = []; focusedXPerWorkspace = [];
+        
+        const startWs = root.workspaceOffset + 1;
+        const endWs = root.workspaceOffset + 10;
+
+        for (var ws = startWs; ws <= endWs; ws++) {
             var windowsInWS = root.windows.filter(function(w) {
-                return w.workspace.id === ws;
+                return w.workspace.id === ws && w.monitor === root.monitor.id;
             });
 
             if (windowsInWS.length === 0) {
+                lastFocusedPerWorkspace.push(null);
                 focusedXPerWorkspace.push(null);
             } else {
                 var lastFocused = windowsInWS.reduce(function(a, b) {
                     return (a.focusHistoryID < b.focusHistoryID) ? a : b;
                 });
-                focusedXPerWorkspace.push(lastFocused.at[0]);
+                lastFocusedPerWorkspace.push(lastFocused);
+                
+                var monitorX = (root.monitor?.x ?? 0);
+                var monitorReservedX = (root.monitorData?.reserved?.[0] ?? 0);
+                var localX = (lastFocused.at[0] - monitorX - monitorReservedX) * root.scale;
+                
+                focusedXPerWorkspace.push(localX);
             }
         }
-
-        // console.log("focusedXPerWorkspace:", JSON.stringify(focusedXPerWorkspace)); // debug
     }
 
 
-
-
-    Rectangle { // Background
+    Item { // Background
         id: overviewBackground
-        property real padding: 10
         anchors.fill: parent
-        anchors.margins: Appearance.sizes.elevationMargin
-
-        implicitWidth: parent.implicitWidth
-        implicitHeight: parent.implicitHeight
-        radius: root.largeWorkspaceRadius + padding
-        color: Qt.rgba(255,0,0,0.1)
 
         StyledFlickable { // using just a hack to make it work, not actually using flickable for core
             id: windowSpace
+            anchors.horizontalCenter: parent.horizontalCenter
             contentWidth: parent.implicitWidth
             contentHeight: parent.implicitHeight
             contentY: root.scrollY
+
+            Repeater {
+                model: root.workspacesShown + 1
+                delegate: Item {
+                    required property int index
+                    property int wsId: index + 1 + root.workspaceOffset
+                    property int rowIndex: getWsRow(wsId)
+                    property int colIndex: getWsColumn(wsId)
+                    anchors.horizontalCenter: parent.horizontalCenter
+
+                    y: (root.workspaceImplicitHeight + root.workspaceSpacing) * rowIndex
+                    implicitWidth: root.workspaceImplicitWidth
+                    implicitHeight: root.workspaceImplicitHeight
+                    
+                    DropArea { // Workspace drop
+                        anchors.fill: parent
+                        onEntered: {
+                            root.dragDropType = 0
+                            root.draggingTargetWorkspace = wsId
+                        }
+                        onExited: {
+                            root.dragDropType = -1
+                            if (root.draggingTargetWorkspace == wsId) root.draggingTargetWorkspace = -1
+                        }
+                    }
+
+                }
+            }
+
 
             Repeater { // Window repeater
                 id: windowRepeater
@@ -210,10 +227,11 @@ Item {
                     property int monitorId: windowData?.monitor
                     property var monitor: HyprlandData.monitors.find(m => m.id == monitorId)
                     property var address: `0x${modelData.HyprlandToplevel.address}`
+                    windowRounding: root.windowRounding
                     toplevel: modelData
                     monitorData: this.monitor
                     scale: root.scale
-                    widgetMonitor: HyprlandData.monitors.find(m => m.id == root.monitor.id)
+                    widgetMonitor: HyprlandData.monitors.find(m => m.id == root.monitor.id) // used by overview window
                     windowData: windowByAddress[address]
 
                     property int wsId: windowData?.workspace?.id
@@ -238,7 +256,6 @@ Item {
                         return arr
                     }
 
-
                     property int wsIndex: {
                         for (let i = 0; i < wsWindowsSorted.length; i++) {
                             if (wsWindowsSorted[i].address === windowData.address)
@@ -262,31 +279,38 @@ Item {
                         }
                     }
 
-                    function calculateXPosDev(extraOffset = 0) { //dev means under development, change before release
-                        const focusedX = root.focusedXPerWorkspace[wsId - 1];
-                        
-                        if (focusedX === null || focusedX === undefined) {
+                   function calculateXPosDev(extraOffset = 0) {
+                        const arrayIndex = wsId - root.workspaceOffset - 1;
+                        const focusedX = root.focusedXPerWorkspace[arrayIndex] ?? null;
+                        const monitorX = root.monitor?.x || 0;
+                        const reservedX = root.monitorData?.reserved?.[0] || 0;
+
+                        if (focusedX === null) {
                             let x = xOffset + extraOffset;
                             for (let i = 0; i < wsIndex; i++) {
-                                const w = wsWindowsSorted[i];
-                                const wWidth = (w.size?.[0] ?? 0) * root.scale;
-                                x += wWidth;
+                                const winWidth = (wsWindowsSorted[i]?.size?.[0] || 0) * root.scale;
+                                x += winWidth;
                             }
                             return x;
                         }
 
-                        const centerX = xOffset + (root.workspaceImplicitWidth / 2);
-                        
-                        const realX = (windowData.at[0] * root.scale);
-                        const focusedRealX = (focusedX * root.scale);
-                        
-                        return centerX + (realX - focusedRealX) + extraOffset;
+                        const focusedWindow = root.lastFocusedPerWorkspace[arrayIndex];
+                        if (!focusedWindow) {
+                            return xOffset + extraOffset;
+                        }
+
+                        const focusedWidth = (focusedWindow.size?.[0] || 0) * root.scale;
+                        const workspaceCenterX = xOffset + root.workspaceImplicitWidth / 2;
+                        const focusedStartX = workspaceCenterX - focusedWidth / 2;
+                        const windowRealX = (windowData.at[0] - monitorX - reservedX) * root.scale;
+                        const deltaX = windowRealX - focusedX;
+                        return focusedStartX + deltaX + extraOffset - root.workspaceImplicitWidth / 2;
                     }
 
 
                     property int wsCount: wsWindowsSorted.length || 1
 
-                    scrollWidth: windowData.size[0] * root.scale
+                    scrollWidth:  windowData.size[0] * root.scale 
                     scrollHeight: windowData.size[1] * root.scale
 
                     scrollX: windowData.floating ? xOffset + xWithinWorkspaceWidget : calculateXPosDev()
@@ -305,8 +329,6 @@ Item {
                         return false
                     }
 
-                    property bool atInitPosition: (initX == x && initY == y)
-
                     // Offset on the canvas
                     property int workspaceColIndex: getWsColumn(windowData?.workspace.id)
                     property int workspaceRowIndex: getWsRow(windowData?.workspace.id)
@@ -315,28 +337,7 @@ Item {
                     property real xWithinWorkspaceWidget: Math.max((windowData?.at[0] - (monitor?.x ?? 0) - monitorData?.reserved[0]) * root.scale, 0)
                     property real yWithinWorkspaceWidget: Math.max((windowData?.at[1] - (monitor?.y ?? 0) - monitorData?.reserved[1]) * root.scale, 0)
 
-                    // Radius
-                    property real minRadius: Appearance.rounding.small
-                    property bool workspaceAtLeft: workspaceColIndex === 0
-                    property bool workspaceAtRight: workspaceColIndex === root.columns - 1
-                    property bool workspaceAtTop: workspaceRowIndex === 0
-                    property bool workspaceAtBottom: workspaceRowIndex === root.rows - 1
-                    property bool workspaceAtTopLeft: (workspaceAtLeft && workspaceAtTop) 
-                    property bool workspaceAtTopRight: (workspaceAtRight && workspaceAtTop) 
-                    property bool workspaceAtBottomLeft: (workspaceAtLeft && workspaceAtBottom) 
-                    property bool workspaceAtBottomRight: (workspaceAtRight && workspaceAtBottom) 
-                    property real distanceFromLeftEdge: xWithinWorkspaceWidget
-                    property real distanceFromRightEdge: root.workspaceImplicitWidth - (xWithinWorkspaceWidget + targetWindowWidth)
-                    property real distanceFromTopEdge: yWithinWorkspaceWidget
-                    property real distanceFromBottomEdge: root.workspaceImplicitHeight - (yWithinWorkspaceWidget + targetWindowHeight)
-                    property real distanceFromTopLeftCorner: Math.max(distanceFromLeftEdge, distanceFromTopEdge)
-                    property real distanceFromTopRightCorner: Math.max(distanceFromRightEdge, distanceFromTopEdge)
-                    property real distanceFromBottomLeftCorner: Math.max(distanceFromLeftEdge, distanceFromBottomEdge)
-                    property real distanceFromBottomRightCorner: Math.max(distanceFromRightEdge, distanceFromBottomEdge)
-                    topLeftRadius: Math.max((workspaceAtTopLeft ? root.largeWorkspaceRadius : root.smallWorkspaceRadius) - distanceFromTopLeftCorner, minRadius)
-                    topRightRadius: Math.max((workspaceAtTopRight ? root.largeWorkspaceRadius : root.smallWorkspaceRadius) - distanceFromTopRightCorner, minRadius)
-                    bottomLeftRadius: Math.max((workspaceAtBottomLeft ? root.largeWorkspaceRadius : root.smallWorkspaceRadius) - distanceFromBottomLeftCorner, minRadius)
-                    bottomRightRadius: Math.max((workspaceAtBottomRight ? root.largeWorkspaceRadius : root.smallWorkspaceRadius) - distanceFromBottomRightCorner, minRadius)
+                    
 
                     property int hoveringDir: 0 // 0: none, 1: right, 2: left
                     property bool hovering: false
@@ -353,10 +354,7 @@ Item {
 
                             color: ColorUtils.transparentize(Appearance.colors.colOnLayer1, 0.8)
                             opacity: window.hovering ? 1 : 0
-                            topRightRadius: window.topLeftRadius
-                            bottomRightRadius: window.topLeftRadius
-                            topLeftRadius: window.topLeftRadius
-                            bottomLeftRadius: window.topLeftRadius
+                            radius: root.windowRounding
 
                             Behavior on x {
                                 animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
@@ -399,8 +397,9 @@ Item {
                         repeat: false
                         running: false
                         onTriggered: {
+                            console.log("updating")
                             if (windowData?.floating) return
-                            window.x = calculateXPos()
+                            window.x = calculateXPosDev()
                             window.y = yOffset
                         }
                     }
@@ -521,7 +520,7 @@ Item {
                 width: root.hyprscrollingEnabled ?  root.activeWindowData?.width ?? 0 : root.workspaceImplicitWidth + 4
                 height: root.hyprscrollingEnabled ? root.activeWindowData?.height ?? 0 : root.workspaceImplicitHeight
 
-                radius: Appearance.rounding.normal
+                radius: root.windowRounding
                 color: "transparent"
                 border.width: 2
                 border.color: root.activeBorderColor
@@ -536,18 +535,6 @@ Item {
                 }
                 Behavior on height {
                     animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
-                }
-                Behavior on topLeftRadius {
-                    animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
-                }
-                Behavior on topRightRadius {
-                    animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
-                }
-                Behavior on bottomLeftRadius {
-                    animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
-                }
-                Behavior on bottomRightRadius {
-                    animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
                 }
             }
         }
