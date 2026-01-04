@@ -99,6 +99,7 @@ Scope {
             Loader {
                 id: overviewLoader
                 anchors.top: searchWidget.bottom
+                anchors.horizontalCenter: parent.horizontalCenter
                 active: GlobalStates.overviewOpen && (Config?.options.overview.enable ?? true) && overviewStyle == "original"
                 sourceComponent: OverviewWidget {
                     panelWindow: root
