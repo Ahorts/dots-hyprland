@@ -114,8 +114,8 @@ Item { // Wrapper
         anchors {
             top: parent.top
             horizontalCenter: parent.horizontalCenter
-            topMargin: Appearance.sizes.elevationMargin
-            bottomMargin: Appearance.sizes.elevationMargin
+            topMargin: 50 + Appearance.sizes.elevationMargin
+            bottomMargin: 50 + Appearance.sizes.elevationMargin
         }
         state: root.overviewPosition === "center" ? "top" : root.overviewPosition
         states: [

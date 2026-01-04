@@ -913,6 +913,18 @@ ContentPage {
                     Config.options.overview.scrollingStyle.showWallpaper = checked;
                 }
             }
+            ConfigSpinBox {
+                enabled: Config.options.overview.hyprscrollingImplementation.enable
+                icon: "width"
+                text: Translation.tr("Dim level (%)")
+                value: Config.options.overview.scrollingStyle.dimLevelPercentage
+                from: 0
+                to: 100
+                stepSize: 10
+                onValueChanged: {
+                    Config.options.overview.scrollingStyle.dimLevelPercentage = value;
+                }
+            }
         }
 
         ContentSubsection {
@@ -926,30 +938,16 @@ ContentPage {
                     Config.options.overview.hyprscrollingImplementation.enable = checked;
                 }
             }
-            ConfigRow {
-                ConfigSpinBox {
-                    enabled: Config.options.overview.hyprscrollingImplementation.enable
-                    icon: "width"
-                    text: Translation.tr("Max workspace width")
-                    value: Config.options.overview.hyprscrollingImplementation.maxWorkspaceWidth
-                    from: 100
-                    to: 1900
-                    stepSize: 100
-                    onValueChanged: {
-                        Config.options.overview.hyprscrollingImplementation.maxWorkspaceWidth = value;
-                    }
-                }
-                ConfigSpinBox {
-                    enabled: Config.options.overview.hyprscrollingImplementation.enable
-                    icon: "width"
-                    text: Translation.tr("Dim level (%)")
-                    value: Config.options.overview.scrollingStyle.dimLevelPercentage
-                    from: 0
-                    to: 100
-                    stepSize: 10
-                    onValueChanged: {
-                        Config.options.overview.scrollingStyle.dimLevelPercentage = value;
-                    }
+            ConfigSpinBox {
+                enabled: Config.options.overview.hyprscrollingImplementation.enable
+                icon: "width"
+                text: Translation.tr("Max workspace width")
+                value: Config.options.overview.hyprscrollingImplementation.maxWorkspaceWidth
+                from: 100
+                to: 1900
+                stepSize: 100
+                onValueChanged: {
+                    Config.options.overview.hyprscrollingImplementation.maxWorkspaceWidth = value;
                 }
             }
         }
