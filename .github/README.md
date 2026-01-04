@@ -17,10 +17,6 @@
 
 </div>
 
-Discord: https://discord.gg/Y6UGDaqg
-
-It would be better if you ask your questions in this discord server related to this dots instead of the official end-4 server. We wouldn't bloat the end-4's discord's chats this way.
-
 <div align="center">
     <h2>• warning •</h2>
 </div>
