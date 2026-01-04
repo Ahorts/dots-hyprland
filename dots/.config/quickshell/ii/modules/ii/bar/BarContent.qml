@@ -28,7 +28,7 @@ Item { // Bar content region
     }
 
     property real leftSidebarButtonWidth
-    property real rightSidebarButtonWidth: barRightSideMouseArea.implicitWidth - 10 // not sure about 10
+    property real rightSidebarButtonWidth: barRightSideMouseArea.implicitWidth - 7 // i have no idea why this is needed
 
 
 
@@ -269,7 +269,7 @@ Item { // Bar content region
             left: middleSection.right
             right: parent.right
         }
-        implicitWidth: rightSectionRowLayout.implicitWidth
+        implicitWidth: rightSectionRowLayout.implicitWidth + 5
         implicitHeight: Appearance.sizes.baseBarHeight
 
         onScrollDown: Audio.decrementVolume();
