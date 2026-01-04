@@ -34,7 +34,7 @@ Scope {
             // WlrLayershell.keyboardFocus: GlobalStates.overviewOpen ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
             color: "transparent"
 
-            /* mask: Region {
+            /* mask: Region { // if we enable this, we cant click or drag windows on overview
                 item: GlobalStates.overviewOpen ? columnLayout : null
             } */
 
@@ -88,6 +88,7 @@ Scope {
             }
 
             SearchWidget {
+                z: 999
                 id: searchWidget
                 anchors.horizontalCenter: parent.horizontalCenter
                 Synchronizer on searchingText {
@@ -97,7 +98,7 @@ Scope {
 
             Loader {
                 id: overviewLoader
-                anchors.centerIn: parent
+                anchors.top: searchWidget.bottom
                 active: GlobalStates.overviewOpen && (Config?.options.overview.enable ?? true) && overviewStyle == "original"
                 sourceComponent: OverviewWidget {
                     panelWindow: root

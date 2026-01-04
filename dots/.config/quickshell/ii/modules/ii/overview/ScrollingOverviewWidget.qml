@@ -68,13 +68,16 @@ Item {
     property real scaleRatio: Config.options.overview.scale
     
     property int currentWorkspace: monitor.activeWorkspace?.id - root.workspaceOffset
-    property int scrollWorkspace: 0
     property var focusedXPerWorkspace: []
     property var lastFocusedPerWorkspace: []
+    property int scrollWorkspace: 0
+    property int scrollWindow: 0 // for x scrolling
     property real scrollY: 0
+    property real scrollX: 0
 
     onCurrentWorkspaceChanged: updateScrollProps()
     onScrollWorkspaceChanged: scrollY = (scrollWorkspace - 1) * workspaceImplicitHeight
+    onScrollWindowChanged: scrollX = scrollWindow * workspaceImplicitWidth
 
     Component.onCompleted: {
         updateScrollProps()
@@ -111,16 +114,26 @@ Item {
     MouseArea {
         anchors.fill: parent
         hoverEnabled: true
+
         onWheel: function(wheel) {
-            if (wheel.angleDelta.y > 0) { // up
-                if (root.scrollWorkspace === 0) return
-                root.scrollWorkspace -= 1
-            } else { // down
-                if (root.scrollWorkspace === root.workspacesShown - 1) return
-                root.scrollWorkspace += 1
+            const shiftPressed = wheel.modifiers & Qt.ShiftModifier
+
+            if (shiftPressed && wheel.angleDelta.y > 0) {
+                root.scrollWindow += 1
+            } else if (shiftPressed && wheel.angleDelta.y < 0) {
+                root.scrollWindow -= 1
+            } else {
+                if (wheel.angleDelta.y > 0) {
+                    if (root.scrollWorkspace === 0) return
+                    root.scrollWorkspace -= 1
+                } else {
+                    if (root.scrollWorkspace === root.workspacesShown - 1) return
+                    root.scrollWorkspace += 1
+                }
             }
         }
     }
+
 
     onWindowsChanged: {
         lastFocusedPerWorkspace = []; focusedXPerWorkspace = [];
@@ -176,6 +189,7 @@ Item {
             contentWidth: parent.implicitWidth
             contentHeight: parent.implicitHeight
             contentY: root.scrollY
+            //contentX: root.scrollX
 
             Repeater {
                 model: root.workspacesShown
@@ -319,15 +333,6 @@ Item {
                         return focusedStartX + deltaX + extraOffset - root.workspaceImplicitWidth / 2;
                     }
 
-
-                    property int wsCount: wsWindowsSorted.length || 1
-
-                    scrollWidth:  windowData.size[0] * root.scaleRatio 
-                    scrollHeight: windowData.size[1] * root.scaleRatio
-
-                    scrollX: windowData.floating ? xOffset + xWithinWorkspaceWidget : calculateXPos()
-                    scrollY: windowData.floating ? yOffset + yWithinWorkspaceWidget : yOffset
-
                     property bool isActiveWindow: { // we have to set root.activeWindowData here instead of component.oncompleted
                         if (window.address == root.activeWindow?.address) {
                             root.activeWindowData = {
@@ -341,12 +346,23 @@ Item {
                         return false
                     }
 
+                    property bool isActiveWorkspace: wsId == monitor.activeWorkspace?.id
+                    property real extraScrollX: isActiveWorkspace ? root.scrollX : 0
+                    
+                    property int wsCount: wsWindowsSorted.length || 1
+
+                    scrollWidth:  windowData.size[0] * root.scaleRatio 
+                    scrollHeight: windowData.size[1] * root.scaleRatio
+
+                    scrollX: windowData.floating ? xOffset + xWithinWorkspaceWidget : calculateXPos(extraScrollX)
+                    scrollY: windowData.floating ? yOffset + yWithinWorkspaceWidget : yOffset
+
                     // Offset on the canvas
                     property int workspaceColIndex: getWsColumn(windowData?.workspace.id)
                     property int workspaceRowIndex: getWsRow(windowData?.workspace.id)
                     xOffset: (root.workspaceImplicitWidth + workspaceSpacing) * workspaceColIndex
                     yOffset: (root.workspaceImplicitHeight + workspaceSpacing) * workspaceRowIndex
-                    property real xWithinWorkspaceWidget: Math.max((windowData?.at[0] - (monitor?.x ?? 0) - monitorData?.reserved[0]) * root.scaleRatio, 0)
+                    property real xWithinWorkspaceWidget: Math.max((windowData?.at[0] - (monitor?.x ?? 0) - monitorData?.reserved[0]) * root.scaleRatio, 0) - root.workspaceImplicitWidth / 2
                     property real yWithinWorkspaceWidget: Math.max((windowData?.at[1] - (monitor?.y ?? 0) - monitorData?.reserved[1]) * root.scaleRatio, 0)                    
 
                     property int hoveringDir: 0 // 0: none, 1: right, 2: left
