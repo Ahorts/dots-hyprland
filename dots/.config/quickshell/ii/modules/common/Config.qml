@@ -328,6 +328,14 @@ Singleton {
                             centered: false,
                             visible: true,
                             scrollTo: "timerAndPomodoro"
+                        },
+                        {
+                            id: "weather",
+                            icon: "weather_mix",
+                            title: "Weather",
+                            centered: false,
+                            visible: true,
+                            scrollTo: ""
                         }
                     ]
                     property list<var> left: [

@@ -4,6 +4,7 @@ import qs.modules.common.widgets
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import qs.modules.ii.bar.weather
 
 import qs.modules.ii.verticalBar as Vertical
 
@@ -39,7 +40,8 @@ Item {
         "date": [dateCompVert, dateCompVert],
         "record_indicator": [recordIndicatorComp, recordIndicatorCompVert],
         "screen_share_indicator": [screenshareIndicatorComp, screenshareIndicatorComp],
-        "timer": [timerComp, timerCompVert]
+        "timer": [timerComp, timerCompVert],
+        "weather": [weatherComp, weatherComp]
     })
 
     
@@ -87,6 +89,8 @@ Item {
             sourceComponent: compMap[modelData.id][vertical ? 1 : 0]
         }
     }
+
+    Component { id: weatherComp; WeatherBar { vertical: rootItem.vertical } }
 
     Component { id: timerComp; TimerWidget {} }
     Component { id: timerCompVert; Vertical.VerticalTimerWidget {} }
