@@ -179,7 +179,8 @@ Item {
         color: "transparent"
         Component.onCompleted: {
             if (!Config.options.overview.scrollingStyle.dimBackground) return; 
-            color = ColorUtils.transparentize("black", 0.5)
+            const dimLevelPercentage = Config.options.overview.scrollingStyle.dimLevelPercentage
+            color = Qt.rgba(0,0,0,dimLevelPercentage/100)
         }
         Behavior on color {
             animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)

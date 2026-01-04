@@ -43,6 +43,7 @@ Scope {
                 left: true
                 right: true
             }
+            margins.left: -50
 
             HyprlandFocusGrab {
                 id: grab

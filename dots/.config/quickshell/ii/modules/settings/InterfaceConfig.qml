@@ -884,16 +884,39 @@ ContentPage {
                     Config.options.overview.hyprscrollingImplementation.enable = checked;
                 }
             }
-            ConfigSpinBox {
-                enabled: Config.options.overview.hyprscrollingImplementation.enable
-                icon: "width"
-                text: Translation.tr("Max workspace width")
-                value: Config.options.overview.hyprscrollingImplementation.maxWorkspaceWidth
-                from: 100
-                to: 1900
-                stepSize: 100
-                onValueChanged: {
-                    Config.options.overview.hyprscrollingImplementation.maxWorkspaceWidth = value;
+            ConfigSwitch {
+                buttonIcon: "wallpaper"
+                text: Translation.tr("Show wallpaper")
+                enabled: Config.options.overview.style === "scrolling"
+                checked: Config.options.overview.scrollingStyle.showWallpaper
+                onCheckedChanged: {
+                    Config.options.overview.scrollingStyle.showWallpaper = checked;
+                }
+            }
+            ConfigRow {
+                ConfigSpinBox {
+                    enabled: Config.options.overview.hyprscrollingImplementation.enable
+                    icon: "width"
+                    text: Translation.tr("Max workspace width")
+                    value: Config.options.overview.hyprscrollingImplementation.maxWorkspaceWidth
+                    from: 100
+                    to: 1900
+                    stepSize: 100
+                    onValueChanged: {
+                        Config.options.overview.hyprscrollingImplementation.maxWorkspaceWidth = value;
+                    }
+                }
+                ConfigSpinBox {
+                    enabled: Config.options.overview.hyprscrollingImplementation.enable
+                    icon: "width"
+                    text: Translation.tr("Dim level (%)")
+                    value: Config.options.overview.scrollingStyle.dimLevelPercentage
+                    from: 0
+                    to: 100
+                    stepSize: 10
+                    onValueChanged: {
+                        Config.options.overview.scrollingStyle.dimLevelPercentage = value;
+                    }
                 }
             }
         }
