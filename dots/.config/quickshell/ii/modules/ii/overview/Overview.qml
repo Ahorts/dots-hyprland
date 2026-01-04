@@ -24,6 +24,7 @@ Scope {
             readonly property HyprlandMonitor monitor: Hyprland.monitorFor(root.screen)
             property bool monitorIsFocused: (Hyprland.focusedMonitor?.id == monitor?.id)
             property int monitorIndex: Quickshell.screens.indexOf(modelData)
+            property string overviewStyle: Config.options.overview.style
             screen: modelData
             visible: GlobalStates.overviewOpen
 
@@ -95,9 +96,20 @@ Scope {
 
             Loader {
                 id: overviewLoader
-                anchors.fill: parent
-                active: GlobalStates.overviewOpen && (Config?.options.overview.enable ?? true)
+                anchors.centerIn: parent
+                active: GlobalStates.overviewOpen && (Config?.options.overview.enable ?? true) && overviewStyle == "original"
                 sourceComponent: OverviewWidget {
+                    panelWindow: root
+                    visible: (root.searchingText == "")
+                    monitorIndex: root.monitorIndex
+                }
+            }
+
+            Loader {
+                id: scrollingOverviewLoader
+                anchors.fill: parent
+                active: GlobalStates.overviewOpen && (Config?.options.overview.enable ?? true) && overviewStyle == "scrolling"
+                sourceComponent: ScrollingOverviewWidget {
                     anchors.fill: parent
                     panelWindow: root
                     visible: (root.searchingText == "")

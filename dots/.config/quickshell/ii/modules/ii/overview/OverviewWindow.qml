@@ -71,6 +71,11 @@ Item { // Window
         }
     }
 
+    property real topLeftRadius
+    property real topRightRadius
+    property real bottomLeftRadius
+    property real bottomRightRadius
+
 
     // We have to disable animations in the first frame or else some strange animations shows up
     property bool initialized: false

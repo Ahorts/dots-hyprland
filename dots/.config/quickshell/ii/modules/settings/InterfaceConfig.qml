@@ -730,17 +730,6 @@ ContentPage {
             }
         }
         
-        ConfigSpinBox {
-            icon: "loupe"
-            text: Translation.tr("Scale (%)")
-            value: Config.options.overview.scale * 100
-            from: 1
-            to: 100
-            stepSize: 1
-            onValueChanged: {
-                Config.options.overview.scale = value / 100;
-            }
-        }
         ConfigSwitch {
             buttonIcon: "grid_3x3"
             text: Translation.tr("Use workspace map")
@@ -752,73 +741,140 @@ ContentPage {
                 text: Translation.tr("Edit the workspace start index for monitors in the config file")
             }
         }
-        ConfigRow {
-            uniform: true
-            ConfigSpinBox {
-                icon: "splitscreen_bottom"
-                text: Translation.tr("Rows")
-                value: Config.options.overview.rows
-                from: 1
-                to: 20
-                stepSize: 1
-                onValueChanged: {
-                    Config.options.overview.rows = value;
-                }
-            }
-            ConfigSpinBox {
-                icon: "splitscreen_right"
-                text: Translation.tr("Columns")
-                value: Config.options.overview.columns
-                from: 1
-                to: 20
-                stepSize: 1
-                onValueChanged: {
-                    Config.options.overview.columns = value;
-                }
+
+        ConfigSpinBox {
+            icon: "loupe"
+            text: Translation.tr("Scale (%)")
+            value: Config.options.overview.scale * 100
+            from: 1
+            to: 100
+            stepSize: 1
+            onValueChanged: {
+                Config.options.overview.scale = value / 100;
             }
         }
-        ConfigRow {
-            uniform: true
+
+
+        ContentSubsection {
+            title: Translation.tr("Overview style")
+
             ConfigSelectionArray {
-                currentValue: Config.options.overview.orderRightLeft
+                currentValue: Config.options.overview.style
                 onSelected: newValue => {
-                    Config.options.overview.orderRightLeft = newValue
+                    Config.options.overview.style = newValue
                 }
                 options: [
                     {
-                        displayName: Translation.tr("Left to right"),
-                        icon: "arrow_forward",
-                        value: 0
+                        displayName: Translation.tr("Original"),
+                        icon: "grid_view",
+                        value: "original"
                     },
                     {
-                        displayName: Translation.tr("Right to left"),
-                        icon: "arrow_back",
-                        value: 1
+                        displayName: Translation.tr("Scrolling"),
+                        icon: "calendar_view_day",
+                        value: "scrolling"
                     }
                 ]
             }
-            ConfigSelectionArray {
-                currentValue: Config.options.overview.orderBottomUp
-                onSelected: newValue => {
-                    Config.options.overview.orderBottomUp = newValue
-                }
-                options: [
-                    {
-                        displayName: Translation.tr("Top-down"),
-                        icon: "arrow_downward",
-                        value: 0
-                    },
-                    {
-                        displayName: Translation.tr("Bottom-up"),
-                        icon: "arrow_upward",
-                        value: 1
+        }
+        
+        ContentSubsection {
+            title: Translation.tr("Original overview style")
+            ConfigRow {
+                uniform: true
+                ConfigSpinBox {
+                    enabled: Config.options.overview.style === "original"
+                    icon: "splitscreen_bottom"
+                    text: Translation.tr("Rows")
+                    value: Config.options.overview.rows
+                    from: 1
+                    to: 20
+                    stepSize: 1
+                    onValueChanged: {
+                        Config.options.overview.rows = value;
                     }
-                ]
+                }
+                ConfigSpinBox {
+                    enabled: Config.options.overview.style === "original"
+                    icon: "splitscreen_right"
+                    text: Translation.tr("Columns")
+                    value: Config.options.overview.columns
+                    from: 1
+                    to: 20
+                    stepSize: 1
+                    onValueChanged: {
+                        Config.options.overview.columns = value;
+                    }
+                }
+            }
+            ConfigRow {
+                uniform: true
+                ConfigSelectionArray {
+                    enabled: Config.options.overview.style === "original"
+                    currentValue: Config.options.overview.orderRightLeft
+                    onSelected: newValue => {
+                        Config.options.overview.orderRightLeft = newValue
+                    }
+                    options: [
+                        {
+                            displayName: Translation.tr("Left to right"),
+                            icon: "arrow_forward",
+                            value: 0
+                        },
+                        {
+                            displayName: Translation.tr("Right to left"),
+                            icon: "arrow_back",
+                            value: 1
+                        }
+                    ]
+                }
+                ConfigSelectionArray {
+                    enabled: Config.options.overview.style === "original"
+                    currentValue: Config.options.overview.orderBottomUp
+                    onSelected: newValue => {
+                        Config.options.overview.orderBottomUp = newValue
+                    }
+                    options: [
+                        {
+                            displayName: Translation.tr("Top-down"),
+                            icon: "arrow_downward",
+                            value: 0
+                        },
+                        {
+                            displayName: Translation.tr("Bottom-up"),
+                            icon: "arrow_upward",
+                            value: 1
+                        }
+                    ]
+                }
             }
         }
 
         ContentSubsection {
-            title: Translation.tr("Hyprscrolling overview")
+            title: Translation.tr("Hyprscrolling overview style")
+
+            ConfigSwitch {
+                buttonIcon: "high_density"
+                text: Translation.tr("Enable opening zoom animation")
+                enabled: Config.options.overview.style === "scrolling"
+                checked: Config.options.overview.scrollingStyle.showOpenningAnimation
+                onCheckedChanged: {
+                    Config.options.overview.scrollingStyle.showOpenningAnimation = checked;
+                }
+            }
+            ConfigSwitch {
+                buttonIcon: "texture"
+                text: Translation.tr("Darken screen")
+                enabled: Config.options.overview.style === "scrolling"
+                checked: Config.options.overview.scrollingStyle.dimBackground
+                onCheckedChanged: {
+                    Config.options.overview.scrollingStyle.dimBackground = checked;
+                }
+            }
+        }
+
+        ContentSubsection {
+            title: Translation.tr("Hyprscrolling plugin implementation")
 
             ConfigSwitch {
                 buttonIcon: "view_carousel"
