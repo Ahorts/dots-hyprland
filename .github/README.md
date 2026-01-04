@@ -1,5 +1,5 @@
 <div align="center">
-     <h1>  [ end_4's dots with my tweaks ] </h1>
+     <h1>  [ ii-vynx hyprland dots ] </h1>
 </div>
 
 
@@ -59,13 +59,16 @@ And copy `dots/.config/quickshell/ii` folder to your `.config/quickshell/ii` fol
 - Settings color scheme previews **_// custom color schemes_**
 - Cookie clock improvements
 - File search functionality in launcher
-- Overview changes for [hyprscrolling](https://github.com/vaguesyntax/hyprscrolling) plugin
+
   
 <div align="center">
-    <h2>• other features •</h2>
+    <h2>• other available features •</h2>
 </div>
 
 - Extended calendar functionality from this PR: https://github.com/end-4/dots-hyprland/pull/1887 _**// in sync with google calendar, tweaked**_
+- Current overview changes for [hyprscrolling plugin](https://github.com/vaguesyntax/hyprscrolling) 
+- New overview style for my hyprscrolling plugin:
+<img width="960" height="540" alt="image" src="https://github.com/user-attachments/assets/40579084-3cc5-4330-b598-9be6015d7a3a" />
 
 <div align="center">
     <h2>• hyprscrolling implementation •</h2>
@@ -81,17 +84,31 @@ You have to use my hyprscrolling plugin inorder to make shell communicate with p
 
 Follow the documentation on [my hyprscrolling plugin](https://github.com/vaguesyntax/hyprscrolling) to install and configure it.
 
+<div align="center">
 
-https://github.com/user-attachments/assets/81f18b69-5ad1-485b-a5e2-7fd1b1a433a6
+## **More description on [wiki](https://github.com/vaguesyntax/ii-vynx/wiki/ii%E2%80%90vynx).**
 
+</div>
 
+<div align="center">
+    <h2>• faq •</h2>
+</div>
+
+- What should I do if I only want one of the features above?
+     - Go to https://github.com/vaguesyntax/dots-hyprland and find the branch you are looking for. (Fell free to ask me if you can't find because some branch names are so random) And merge that branch to your own dots.
 
 <div align="center">
     <h2>• credits •</h2>
 </div>
 
-- [@end-4](https://github.com/end-4) ofc
-- screenshot wallpaper from [exo](https://github.com/debuggyo/Exo)
+**[end-4](https://github.com/end-4):** Creator of illogical-impulse, alien
+
+**[ii](https://github.com/end-4/dots-hyprland):** A perfect hyprland dots in material-3 style
+
+**[Quickshell](https://quickshell.org/):** Qt-Quick based widget system for hyprland
+
+**[Hyprland](https://hypr.land/):** Loves-to-crash wayland compositor
+
 
 **Since you scrolled all the way down here, can I get your star? ⭐**
 
