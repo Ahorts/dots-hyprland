@@ -1,5 +1,5 @@
 <div align="center">
-     <h1>  [ end_4's dots with my tweaks ] </h1>
+     <h1>  [ ii-vynx hyprland dots ] </h1>
 </div>
 
 
