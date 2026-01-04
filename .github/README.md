@@ -90,6 +90,12 @@ Follow the documentation on [my hyprscrolling plugin](https://github.com/vaguesy
 
 </div>
 
+<div align="center">
+    <h2>• faq •</h2>
+</div>
+
+- What should I do if I only want one of the features above?
+     - Go to https://github.com/vaguesyntax/dots-hyprland and find the branch you are looking for. (Fell free to ask me if you can't find because some branch names are so random) And merge that branch to your own dots.
 
 <div align="center">
     <h2>• credits •</h2>
