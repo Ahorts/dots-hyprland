@@ -25,6 +25,7 @@ Scope {
             readonly property HyprlandMonitor monitor: Hyprland.monitorFor(root.screen)
             property bool monitorIsFocused: (Hyprland.focusedMonitor?.id == monitor?.id)
             property int monitorIndex: Quickshell.screens.indexOf(modelData)
+            property string overviewStyle: Config.options.overview.style
             screen: modelData
             visible: GlobalStates.overviewOpen && (!Config.options.overview.showOnlyOnFocusedMonitor || monitorIsFocused)
 
@@ -33,9 +34,9 @@ Scope {
             // WlrLayershell.keyboardFocus: GlobalStates.overviewOpen ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
             color: "transparent"
 
-            mask: Region {
-                item: GlobalStates.overviewOpen ? gridLayout : null
-            }
+            /* mask: Region {
+                item: GlobalStates.overviewOpen ? columnLayout : null
+            } */
 
             anchors {
                 top: true
@@ -81,66 +82,39 @@ Scope {
                 }
             }
 
-            implicitWidth: gridLayout.implicitWidth
-            implicitHeight: gridLayout.implicitHeight
-
             function setSearchingText(text) {
                 searchWidget.setSearchingText(text);
                 searchWidget.focusFirstItem();
             }
 
-            GridLayout {
-                id: gridLayout
-                visible: GlobalStates.overviewOpen
-                anchors {
-                    horizontalCenter: parent.horizontalCenter
-                    margins: overviewScope.position == "center" ? root.implicitHeight / Config.options.overview.centerTopPaddingRatio : 0
+            SearchWidget {
+                id: searchWidget
+                anchors.horizontalCenter: parent.horizontalCenter
+                Synchronizer on searchingText {
+                    property alias source: root.searchingText
                 }
-                columns: 1
+            }
 
-                state: overviewScope.position === "center" ? "top" : overviewScope.position
-                states: [
-                    State {
-                        name: "top"
-                        AnchorChanges { target: gridLayout; anchors.top: parent.top; anchors.bottom: undefined; }
-                    },
-                    State {
-                        name: "bottom" 
-                        AnchorChanges { target: gridLayout; anchors.top: undefined; anchors.bottom: parent.bottom; }
-                    }
-                ]
-
-                Keys.onPressed: event => {
-                    if (event.key === Qt.Key_Escape) {
-                        GlobalStates.overviewOpen = false;
-                    } else if (event.key === Qt.Key_Left) {
-                        if (!root.searchingText)
-                            Hyprland.dispatch("workspace r-1");
-                    } else if (event.key === Qt.Key_Right) {
-                        if (!root.searchingText)
-                            Hyprland.dispatch("workspace r+1");
-                    }
+            Loader {
+                id: overviewLoader
+                anchors.centerIn: parent
+                active: GlobalStates.overviewOpen && (Config?.options.overview.enable ?? true) && overviewStyle == "original"
+                sourceComponent: OverviewWidget {
+                    panelWindow: root
+                    visible: (root.searchingText == "")
+                    monitorIndex: root.monitorIndex
                 }
+            }
 
-                SearchWidget {
-                    id: searchWidget
-                    Layout.row: overviewScope.position == "bottom" ? 1 : 0
-                    Layout.alignment: Qt.AlignHCenter
-                    Synchronizer on searchingText {
-                        property alias source: root.searchingText
-                    }
-                }
-
-                Loader {
-                    id: overviewLoader
-                    Layout.row: overviewScope.position == "bottom" ? 0 : 1
-                    Layout.alignment: Qt.AlignHCenter
-                    active: GlobalStates.overviewOpen && (Config?.options.overview.enable ?? true)
-                    sourceComponent: OverviewWidget {
-                        panelWindow: root
-                        visible: (root.searchingText == "")
-                        monitorIndex: root.monitorIndex
-                    }
+            Loader {
+                id: scrollingOverviewLoader
+                anchors.fill: parent
+                active: GlobalStates.overviewOpen && (Config?.options.overview.enable ?? true) && overviewStyle == "scrolling"
+                sourceComponent: ScrollingOverviewWidget {
+                    anchors.fill: parent
+                    panelWindow: root
+                    visible: (root.searchingText == "")
+                    monitorIndex: root.monitorIndex
                 }
             }
         }

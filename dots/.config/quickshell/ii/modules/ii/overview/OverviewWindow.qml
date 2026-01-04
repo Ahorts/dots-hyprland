@@ -11,6 +11,7 @@ import Quickshell.Wayland
 
 Item { // Window
     id: root
+    property int windowRounding
     property var toplevel
     property var windowData
     property var monitorData
@@ -39,6 +40,7 @@ Item { // Window
     property bool pressed: false
 
     property bool centerIcons: Config.options.overview.centerIcons
+    property bool showIcons: Config.options.overview.showIcons
     property real iconGapRatio: 0.06
     property real iconToWindowRatio: centerIcons ? 0.35 : 0.15
     property real xwaylandIndicatorToIconRatio: 0.35
@@ -60,37 +62,41 @@ Item { // Window
     height: !windowData.floating && hyprscrollingEnabled ? scrollHeight : targetWindowHeight
     opacity: windowData.monitor == widgetMonitorId ? 1 : 0.4
 
-    property real topLeftRadius
-    property real topRightRadius
-    property real bottomLeftRadius
-    property real bottomRightRadius
-
     layer.enabled: true
     layer.effect: OpacityMask {
         maskSource: Rectangle {
             width: root.width
             height: root.height
-            topLeftRadius: root.topLeftRadius
-            topRightRadius: root.topRightRadius
-            bottomRightRadius: root.bottomRightRadius
-            bottomLeftRadius: root.bottomLeftRadius
+            radius: root.windowRounding
         }
     }
 
+    property real topLeftRadius
+    property real topRightRadius
+    property real bottomLeftRadius
+    property real bottomRightRadius
+
+
+    // We have to disable animations in the first frame or else some strange animations shows up
+    property bool initialized: false
+    Component.onCompleted: Qt.callLater(() => root.initialized = true)
+
     Behavior on x {
+        enabled: root.initialized
         animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
     }
     Behavior on y {
+        enabled: root.initialized
         animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
     }
-    //NOTE: disabled these to prevent annoying startup animation, TODO: find the cause of weird startup animation, then uncomment these
-    //NOTE: and there is also hyprland's default window animations when you resize them
-    /* Behavior on width {
+    Behavior on width {
+        enabled: root.initialized
         animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
     }
     Behavior on height {
+        enabled: root.initialized
         animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
-    } */
+    }
 
     ScreencopyView {
         id: windowPreview
@@ -101,46 +107,45 @@ Item { // Window
         // Color overlay for interactions
         Rectangle {
             anchors.fill: parent
-            topLeftRadius: root.topLeftRadius
-            topRightRadius: root.topRightRadius
-            bottomRightRadius: root.bottomRightRadius
-            bottomLeftRadius: root.bottomLeftRadius
+            radius: root.windowRounding
             color: pressed ? ColorUtils.transparentize(Appearance.colors.colLayer2Active, 0.5) : 
                 hovered ? ColorUtils.transparentize(Appearance.colors.colLayer2Hover, 0.7) : 
                 ColorUtils.transparentize(Appearance.colors.colLayer2)
-            border.color : ColorUtils.transparentize(Appearance.m3colors.m3outline, 0.88)
-            border.width : 1
         }
 
-        Image {
-            id: windowIcon
-            property real baseSize: Math.min(root.targetWindowWidth, root.targetWindowHeight)
-            anchors {
-                top: root.centerIcons ? undefined : parent.top
-                left: root.centerIcons ? undefined : parent.left
-                centerIn: root.centerIcons ? parent : undefined
-                margins: baseSize * root.iconGapRatio
-            }
-            property var iconSize: {
-                // console.log("-=-=-", root.toplevel.title, "-=-=-")
-                // console.log("Target window size:", targetWindowWidth, targetWindowHeight)
-                // console.log("Icon ratio:", root.compactMode ? root.iconToWindowRatioCompact : root.iconToWindowRatio)
-                // console.log("Scale:", root.monitorData.scale)
-                // console.log("Final:", Math.min(targetWindowWidth, targetWindowHeight) * (root.compactMode ? root.iconToWindowRatioCompact : root.iconToWindowRatio) / root.monitorData.scale)
-                return baseSize * (root.compactMode ? root.iconToWindowRatioCompact : root.iconToWindowRatio);
-            }
-            // mipmap: true
-            Layout.alignment: Qt.AlignHCenter
-            source: root.iconPath
-            width: iconSize
-            height: iconSize
-            sourceSize: Qt.size(iconSize, iconSize)
+        Loader {
+            active: root.showIcons
+            anchors.centerIn: root.centerIcons ? parent : undefined
+            sourceComponent: Image {
+                id: windowIcon
+                property real baseSize: Math.min(root.targetWindowWidth, root.targetWindowHeight)
+                anchors {
+                    top: root.centerIcons ? undefined : parent.top
+                    left: root.centerIcons ? undefined : parent.left
+                    centerIn: root.centerIcons ? parent : undefined
+                    margins: baseSize * root.iconGapRatio
+                }
+                property var iconSize: {
+                    // console.log("-=-=-", root.toplevel.title, "-=-=-")
+                    // console.log("Target window size:", targetWindowWidth, targetWindowHeight)
+                    // console.log("Icon ratio:", root.compactMode ? root.iconToWindowRatioCompact : root.iconToWindowRatio)
+                    // console.log("Scale:", root.monitorData.scale)
+                    // console.log("Final:", Math.min(targetWindowWidth, targetWindowHeight) * (root.compactMode ? root.iconToWindowRatioCompact : root.iconToWindowRatio) / root.monitorData.scale)
+                    return baseSize * (root.compactMode ? root.iconToWindowRatioCompact : root.iconToWindowRatio);
+                }
+                // mipmap: true
+                Layout.alignment: Qt.AlignHCenter
+                source: root.iconPath
+                width: iconSize
+                height: iconSize
+                sourceSize: Qt.size(iconSize, iconSize)
 
-            Behavior on width {
-                animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
-            }
-            Behavior on height {
-                animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
+                Behavior on width {
+                    animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
+                }
+                Behavior on height {
+                    animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
+                }
             }
         }
     }

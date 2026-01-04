@@ -585,14 +585,22 @@ Singleton {
                 property real columns: 1
                 property bool orderRightLeft: false
                 property bool orderBottomUp: false
+                property bool showIcons: true
                 property bool centerIcons: true
                 property bool useWorkspaceMap: false
                 property list<var> workspaceMap: [0,10]
+
+                property string style: "original" // Options: original, scrolling
 
                 property JsonObject hyprscrollingImplementation: JsonObject {
                     property bool enable: false
                     property int maxWorkspaceWidth: 1200
                 }
+                property JsonObject scrollingStyle: JsonObject {
+                    property bool showOpenningAnimation: true
+                    property bool dimBackground: true
+                }
+                
                 property string position: "center" // Options: top, center, bottom
                 property int centerTopPaddingRatio: 3
                 property bool showOnlyOnFocusedMonitor: true
