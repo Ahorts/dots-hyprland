@@ -71,6 +71,7 @@ Item {
     property int currentWorkspace: monitor.activeWorkspace?.id - root.workspaceOffset
     property var focusedXPerWorkspace: []
     property var lastFocusedPerWorkspace: []
+
     property int scrollWorkspace: 0 // y scrolling workspace
     property int scrollWindow: 0 // for x scrolling
     property real scrollY: 0
@@ -195,7 +196,7 @@ Item {
                     property int rowIndex: getWsRow(wsId)
                     property int colIndex: getWsColumn(wsId)
                     property bool hovering: false
-                    property bool isScrolledWorkspace: wsId - 1 === root.scrollWorkspace
+                    property bool isScrolledWorkspace: wsId - 1 === root.scrollWorkspace + root.workspaceOffset
                     anchors.horizontalCenter: parent.horizontalCenter
 
                     y: (root.workspaceImplicitHeight + root.workspaceSpacing) * rowIndex - 3
