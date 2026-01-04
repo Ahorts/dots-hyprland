@@ -31,15 +31,15 @@ Item {
     property var windows: HyprlandData.windowList
     property var windowByAddress: HyprlandData.windowByAddress
     property var monitorData: HyprlandData.monitors.find(m => m.id === root.monitor?.id)
-    property real scale: 0.25 // to be changed later
+    property real scaleRatio: 0.25 // to be changed later
     property color activeBorderColor: Appearance.colors.colSecondary
 
     property real workspaceImplicitWidth: (monitorData?.transform % 2 === 1) ? 
-        ((monitor.height - monitorData?.reserved[0] - monitorData?.reserved[2]) * root.scale / monitor.scale) :
-        ((monitor.width - monitorData?.reserved[0] - monitorData?.reserved[2]) * root.scale / monitor.scale)
+        ((monitor.height - monitorData?.reserved[0] - monitorData?.reserved[2]) * root.scaleRatio / monitor.scale) :
+        ((monitor.width - monitorData?.reserved[0] - monitorData?.reserved[2]) * root.scaleRatio / monitor.scale)
     property real workspaceImplicitHeight: (monitorData?.transform % 2 === 1) ? 
-        ((monitor.width - monitorData?.reserved[1] - monitorData?.reserved[3]) * root.scale / monitor.scale) :
-        ((monitor.height - monitorData?.reserved[1] - monitorData?.reserved[3]) * root.scale / monitor.scale)
+        ((monitor.width - monitorData?.reserved[1] - monitorData?.reserved[3]) * root.scaleRatio / monitor.scale) :
+        ((monitor.height - monitorData?.reserved[1] - monitorData?.reserved[3]) * root.scaleRatio / monitor.scale)
 
     // we are using a width map to get all windows width and settings workspaceImplicitWidth to the maximum item of this list/map
     property list<int> widthMap: [] 
@@ -102,10 +102,17 @@ Item {
         scrollY = (scrollWorkspace - 1) * workspaceImplicitHeight // actually we dont have to decrease 1 here, but I want active workspace row to be in center of the screen
     }
 
+    property real initScale: 1.08 //TODO: add config option
+    scale: initScale
+    Behavior on scale {
+        animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
+    }
+
     Component.onCompleted: {
         scrollWorkspace = currentWorkspace - 1
         scrollY = (scrollWorkspace - 1) * workspaceImplicitHeight
         HyprlandData.windowListChanged() // making sure it reloads
+        scale = 1
     }
 
     onScrollWorkspaceChanged: {
@@ -153,17 +160,21 @@ Item {
                 
                 var monitorX = (root.monitor?.x ?? 0);
                 var monitorReservedX = (root.monitorData?.reserved?.[0] ?? 0);
-                var localX = (lastFocused.at[0] - monitorX - monitorReservedX) * root.scale;
+                var localX = (lastFocused.at[0] - monitorX - monitorReservedX) * root.scaleRatio;
                 
                 focusedXPerWorkspace.push(localX);
             }
         }
     }
 
-
-    Item { // Background
+    Rectangle { // Background
         id: overviewBackground
         anchors.fill: parent
+        color: "transparent"
+        Component.onCompleted: color = ColorUtils.transparentize("black", 0.5)
+        Behavior on color {
+            animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
+        }
 
         StyledFlickable { // using just a hack to make it work, not actually using flickable for core
             id: windowSpace
@@ -173,27 +184,48 @@ Item {
             contentY: root.scrollY
 
             Repeater {
-                model: root.workspacesShown + 1
-                delegate: Item {
+                model: root.workspacesShown
+                delegate: Rectangle {
                     required property int index
                     property int wsId: index + 1 + root.workspaceOffset
                     property int rowIndex: getWsRow(wsId)
                     property int colIndex: getWsColumn(wsId)
+                    property bool hovering: false
                     anchors.horizontalCenter: parent.horizontalCenter
 
                     y: (root.workspaceImplicitHeight + root.workspaceSpacing) * rowIndex
                     implicitWidth: root.workspaceImplicitWidth
                     implicitHeight: root.workspaceImplicitHeight
+                    color: hovering ? ColorUtils.transparentize(Appearance.colors.colLayer1Hover, 0.7) : ColorUtils.transparentize(Appearance.colors.colLayer1, 0.5)
+                    radius: root.windowRounding
+
+                    Behavior on color {
+                        animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
+                    }
+
+                    StyledText {
+                        text: wsId
+                        anchors.centerIn: parent
+                        font.pixelSize: 64
+                        color: ColorUtils.transparentize(Appearance.colors.colSecondaryContainer,0.5)
+                        opacity: 0.0  // text flashes over windowses for a split second if we dont put this animation
+                        Component.onCompleted: opacity = 1
+                        Behavior on opacity {
+                            animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+                        }
+                    }
                     
                     DropArea { // Workspace drop
                         anchors.fill: parent
                         onEntered: {
                             root.dragDropType = 0
                             root.draggingTargetWorkspace = wsId
+                            hovering = true
                         }
                         onExited: {
                             root.dragDropType = -1
                             if (root.draggingTargetWorkspace == wsId) root.draggingTargetWorkspace = -1
+                            hovering = false
                         }
                     }
 
@@ -230,7 +262,7 @@ Item {
                     windowRounding: root.windowRounding
                     toplevel: modelData
                     monitorData: this.monitor
-                    scale: root.scale
+                    scale: root.scaleRatio
                     widgetMonitor: HyprlandData.monitors.find(m => m.id == root.monitor.id) // used by overview window
                     windowData: windowByAddress[address]
 
@@ -270,7 +302,7 @@ Item {
                             const w = wsWindowsSorted[i]
                             sum += w.size?.[0] ?? 0
                         }
-                        return sum * root.scale
+                        return sum * root.scaleRatio
                     }
 
                     onWorkspaceTotalWindowWidthChanged: { // we have to update widthMap here to prevent 'Binding Loop' error
@@ -288,7 +320,7 @@ Item {
                         if (focusedX === null) {
                             let x = xOffset + extraOffset;
                             for (let i = 0; i < wsIndex; i++) {
-                                const winWidth = (wsWindowsSorted[i]?.size?.[0] || 0) * root.scale;
+                                const winWidth = (wsWindowsSorted[i]?.size?.[0] || 0) * root.scaleRatio;
                                 x += winWidth;
                             }
                             return x;
@@ -299,10 +331,10 @@ Item {
                             return xOffset + extraOffset;
                         }
 
-                        const focusedWidth = (focusedWindow.size?.[0] || 0) * root.scale;
+                        const focusedWidth = (focusedWindow.size?.[0] || 0) * root.scaleRatio;
                         const workspaceCenterX = xOffset + root.workspaceImplicitWidth / 2;
                         const focusedStartX = workspaceCenterX - focusedWidth / 2;
-                        const windowRealX = (windowData.at[0] - monitorX - reservedX) * root.scale;
+                        const windowRealX = (windowData.at[0] - monitorX - reservedX) * root.scaleRatio;
                         const deltaX = windowRealX - focusedX;
                         return focusedStartX + deltaX + extraOffset - root.workspaceImplicitWidth / 2;
                     }
@@ -310,8 +342,8 @@ Item {
 
                     property int wsCount: wsWindowsSorted.length || 1
 
-                    scrollWidth:  windowData.size[0] * root.scale 
-                    scrollHeight: windowData.size[1] * root.scale
+                    scrollWidth:  windowData.size[0] * root.scaleRatio 
+                    scrollHeight: windowData.size[1] * root.scaleRatio
 
                     scrollX: windowData.floating ? xOffset + xWithinWorkspaceWidget : calculateXPosDev()
                     scrollY: windowData.floating ? yOffset + yWithinWorkspaceWidget : yOffset
@@ -334,10 +366,8 @@ Item {
                     property int workspaceRowIndex: getWsRow(windowData?.workspace.id)
                     xOffset: (root.workspaceImplicitWidth + workspaceSpacing) * workspaceColIndex
                     yOffset: (root.workspaceImplicitHeight + workspaceSpacing) * workspaceRowIndex
-                    property real xWithinWorkspaceWidget: Math.max((windowData?.at[0] - (monitor?.x ?? 0) - monitorData?.reserved[0]) * root.scale, 0)
-                    property real yWithinWorkspaceWidget: Math.max((windowData?.at[1] - (monitor?.y ?? 0) - monitorData?.reserved[1]) * root.scale, 0)
-
-                    
+                    property real xWithinWorkspaceWidget: Math.max((windowData?.at[0] - (monitor?.x ?? 0) - monitorData?.reserved[0]) * root.scaleRatio, 0)
+                    property real yWithinWorkspaceWidget: Math.max((windowData?.at[1] - (monitor?.y ?? 0) - monitorData?.reserved[1]) * root.scaleRatio, 0)                    
 
                     property int hoveringDir: 0 // 0: none, 1: right, 2: left
                     property bool hovering: false
@@ -352,7 +382,7 @@ Item {
                             implicitWidth: window.hovering ? window.width / 2 : 0
                             implicitHeight: window.height
 
-                            color: ColorUtils.transparentize(Appearance.colors.colOnLayer1, 0.8)
+                            color: ColorUtils.transparentize(Appearance.colors.colOutlineVariant, 0.8)
                             opacity: window.hovering ? 1 : 0
                             radius: root.windowRounding
 
@@ -397,7 +427,6 @@ Item {
                         repeat: false
                         running: false
                         onTriggered: {
-                            console.log("updating")
                             if (windowData?.floating) return
                             window.x = calculateXPosDev()
                             window.y = yOffset
@@ -432,6 +461,7 @@ Item {
                                 const targetWorkspace = root.draggingTargetWorkspace
                                 window.pressed = false
                                 window.Drag.active = false
+                                
                                 root.draggingFromWorkspace = -1
                                 if (targetWorkspace !== -1 && targetWorkspace !== windowData?.workspace.id) {
                                     Hyprland.dispatch(`movetoworkspacesilent ${targetWorkspace}, address:${window.windowData?.address}`)
@@ -449,6 +479,7 @@ Item {
                             } else if (root.dragDropType === 1) { // Window drop
                                 const targetWindowAdress = root.draggingTargetWindowAdress
                                 const targetWorkspace = root.draggingTargetWorkspace
+                                
                                 window.pressed = false
                                 window.Drag.active = false
                                 if (targetWindowAdress !== "" && targetWindowAdress !== windowData?.address) {
@@ -461,13 +492,16 @@ Item {
                                         })
                                     }
                                 }
-                                Qt.callLater(() => {
-                                    root.draggingFromWindowAddress = "";
-                                    root.draggingTargetWindowAdress = "";
-                                    updateWindowPosition.restart();
-                                    HyprlandData.updateWindowList();
-                                })   
+                            } else {
+                                window.pressed = false
+                                window.Drag.active = false
                             }
+                            Qt.callLater(() => {
+                                root.draggingFromWindowAddress = "";
+                                root.draggingTargetWindowAdress = "";
+                                updateWindowPosition.restart();
+                                HyprlandData.updateWindowList();
+                            })   
                         }
                         onClicked: (event) => {
                             if (!windowData) return;
@@ -517,13 +551,13 @@ Item {
 
                 x: root.hyprscrollingEnabled ? root.activeWindowData?.x ?? 0 : (root.workspaceImplicitWidth + workspaceSpacing) * colIndex
                 y: root.hyprscrollingEnabled ? root.activeWindowData?.y ?? 0 : (root.workspaceImplicitHeight + workspaceSpacing) * rowIndex
-                width: root.hyprscrollingEnabled ?  root.activeWindowData?.width ?? 0 : root.workspaceImplicitWidth + 4
+                width: root.hyprscrollingEnabled ? root.activeWindowData?.width ?? 0 : root.workspaceImplicitWidth + 4
                 height: root.hyprscrollingEnabled ? root.activeWindowData?.height ?? 0 : root.workspaceImplicitHeight
 
                 radius: root.windowRounding
                 color: "transparent"
                 border.width: 2
-                border.color: root.activeBorderColor
+                border.color: root.activeWindow ? root.activeBorderColor : "transparent"
                 Behavior on x {
                     animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
                 }
