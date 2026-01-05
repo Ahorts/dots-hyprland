@@ -66,22 +66,29 @@ Variants {
         Behavior on colText {
             animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
         }
+
+        property var zoomLevels: {  // has to be reverted compared to background
+            "in": { default: 1.04, zoomed: 1 },
+            "out": { default: 1, zoomed: 1.04 }
+        }
+
+        property real defaultRatio: zoomInStyle ? zoomLevels.in.default : zoomLevels.out.default
+        property real zoomedRatio: zoomInStyle ? zoomLevels.in.zoomed : zoomLevels.out.zoomed
         
-        property bool showOpenningAnimation: Config.options.overview.scrollingStyle.showOpenningAnimation
-        property bool showWallpaper: Config.options.overview.scrollingStyle.showWallpaper
-        property bool showOnTop: Config.options.overview.style === "scrolling" && showWallpaper && Config.options.overview.scrollingStyle.backgroundStyle != "blur" ? showOpenningAnimation ? scaleAnimated > 1 : GlobalStates.overviewOpen : false
-        property real zoomRatio: 1.08
+        readonly property bool zoomInStyle: Config.options.overview.scrollingStyle.zoomStyle === "in"
+        readonly property bool showOpeningAnimation: Config.options.overview.scrollingStyle.showOpeningAnimation
+
         property bool overviewOpen: GlobalStates.overviewOpen
-        
-        property real scaleAnimated: GlobalStates.overviewOpen && showOpenningAnimation ? zoomRatio : 1
+
+        property real scaleAnimated: GlobalStates.overviewOpen && showOpeningAnimation ? zoomedRatio : defaultRatio
         Behavior on scaleAnimated {
-            animation: Appearance.animation.elementMove.numberAnimation.createObject(this)
+            animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
         }
 
         // Layer props
         screen: modelData
         exclusionMode: ExclusionMode.Ignore
-        WlrLayershell.layer: (showOnTop || GlobalStates.screenLocked && !scaleAnim.running) ? WlrLayer.Top : WlrLayer.Bottom
+        WlrLayershell.layer: (GlobalStates.screenLocked && !scaleAnim.running) ? WlrLayer.Top : WlrLayer.Bottom
         // WlrLayershell.layer: WlrLayer.Bottom
         WlrLayershell.namespace: "quickshell:background"
         anchors {
@@ -137,7 +144,7 @@ Variants {
             id: wallpaperItem
             anchors.fill: parent
             clip: true
-            scale: showOpenningAnimation && overviewOpen && Config.options.overview.style === "scrolling" ? 1 : zoomRatio
+            scale: showOpeningAnimation && overviewOpen && Config.options.overview.style === "scrolling" ? zoomedRatio : defaultRatio
 
             Behavior on scale {
                 animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
@@ -226,7 +233,10 @@ Variants {
 
             WidgetCanvas {
                 id: widgetCanvas
-                scale: 1 - (zoomRatio - 1)
+                scale: 1 - (defaultRatio - 1)
+                Behavior on scale {
+                    animation: Appearance.animation.elementMove.numberAnimation.createObject(this)
+                }
                 anchors {
                     left: wallpaper.left
                     right: wallpaper.right

@@ -172,7 +172,7 @@ Item {
         anchors.fill: parent
         color: "transparent"
         Component.onCompleted: {
-            const opacity = backgroundStyle == "dim" ? 0.4 : backgroundStyle == "blur" ? 0.8 : 0 // blur has to 0.8 or more
+            const opacity = backgroundStyle == "dim" ? 0.5 : backgroundStyle == "blur" ? 0.8 : 0 // blur has to 0.8 to work
             color = Qt.rgba(0,0,0,opacity)
         }
         Behavior on color {
