@@ -105,15 +105,23 @@ Scope {
                 searchWidget.focusFirstItem();
             }
 
-            SearchWidget {
+            Item { // Wrapper for animation
                 z: 999
-                id: searchWidget
-                scale: showOpenningAnimation ? zoomRatio - scaleAnimated + 1 : 1
-                anchors.horizontalCenter: parent.horizontalCenter
-                Synchronizer on searchingText {
-                    property alias source: root.searchingText
+                anchors {
+                    horizontalCenter: parent.horizontalCenter
+                    top: parent.top
+                    topMargin: margin + Appearance.sizes.elevationMargin
+                }
+                SearchWidget {
+                    id: searchWidget
+                    scale: showOpenningAnimation && isScrollingOverview ? zoomRatio - scaleAnimated + 1 : 1
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    Synchronizer on searchingText {
+                        property alias source: root.searchingText
+                    }
                 }
             }
+            
 
             Loader {
                 id: overviewLoader

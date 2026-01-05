@@ -70,7 +70,7 @@ Variants {
         property bool showOpenningAnimation: Config.options.overview.scrollingStyle.showOpenningAnimation
         property bool showWallpaper: Config.options.overview.scrollingStyle.showWallpaper
         property bool showOnTop: Config.options.overview.style === "scrolling" && overviewOpen && showWallpaper && Config.options.overview.scrollingStyle.backgroundStyle != "blur" 
-        property real zoomRatio: Config.options.overview.scrollingStyle.showOpenningAnimation && showOpenningAnimation ? 1.08 : 1.0001
+        property real zoomRatio: Config.options.overview.scrollingStyle.showOpenningAnimation && showOpenningAnimation ? 1.08 : 1
         property bool overviewOpen: GlobalStates.overviewOpen
 
         // Layer props
@@ -221,6 +221,7 @@ Variants {
 
             WidgetCanvas {
                 id: widgetCanvas
+                scale: 1 - (zoomRatio - 1)
                 anchors {
                     left: wallpaper.left
                     right: wallpaper.right

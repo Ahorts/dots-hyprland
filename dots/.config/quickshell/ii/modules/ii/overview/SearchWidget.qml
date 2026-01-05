@@ -98,11 +98,6 @@ Item { // Wrapper
     }
     Rectangle { // Background
         id: searchWidgetContent
-        anchors {
-            top: parent.top
-            horizontalCenter: parent.horizontalCenter
-            topMargin: 50 + Appearance.sizes.elevationMargin //FIXME: Fix magic number
-        }
         clip: true
         implicitWidth: columnLayout.implicitWidth
         implicitHeight: columnLayout.implicitHeight
