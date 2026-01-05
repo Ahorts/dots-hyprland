@@ -108,7 +108,7 @@ Scope {
             SearchWidget {
                 z: 999
                 id: searchWidget
-                zoomRatio: overviewStyle == "scrolling" ? root.zoomRatio : 1 //FIXME: 
+                scale: showOpenningAnimation ? zoomRatio - scaleAnimated + 1 : 1
                 anchors.horizontalCenter: parent.horizontalCenter
                 Synchronizer on searchingText {
                     property alias source: root.searchingText
