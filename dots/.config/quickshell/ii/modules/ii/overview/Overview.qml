@@ -26,7 +26,7 @@ Scope {
             property int monitorIndex: Quickshell.screens.indexOf(modelData)
             property string overviewStyle: Config.options.overview.style
             screen: modelData
-            visible: GlobalStates.overviewOpen
+            
 
             WlrLayershell.namespace: "quickshell:overview"
             WlrLayershell.layer: WlrLayer.Overlay
@@ -37,9 +37,17 @@ Scope {
                 item: GlobalStates.overviewOpen ? columnLayout : null
             } */
 
+            property bool isScrollingOverview: Config.options.overview.style === "scrolling"
             property bool showOpenningAnimation: Config.options.overview.scrollingStyle.showOpenningAnimation
-            property real zoomRatio: showOpenningAnimation ? 1.08 : 1.0001
+            property real zoomRatio: 1.04 //TODO: make a configurable config option for it maybe?
+            property real scaleAnimated: GlobalStates.overviewOpen ? zoomRatio : 1
             property real initScale: zoomRatio
+
+            visible: showOpenningAnimation && isScrollingOverview ? scaleAnimated > 1 : GlobalStates.overviewOpen
+
+            Behavior on scaleAnimated {
+                animation: Appearance.animation.elementMove.numberAnimation.createObject(root)
+            }
 
             anchors {
                 top: true
@@ -100,7 +108,7 @@ Scope {
             SearchWidget {
                 z: 999
                 id: searchWidget
-                zoomRatio: overviewStyle == "scrolling" ? root.zoomRatio : 1
+                zoomRatio: overviewStyle == "scrolling" ? root.zoomRatio : 1 //FIXME: 
                 anchors.horizontalCenter: parent.horizontalCenter
                 Synchronizer on searchingText {
                     property alias source: root.searchingText
@@ -123,16 +131,13 @@ Scope {
             Loader {
                 id: scrollingOverviewLoader
                 anchors.fill: parent
-                active: GlobalStates.overviewOpen && (Config?.options.overview.enable ?? true) && overviewStyle == "scrolling"
+                active: root.visible && (Config?.options.overview.enable ?? true) && overviewStyle == "scrolling"
                 sourceComponent: ScrollingOverviewWidget {
-                    scale: initScale
+                    scale: showOpenningAnimation ? zoomRatio - scaleAnimated + 1 : 1
                     anchors.fill: parent
                     panelWindow: root
                     visible: (root.searchingText == "")
                     monitorIndex: root.monitorIndex
-                    Behavior on scale {
-                        animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
-                    }
                 }
             }
         }

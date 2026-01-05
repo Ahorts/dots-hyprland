@@ -84,7 +84,6 @@ Item {
     Component.onCompleted: {
         updateScrollProps()
         HyprlandData.windowListChanged()
-        scale = 1
     }
 
     // Helper functions
