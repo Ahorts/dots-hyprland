@@ -888,7 +888,7 @@ ContentPage {
 
             ConfigSwitch {
                 buttonIcon: "high_density"
-                text: Translation.tr("Enable opening zoom animation")
+                text: Translation.tr("Enable zoom animation")
                 enabled: Config.options.overview.style === "scrolling"
                 checked: Config.options.overview.scrollingStyle.showOpenningAnimation
                 onCheckedChanged: {
