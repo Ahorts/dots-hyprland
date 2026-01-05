@@ -457,6 +457,7 @@ ContentPage {
 
         ConfigSwitch {
             buttonIcon: "colors"
+            enabled: Config.options.bar.workspaces.showAppIcons
             text: Translation.tr('Tint app icons')
             checked: Config.options.bar.workspaces.monochromeIcons
             onCheckedChanged: {

@@ -161,7 +161,7 @@ Item {
         }
 
         property int index: root.workspaceIndexInGroup
-        property int workspacePadding: !hasWindowsInWorkspace(index + root.workspaceOffset + 1) ? emptyWorkspaceMargin : 0
+        property int workspacePadding: !hasWindowsInWorkspace(index + root.workspaceOffset + 1) || !root.showIcons ? emptyWorkspaceMargin : 0
         
         property real logicalPosition: indicatorPosition - workspacePadding
         property real logicalLength: indicatorLength + workspacePadding * 2   
