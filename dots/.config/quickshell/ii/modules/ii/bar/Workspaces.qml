@@ -107,6 +107,7 @@ Item {
         animation: Appearance.animation.elementResize.numberAnimation.createObject(this)
     }
 
+    property var windowModel: []
 
     // Active workspace indicator
     Rectangle {
@@ -115,7 +116,22 @@ Item {
         anchors.verticalCenter: root.vertical ? undefined : parent.verticalCenter
         color: Appearance.colors.colPrimary
         radius: Appearance.rounding.full
-        property int baseHeight: root.iconBoxWrapperSize
+        
+        AnimatedTabIndexPair {
+            id: idxPair
+            index: root.workspaceIndexInGroup
+        }
+
+        function isWorkspaceEmpty(index) {
+            const workspace = root.windowModel[index]
+            if (!workspace || !Array.isArray(workspace)) {
+                return true
+            }
+            
+            const modelArray = workspace[0]
+            return !modelArray || modelArray.length === 0
+        }
+
 
         function offsetFor(index) {
             let y = 0
@@ -126,22 +142,45 @@ Item {
             return y
         }
 
-        AnimatedTabIndexPair {
-            id: idxPair
-            index: root.workspaceIndexInGroup
+        property int baseHeight: root.iconBoxWrapperSize
+        property real itemHeight: contentLayout.children[root.workspaceIndexInGroup].height
+
+        property real indicatorMargin: 7      // to make a perfect circle in one windowed-workspaces
+        property real emptyWorkspaceMargin: 2 // to make a perferct circle in empty workspaces
+
+        property real pairMin: Math.min(idxPair.idx1, idxPair.idx2)
+        property real pairAbs: Math.abs(idxPair.idx1 - idxPair.idx2)
+
+        property real offset: {
+            const item = contentLayout.children[root.workspaceIndexInGroup]
+            const itemSize = root.vertical ? item?.height : item?.width
+            return itemSize - baseHeight
         }
 
-        property real indicatorMargin: 7 // to make a perfect round in one windowed-workspaces
+        property real indicatorPosition: {
+            const basePos = pairMin * root.iconBoxWrapperSize
+            const accumulatedOffset = offsetFor(root.workspaceIndexInGroup + 1)
+            return basePos + accumulatedOffset - offset + indicatorMargin / 2
+        }
 
-        property real offset: root.vertical ? contentLayout.children[root.workspaceIndexInGroup]?.height - baseHeight : contentLayout.children[root.workspaceIndexInGroup]?.width - baseHeight
-        property real indicatorPosition: ((Math.min(idxPair.idx1, idxPair.idx2) * root.iconBoxWrapperSize + offsetFor(root.workspaceIndexInGroup + 1) - offset / 2) - offset / 2) + indicatorMargin / 2 
-        property real indicatorLength: (Math.abs(idxPair.idx1 - idxPair.idx2) * root.iconBoxWrapperSize + root.iconBoxWrapperSize) + offset - indicatorMargin 
+        property real indicatorLength: {
+            const baseLength = (pairAbs + 1) * root.iconBoxWrapperSize
+            return baseLength + offset - indicatorMargin
+        }
 
-        y: root.vertical ? indicatorPosition : 0
-        x: root.vertical ? 0 : indicatorPosition
-        implicitHeight: root.vertical ? indicatorLength : individualIconBoxHeight
-        implicitWidth: root.vertical ? individualIconBoxHeight : indicatorLength
+        property int index: root.workspaceIndexInGroup
+        property int workspacePadding: isWorkspaceEmpty(index) ? emptyWorkspaceMargin : 0
+        
+        property real logicalPosition: indicatorPosition - workspacePadding
+        property real logicalLength: indicatorLength + workspacePadding * 2   
+
+        y: root.vertical ? logicalPosition : 0
+        x: root.vertical ? 0 : logicalPosition
+        implicitHeight: root.vertical ? logicalLength : individualIconBoxHeight
+        implicitWidth: root.vertical ? individualIconBoxHeight : logicalLength
     }
+
+    
 
     GridLayout {
         anchors.centerIn: parent
@@ -222,9 +261,18 @@ Item {
                     rowSpacing: 0
                     columns: root.vertical ? 1 : 99
                     rows: root.vertical ? 99 : 1
-
+                    
+                    
                     Repeater {
-                        model: root.showIcons ? root.monitorWindows?.filter(win => win.workspace === workspaceOffset + workspaceGroup * workspacesShown + index + 1).splice(0, Config.options.bar.workspaces.maxWindowCount) : []
+                        property int workspaceIndex: workspaceOffset + workspaceGroup * workspacesShown + index + 1
+                        model: root.showIcons ? root.monitorWindows?.filter(win => win.workspace === workspaceIndex).splice(0, Config.options.bar.workspaces.maxWindowCount) : []
+                        Component.onCompleted: updateWindowModel()
+                        onModelChanged: updateWindowModel()
+
+                        function updateWindowModel() {
+                            if (!model) return
+                            root.windowModel[workspaceIndex - root.workspaceOffset - 1] = [model, workspaceIndex]
+                        }
                         delegate: Item {
                             Layout.alignment: Qt.AlignHCenter
                             width: root.individualIconBoxHeight
