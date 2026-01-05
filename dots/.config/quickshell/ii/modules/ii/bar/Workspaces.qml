@@ -44,6 +44,11 @@ Item {
         })
     }
 
+    function hasWindowsInWorkspace(workspaceId) {
+        return HyprlandData.windowList.some(w => w.workspace.id === workspaceId);
+    }
+
+
     // Window list updates
     Connections {
         target: HyprlandData
@@ -107,8 +112,6 @@ Item {
         animation: Appearance.animation.elementResize.numberAnimation.createObject(this)
     }
 
-    property var windowModel: []
-
     // Active workspace indicator
     Rectangle {
         z: 2
@@ -121,17 +124,6 @@ Item {
             id: idxPair
             index: root.workspaceIndexInGroup
         }
-
-        function isWorkspaceEmpty(index) {
-            const workspace = root.windowModel[index]
-            if (!workspace || !Array.isArray(workspace)) {
-                return true
-            }
-            
-            const modelArray = workspace[0]
-            return !modelArray || modelArray.length === 0
-        }
-
 
         function offsetFor(index) {
             let y = 0
@@ -169,7 +161,7 @@ Item {
         }
 
         property int index: root.workspaceIndexInGroup
-        property int workspacePadding: isWorkspaceEmpty(index) ? emptyWorkspaceMargin : 0
+        property int workspacePadding: !hasWindowsInWorkspace(index + root.workspaceOffset + 1) ? emptyWorkspaceMargin : 0
         
         property real logicalPosition: indicatorPosition - workspacePadding
         property real logicalLength: indicatorLength + workspacePadding * 2   
@@ -266,13 +258,6 @@ Item {
                     Repeater {
                         property int workspaceIndex: workspaceOffset + workspaceGroup * workspacesShown + index + 1
                         model: root.showIcons ? root.monitorWindows?.filter(win => win.workspace === workspaceIndex).splice(0, Config.options.bar.workspaces.maxWindowCount) : []
-                        Component.onCompleted: updateWindowModel()
-                        onModelChanged: updateWindowModel()
-
-                        function updateWindowModel() {
-                            if (!model) return
-                            root.windowModel[workspaceIndex - root.workspaceOffset - 1] = [model, workspaceIndex]
-                        }
                         delegate: Item {
                             Layout.alignment: Qt.AlignHCenter
                             width: root.individualIconBoxHeight
