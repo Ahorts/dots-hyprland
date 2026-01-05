@@ -169,17 +169,10 @@ Item {
         }
 
         property int index: root.workspaceIndexInGroup
-        property int workspacePadding: 0
-        onIndexChanged: {
-            workspacePadding = isWorkspaceEmpty(index) ? emptyWorkspaceMargin : 0
-        }
+        property int workspacePadding: isWorkspaceEmpty(index) ? emptyWorkspaceMargin : 0
         
         property real logicalPosition: indicatorPosition - workspacePadding
         property real logicalLength: indicatorLength + workspacePadding * 2   
-
-        Component.onCompleted: {
-            console.log(itemHeight)
-        }
 
         y: root.vertical ? logicalPosition : 0
         x: root.vertical ? 0 : logicalPosition
