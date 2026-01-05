@@ -70,9 +70,14 @@ Variants {
         
         property bool showOpenningAnimation: Config.options.overview.scrollingStyle.showOpenningAnimation
         property bool showWallpaper: Config.options.overview.scrollingStyle.showWallpaper
-        property bool showOnTop: Config.options.overview.style === "scrolling" && overviewOpen && showWallpaper && Config.options.overview.scrollingStyle.backgroundStyle != "blur" 
-        property real zoomRatio: Config.options.overview.scrollingStyle.showOpenningAnimation && showOpenningAnimation ? 1.08 : 1.0001
+        property bool showOnTop: Config.options.overview.style === "scrolling" && showWallpaper && Config.options.overview.scrollingStyle.backgroundStyle != "blur" ? showOpenningAnimation ? scaleAnimated > 1 : GlobalStates.overviewOpen : false
+        property real zoomRatio: 1.08
         property bool overviewOpen: GlobalStates.overviewOpen
+        
+        property real scaleAnimated: GlobalStates.overviewOpen && showOpenningAnimation ? zoomRatio : 1
+        Behavior on scaleAnimated {
+            animation: Appearance.animation.elementMove.numberAnimation.createObject(this)
+        }
 
         // Layer props
         screen: modelData
@@ -222,6 +227,7 @@ Variants {
 
             WidgetCanvas {
                 id: widgetCanvas
+                scale: 1 - (zoomRatio - 1)
                 anchors {
                     left: wallpaper.left
                     right: wallpaper.right

@@ -105,20 +105,31 @@ Scope {
                 searchWidget.focusFirstItem();
             }
 
-            SearchWidget {
+            Item { // Wrapper for animation
+                id: searchWidgetWrapper
+                implicitHeight: searchWidget.implicitHeight
+                implicitWidth: searchWidget.implicitWidth
                 z: 999
-                id: searchWidget
-                scale: showOpenningAnimation ? zoomRatio - scaleAnimated + 1 : 1
-                anchors.horizontalCenter: parent.horizontalCenter
-                Synchronizer on searchingText {
-                    property alias source: root.searchingText
+                anchors {
+                    horizontalCenter: parent.horizontalCenter
+                    top: parent.top
+                    topMargin: margin + Appearance.sizes.elevationMargin
+                }
+                SearchWidget {
+                    id: searchWidget
+                    scale: showOpenningAnimation && isScrollingOverview ? zoomRatio - scaleAnimated + 1 : 1
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    Synchronizer on searchingText {
+                        property alias source: root.searchingText
+                    }
                 }
             }
+            
 
             Loader {
                 id: overviewLoader
                 anchors.topMargin: margin
-                anchors.top: searchWidget.bottom
+                anchors.top: searchWidgetWrapper.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
                 active: GlobalStates.overviewOpen && (Config?.options.overview.enable ?? true) && overviewStyle == "classic"
                 sourceComponent: OverviewWidget {

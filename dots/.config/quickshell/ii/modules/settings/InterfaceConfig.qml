@@ -919,14 +919,14 @@ ContentPage {
                             value: "blur"
                         },
                         {
-                            displayName: Translation.tr("Transparent"),
-                            icon: "opacity",
-                            value: "transparent"
-                        },
-                        {
                             displayName: Translation.tr("Dim"),
                             icon: "ev_shadow",
                             value: "dim"
+                        },
+                        {
+                            displayName: Translation.tr("Transparent"),
+                            icon: "opacity",
+                            value: "transparent"
                         }
                     ]
                 }

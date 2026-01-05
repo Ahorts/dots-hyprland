@@ -98,26 +98,6 @@ Item { // Wrapper
     }
     Rectangle { // Background
         id: searchWidgetContent
-        anchors {
-            top: parent.top
-            horizontalCenter: parent.horizontalCenter
-            topMargin: 50 + Appearance.sizes.elevationMargin
-            bottomMargin: 50 + Appearance.sizes.elevationMargin
-        }
-        state: root.overviewPosition === "center" ? "top" : root.overviewPosition
-        states: [
-            State {
-                name: "top"
-                AnchorChanges { target: searchWidgetContent; anchors.top: parent.top; anchors.bottom: undefined; }
-                AnchorChanges { target: gridLayout; anchors.top: parent.top; anchors.bottom: undefined; }
-            },
-            State {
-                name: "bottom"
-                AnchorChanges { target: searchWidgetContent; anchors.top: undefined; anchors.bottom: parent.bottom; }
-                AnchorChanges { target: gridLayout; anchors.top: undefined; anchors.bottom: parent.bottom; }
-            }
-        ]
-        
         clip: true
         implicitWidth: gridLayout.implicitWidth
         implicitHeight: gridLayout.implicitHeight
