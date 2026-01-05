@@ -72,7 +72,6 @@ Variants {
         property bool showOnTop: Config.options.overview.style === "scrolling" && overviewOpen && showWallpaper && Config.options.overview.scrollingStyle.backgroundStyle != "blur" 
         property real zoomRatio: Config.options.overview.scrollingStyle.showOpenningAnimation && showOpenningAnimation ? 1.08 : 1.0001
         property bool overviewOpen: GlobalStates.overviewOpen
-        onOverviewOpenChanged: wallpaperItem.scale = showOpenningAnimation && overviewOpen && Config.options.overview.style === "scrolling" ? 1 : zoomRatio
 
         // Layer props
         screen: modelData
@@ -129,12 +128,11 @@ Variants {
             }
         }
 
-
-
         Item {
             id: wallpaperItem
             anchors.fill: parent
             clip: true
+            scale: showOpenningAnimation && overviewOpen && Config.options.overview.style === "scrolling" ? 1 : zoomRatio
 
             Behavior on scale {
                 animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
