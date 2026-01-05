@@ -813,10 +813,10 @@ ContentPage {
         
         ContentSubsection {
             title: Translation.tr("Classic overview style")
+            visible: Config.options.overview.style === "classic"
             ConfigRow {
                 uniform: true
                 ConfigSpinBox {
-                    enabled: Config.options.overview.style === "classic"
                     icon: "splitscreen_bottom"
                     text: Translation.tr("Rows")
                     value: Config.options.overview.rows
@@ -828,7 +828,6 @@ ContentPage {
                     }
                 }
                 ConfigSpinBox {
-                    enabled: Config.options.overview.style === "classic"
                     icon: "splitscreen_right"
                     text: Translation.tr("Columns")
                     value: Config.options.overview.columns
@@ -840,10 +839,21 @@ ContentPage {
                     }
                 }
             }
+            ConfigSpinBox {
+                enabled: Config.options.overview.hyprscrollingImplementation.enable
+                icon: "width"
+                text: Translation.tr("Max workspace width")
+                value: Config.options.overview.hyprscrollingImplementation.maxWorkspaceWidth
+                from: 100
+                to: 1900
+                stepSize: 100
+                onValueChanged: {
+                    Config.options.overview.hyprscrollingImplementation.maxWorkspaceWidth = value;
+                }
+            }
             ConfigRow {
                 uniform: true
                 ConfigSelectionArray {
-                    enabled: Config.options.overview.style === "classic"
                     currentValue: Config.options.overview.orderRightLeft
                     onSelected: newValue => {
                         Config.options.overview.orderRightLeft = newValue
@@ -862,7 +872,6 @@ ContentPage {
                     ]
                 }
                 ConfigSelectionArray {
-                    enabled: Config.options.overview.style === "classic"
                     currentValue: Config.options.overview.orderBottomUp
                     onSelected: newValue => {
                         Config.options.overview.orderBottomUp = newValue
@@ -885,29 +894,48 @@ ContentPage {
 
         ContentSubsection {
             title: Translation.tr("Hyprscrolling overview style")
+            visible: Config.options.overview.style === "scrolling"
 
-            ConfigSwitch {
-                buttonIcon: "high_density"
-                text: Translation.tr("Enable zoom animation")
-                enabled: Config.options.overview.style === "scrolling"
-                checked: Config.options.overview.scrollingStyle.showOpenningAnimation
-                onCheckedChanged: {
-                    Config.options.overview.scrollingStyle.showOpenningAnimation = checked;
+            ConfigRow {
+                ConfigSwitch {
+                    buttonIcon: "high_density"
+                    text: Translation.tr("Enable zoom animation")
+                    checked: Config.options.overview.scrollingStyle.showOpeningAnimation
+                    onCheckedChanged: {
+                        Config.options.overview.scrollingStyle.showOpeningAnimation = checked;
+                    }
+                    StyledToolTip {
+                        text: Translation.tr("Using zoom-in style zoomes the wallpaper in default state, may look pixelated on crisp wallpapers")
+                    }
+                }
+                Item {
+                    Layout.fillWidth: true
+                }
+                ConfigSelectionArray {
+                    Layout.fillWidth: false
+                    enabled: Config.options.overview.scrollingStyle.showOpeningAnimation
+                    currentValue: Config.options.overview.scrollingStyle.zoomStyle
+                    onSelected: newValue => {
+                        Config.options.overview.scrollingStyle.zoomStyle = newValue
+                    }
+                    options: [
+                        {
+                            displayName: Translation.tr("In"),
+                            icon: "zoom_in_map",
+                            value: "in"
+                        },
+                        {
+                            displayName: Translation.tr("Out"),
+                            icon: "zoom_out_map",
+                            value: "out"
+                        }
+                    ]
                 }
             }
-            ConfigSwitch {
-                buttonIcon: "wallpaper"
-                text: Translation.tr("Show wallpaper")
-                enabled: Config.options.overview.style === "scrolling"
-                checked: Config.options.overview.scrollingStyle.showWallpaper
-                onCheckedChanged: {
-                    Config.options.overview.scrollingStyle.showWallpaper = checked;
-                }
-            }
+            
             ContentSubsection {
                 title: Translation.tr("Background style")
                 ConfigSelectionArray {
-                    enabled: Config.options.overview.style === "scrolling"
                     currentValue: Config.options.overview.scrollingStyle.backgroundStyle
                     onSelected: newValue => {
                         Config.options.overview.scrollingStyle.backgroundStyle = newValue
@@ -942,18 +970,6 @@ ContentPage {
                 checked: Config.options.overview.hyprscrollingImplementation.enable
                 onCheckedChanged: {
                     Config.options.overview.hyprscrollingImplementation.enable = checked;
-                }
-            }
-            ConfigSpinBox {
-                enabled: Config.options.overview.hyprscrollingImplementation.enable
-                icon: "width"
-                text: Translation.tr("Max workspace width")
-                value: Config.options.overview.hyprscrollingImplementation.maxWorkspaceWidth
-                from: 100
-                to: 1900
-                stepSize: 100
-                onValueChanged: {
-                    Config.options.overview.hyprscrollingImplementation.maxWorkspaceWidth = value;
                 }
             }
         }

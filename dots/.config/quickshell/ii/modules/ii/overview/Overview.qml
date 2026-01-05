@@ -37,16 +37,37 @@ Scope {
                 item: GlobalStates.overviewOpen ? columnLayout : null
             } */
 
-            property bool isScrollingOverview: Config.options.overview.style === "scrolling"
-            property bool showOpenningAnimation: Config.options.overview.scrollingStyle.showOpenningAnimation
-            property real zoomRatio: 1.04 //TODO: make a configurable config option for it maybe?
-            property real scaleAnimated: GlobalStates.overviewOpen ? zoomRatio : 1
-            property real initScale: zoomRatio
+            property var zoomLevels: {  // has to be reverted compared to background
+                "in": { default: 1, zoomed: 1.04 },
+                "out": { default: 1.04, zoomed: 1 }
+            }
 
-            visible: showOpenningAnimation && isScrollingOverview ? scaleAnimated > 1 && (!Config.options.overview.showOnlyOnFocusedMonitor || monitorIsFocused) : GlobalStates.overviewOpen && (!Config.options.overview.showOnlyOnFocusedMonitor || monitorIsFocused)
+            readonly property bool isZoomInStyle: Config.options.overview.scrollingStyle.zoomStyle === "in"
+            readonly property bool isScrollingOverview: Config.options.overview.style === "scrolling"
+            readonly property bool showOpeningAnimation: Config.options.overview.scrollingStyle.showOpeningAnimation
+
+            property real defaultRatio: isZoomInStyle ? zoomLevels.in.default : zoomLevels.out.default
+            property real zoomedRatio: isZoomInStyle ? zoomLevels.in.zoomed : zoomLevels.out.zoomed
+
+            property bool isResettingZoom: false 
+            property real scaleAnimated: GlobalStates.overviewOpen ? zoomedRatio : defaultRatio
+
+            onIsZoomInStyleChanged: isResettingZoom = true
+            onScaleAnimatedChanged: {
+                if (scaleAnimated === defaultRatio) {
+                    isResettingZoom = false
+                }
+            }
+
+            visible: {
+                if (isResettingZoom) return false // not showing when we are resetting 
+                if (!showOpeningAnimation || !isScrollingOverview) return GlobalStates.overviewOpen // no anim
+                
+                return isZoomInStyle ? scaleAnimated > defaultRatio : scaleAnimated < defaultRatio
+            }
 
             Behavior on scaleAnimated {
-                animation: Appearance.animation.elementMove.numberAnimation.createObject(root)
+                animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(root)
             }
 
             anchors {
@@ -55,8 +76,8 @@ Scope {
                 left: true
                 right: true
             }
-            property int margin: 50
-            margins { //TODO: properly implement these according to bar position
+            property int margin: isZoomInStyle ? 50 : 100 //TODO: properly implement these according to bar position
+            margins { 
                 top: -margin
                 bottom: -margin
                 left: -margin
@@ -117,7 +138,7 @@ Scope {
                 }
                 SearchWidget {
                     id: searchWidget
-                    scale: showOpenningAnimation && isScrollingOverview ? zoomRatio - scaleAnimated + 1 : 1
+                    scale: showOpeningAnimation && isScrollingOverview ? zoomedRatio - scaleAnimated + 1 : defaultRatio
                     anchors.horizontalCenter: parent.horizontalCenter
                     Synchronizer on searchingText {
                         property alias source: root.searchingText
@@ -144,7 +165,7 @@ Scope {
                 anchors.fill: parent
                 active: root.visible && (Config?.options.overview.enable ?? true) && overviewStyle == "scrolling"
                 sourceComponent: ScrollingOverviewWidget {
-                    scale: showOpenningAnimation ? zoomRatio - scaleAnimated + 1 : 1
+                    scale: showOpeningAnimation ? zoomedRatio - scaleAnimated + 1 : defaultRatio
                     anchors.fill: parent
                     panelWindow: root
                     visible: (root.searchingText == "")
