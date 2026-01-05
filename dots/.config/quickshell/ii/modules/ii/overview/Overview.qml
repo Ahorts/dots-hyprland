@@ -106,6 +106,9 @@ Scope {
             }
 
             Item { // Wrapper for animation
+                id: searchWidgetWrapper
+                implicitHeight: searchWidget.implicitHeight
+                implicitWidth: searchWidget.implicitWidth
                 z: 999
                 anchors {
                     horizontalCenter: parent.horizontalCenter
@@ -126,7 +129,7 @@ Scope {
             Loader {
                 id: overviewLoader
                 anchors.topMargin: margin
-                anchors.top: searchWidget.bottom
+                anchors.top: searchWidgetWrapper.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
                 active: GlobalStates.overviewOpen && (Config?.options.overview.enable ?? true) && overviewStyle == "classic"
                 sourceComponent: OverviewWidget {
