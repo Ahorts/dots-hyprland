@@ -164,7 +164,7 @@ Item {
             Loader {
                 active: barSection == 1 // only showing it on center layout
                 sourceComponent: EntryButton {
-                    iconText: "center_focus_strong"
+                    iconText: "adjust"
                     iconFill: modelData.centered
                     tooltip: Translation.tr("Center")
 
