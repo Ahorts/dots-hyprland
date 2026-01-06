@@ -136,6 +136,9 @@ Item {
                 }
             }
         }
+        onClicked: {
+            GlobalStates.overviewOpen = false;
+        }
     }
 
     onWindowsChanged: {
