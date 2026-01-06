@@ -23,34 +23,54 @@
 
 These dots are not mine! You can access original dots from : https://github.com/end-4/dots-hyprland. 
 
-This repo contains my PRs and tweaks to original dots. (mostly up to date with original dots). This is my daily driver when I am not coding.
+This repo contains my PRs and tweaks to original dots. (mostly up to date with original dots). This is my current daily driver.
 However there can (and will) be bugs **so don't expect stability here**. Use these dots if you know what you are doing.
-
-
 
 <div align="center">
     <h2>• installation •</h2>
 </div>
 
-**Install the [original dots](https://github.com/end-4/dots-hyprland)** and clone the repo like this after that:
- 
+1. **Install the [original dots](https://github.com/end-4/dots-hyprland)**
+
+2. Clone this repository like this:
+
 ```
 git clone https://github.com/vaguesyntax/ii-vynx.git --recurse-submodules
 ```
 
-Remove the old `.config/quickshell/ii` folder.
+3. Backup your existing configuration files (recommended):
 
-And copy `dots/.config/quickshell/ii` folder to your `.config/quickshell/ii` folder.
+```
+mv ~/.config/quickshell/ii ~/.config/quickshell/ii.backup
+```
+
+4. Copy the `ii` folder config from repo into your Quickshell config directory:
+```
+cp -r ii-vynx/dots/.config/quickshell/ii ~/.config/quickshell/
+```
+5. Restart the shell with `SUPER+CTRL+R`, done!
+
+If something breaks, you can always restore your backup (original dots):
+
+```
+mv ~/.config/quickshell/ii.backup ~/.config/quickshell/ii
+```
 
 <div align="center">
-    <h2>• prs •</h2>
+    <h2>• wiki •</h2>
+</div>
+
+Please refer to [this repository's wiki](https://github.com/vaguesyntax/ii-vynx/wiki) for detailed component descriptions and further information.
+
+<div align="center">
+    <h2>• PRs •</h2>
 </div>
 
 - PR: https://github.com/end-4/dots-hyprland/pull/2539 -> Video wallpaper fixes | Branch: [video-wallpaper-fixes](https://github.com/vaguesyntax/dots-hyprland/tree/video-wallpaper-fixes)
 - PR: https://github.com/end-4/dots-hyprland/pull/2515 -> Config option for overview to show only on focused monitor | Branch  [overview-on-focused-monitor](https://github.com/vaguesyntax/dots-hyprland/tree/overview-on-focused-monitor)
 
 <div align="center">
-    <h2>• features i may open a pr later •</h2>
+    <h2>• PR-ready features •</h2>
 </div>
 
 - Bar rework  **_// security and timer indicators, custom ordering and more.._**
@@ -77,26 +97,24 @@ And copy `dots/.config/quickshell/ii` folder to your `.config/quickshell/ii` fol
 
 
 A [Niri](https://github.com/YaLTeR/niri) like scrollable tiling layout.
-You have to use my hyprscrolling plugin inorder to make shell communicate with plugin.
+You have to use my hyprscrolling plugin in order to make shell communicate with plugin.
 
 - Realtime windows position and size communication with plugin
-- You can move windowses in **different** workspaces
-- You can swap the places of windowses **in the same row** 
+- You can move windows in **different** workspaces
+- You can swap the places of windows **in the same row** 
 
 Follow the documentation on [my hyprscrolling plugin](https://github.com/vaguesyntax/hyprscrolling) to install and configure it.
 
 <div align="center">
 
-## **More description on [wiki](https://github.com/vaguesyntax/ii-vynx/wiki/ii%E2%80%90vynx).**
-
 </div>
 
 <div align="center">
-    <h2>• faq •</h2>
+    <h2>• FAQ •</h2>
 </div>
 
 - What should I do if I only want one of the features above?
-     - Go to https://github.com/vaguesyntax/dots-hyprland and find the branch you are looking for. (Fell free to ask me if you can't find because some branch names are so random) And merge that branch to your own dots.
+     - Go to https://github.com/vaguesyntax/dots-hyprland and find the branch you are looking for. (Feel free to ask me if you can't find because some branch names are so random) And merge that branch to your own dots.
 
 <div align="center">
     <h2>• credits •</h2>
