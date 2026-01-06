@@ -10,6 +10,7 @@ import qs.modules.common.functions
 
 ContentPage {
     forceWidth: true
+    interactive: false
 
     Process {
         id: randomWallProc
@@ -70,8 +71,8 @@ ContentPage {
             Layout.fillWidth: true
 
             Item {
-                implicitWidth: 340
-                implicitHeight: 200
+                implicitWidth: 360
+                implicitHeight: 220
                 
                 StyledImage {
                     id: wallpaperPreview
