@@ -134,42 +134,51 @@ Item {
             return y
         }
 
-        property int baseHeight: root.iconBoxWrapperSize
-        property real itemHeight: contentLayout.children[root.workspaceIndexInGroup].height
+        function getWindowCount(workspaceId) {
+            return HyprlandData.windowList.filter( w => w.workspace.id === workspaceId && !w.floating ).length;
+        }
 
-        property real indicatorMargin: 7      // to make a perfect circle in one windowed-workspaces
-        property real emptyWorkspaceMargin: 2 // to make a perferct circle in empty workspaces
+        property int index: root.workspaceIndexInGroup
+        property int baseHeight: root.iconBoxWrapperSize
+        property int windowCount: getWindowCount(index + root.workspaceOffset + 1)
+
+        property bool isEmptyWorkspace: windowCount === 0
+        property bool isOneWindow: windowCount === 1
+
+        // insets to create perfect round circles
+        property real indicatorInsetEmpty: root.iconBoxWrapperSize * 0.07
+        property real indicatorInsetOneWindow: root.iconBoxWrapperSize * 0.1
+        property real indicatorInset: root.iconBoxWrapperSize * 0.1
+
+        property real visualInset: {
+            if (isEmptyWorkspace)
+                return indicatorInsetEmpty
+            if (isOneWindow)
+                return indicatorInsetOneWindow
+            return indicatorInset
+        }
 
         property real pairMin: Math.min(idxPair.idx1, idxPair.idx2)
         property real pairAbs: Math.abs(idxPair.idx1 - idxPair.idx2)
 
-        property real offset: {
+        property real currentItemOffset: {
             const item = contentLayout.children[root.workspaceIndexInGroup]
             const itemSize = root.vertical ? item?.height : item?.width
             return itemSize - baseHeight
         }
 
-        property real indicatorPosition: {
-            const basePos = pairMin * root.iconBoxWrapperSize
-            const accumulatedOffset = offsetFor(root.workspaceIndexInGroup + 1)
-            return basePos + accumulatedOffset - offset + indicatorMargin / 2
-        }
+        readonly property real accumulatedPreviousOffsets: offsetFor(root.workspaceIndexInGroup + 1)
 
-        property real indicatorLength: {
-            const baseLength = (pairAbs + 1) * root.iconBoxWrapperSize
-            return baseLength + offset - indicatorMargin
-        }
+        readonly property real baseIndicatorPosition: pairMin * root.iconBoxWrapperSize
+        readonly property real baseIndicatorLength: (pairAbs + 1) * root.iconBoxWrapperSize
 
-        property int index: root.workspaceIndexInGroup
-        property int workspacePadding: !hasWindowsInWorkspace(index + root.workspaceOffset + 1) || !root.showIcons ? emptyWorkspaceMargin : 0
-        
-        property real logicalPosition: indicatorPosition - workspacePadding
-        property real logicalLength: indicatorLength + workspacePadding * 2   
+        property real indicatorPosition: baseIndicatorPosition + accumulatedPreviousOffsets - currentItemOffset + visualInset
+        property real indicatorLength: baseIndicatorLength + currentItemOffset - visualInset * 2
 
-        y: root.vertical ? logicalPosition : 0
-        x: root.vertical ? 0 : logicalPosition
-        implicitHeight: root.vertical ? logicalLength : individualIconBoxHeight
-        implicitWidth: root.vertical ? individualIconBoxHeight : logicalLength
+        y: root.vertical ? indicatorPosition : 0
+        x: root.vertical ? 0 : indicatorPosition
+        implicitHeight: root.vertical ? indicatorLength : individualIconBoxHeight
+        implicitWidth: root.vertical ? individualIconBoxHeight : indicatorLength
     }
 
     
@@ -260,6 +269,7 @@ Item {
                         model: root.showIcons ? root.monitorWindows?.filter(win => win.workspace === workspaceIndex).splice(0, Config.options.bar.workspaces.maxWindowCount) : []
                         delegate: Item {
                             Layout.alignment: Qt.AlignHCenter
+                            Layout.leftMargin: 1.5
                             width: root.individualIconBoxHeight
                             height: root.individualIconBoxHeight
                             IconImage {
