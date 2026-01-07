@@ -269,7 +269,6 @@ Item {
                         model: root.showIcons ? root.monitorWindows?.filter(win => win.workspace === workspaceIndex).splice(0, Config.options.bar.workspaces.maxWindowCount) : []
                         delegate: Item {
                             Layout.alignment: Qt.AlignHCenter
-                            Layout.leftMargin: 1.5
                             width: root.individualIconBoxHeight
                             height: root.individualIconBoxHeight
                             IconImage {
