@@ -899,6 +899,19 @@ ContentPage {
             }
         }
 
+        ConfigSpinBox {
+            enabled: Config.options.overview.scrollingStyle.backgroundStyle === "dim"
+            icon: "backlight_low"
+            text: Translation.tr("Dim percentage")
+            value: Config.options.overview.scrollingStyle.dimPercentage
+            from: 0
+            to: 75
+            stepSize: 5
+            onValueChanged: {
+                Config.options.overview.scrollingStyle.dimPercentage = value;
+            }
+        }
+
 
         ContentSubsection {
             title: Translation.tr("Background style")
@@ -927,6 +940,8 @@ ContentPage {
                 ]
             }
         }
+
+
 
         ContentSubsection {
             title: Translation.tr("Hyprscrolling plugin implementation")
