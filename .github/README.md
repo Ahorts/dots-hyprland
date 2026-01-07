@@ -70,7 +70,7 @@ Please refer to [this repository's wiki](https://github.com/vaguesyntax/ii-vynx/
 - PR: https://github.com/end-4/dots-hyprland/pull/2515 -> Config option for overview to show only on focused monitor | Branch  [overview-on-focused-monitor](https://github.com/vaguesyntax/dots-hyprland/tree/overview-on-focused-monitor)
 
 <div align="center">
-    <h2>• PR-ready features •</h2>
+    <h2>• other available features •</h2>
 </div>
 
 - Bar rework  **_// security and timer indicators, custom ordering and more.._**
@@ -79,12 +79,6 @@ Please refer to [this repository's wiki](https://github.com/vaguesyntax/ii-vynx/
 - Settings color scheme previews **_// custom color schemes_**
 - Cookie clock improvements
 - File search functionality in launcher
-
-  
-<div align="center">
-    <h2>• other available features •</h2>
-</div>
-
 - Extended calendar functionality from this PR: https://github.com/end-4/dots-hyprland/pull/1887 _**// in sync with google calendar, tweaked**_
 - Current overview changes for [hyprscrolling plugin](https://github.com/vaguesyntax/hyprscrolling) 
 - New overview style for my hyprscrolling plugin:
@@ -103,17 +97,6 @@ You have to use my hyprscrolling plugin in order to make shell communicate with 
 - You can swap the places of windows **in the same row** 
 
 Follow the documentation on [my hyprscrolling plugin](https://github.com/vaguesyntax/hyprscrolling) to install and configure it.
-
-<div align="center">
-
-</div>
-
-<div align="center">
-    <h2>• FAQ •</h2>
-</div>
-
-- What should I do if I only want one of the features above?
-     - Go to https://github.com/vaguesyntax/dots-hyprland and find the branch you are looking for. (Feel free to ask me if you can't find because some branch names are so random) And merge that branch to your own dots.
 
 <div align="center">
     <h2>• credits •</h2>
