@@ -43,14 +43,15 @@ Scope {
             }
 
             readonly property bool isZoomInStyle: Config.options.overview.scrollingStyle.zoomStyle === "in"
-            readonly property bool isScrollingOverview: Config.options.overview.style === "scrolling"
             readonly property bool showOpeningAnimation: Config.options.overview.scrollingStyle.showOpeningAnimation
 
             property real defaultRatio: isZoomInStyle ? zoomLevels.in.default : zoomLevels.out.default
             property real zoomedRatio: isZoomInStyle ? zoomLevels.in.zoomed : zoomLevels.out.zoomed
 
             property bool isResettingZoom: false 
-            property real scaleAnimated: GlobalStates.overviewOpen ? zoomedRatio : defaultRatio
+            property real scaleAnimated: showOpeningAnimation ? GlobalStates.overviewOpen ? zoomedRatio : defaultRatio : 1
+
+            property real effectiveScale: showOpeningAnimation ? zoomedRatio - scaleAnimated + 1 : 1 
 
             onIsZoomInStyleChanged: isResettingZoom = true
             onScaleAnimatedChanged: {
@@ -61,7 +62,7 @@ Scope {
 
             visible: {
                 if (isResettingZoom) return false // not showing when we are resetting 
-                if (!showOpeningAnimation || !isScrollingOverview) return GlobalStates.overviewOpen // no anim
+                if (!showOpeningAnimation) return GlobalStates.overviewOpen // no anim
                 
                 return isZoomInStyle ? scaleAnimated > defaultRatio : scaleAnimated < defaultRatio
             }
@@ -76,7 +77,8 @@ Scope {
                 left: true
                 right: true
             }
-            property int margin: isZoomInStyle ? 50 : 100 //TODO: properly implement these according to bar position
+            property int barSize: Config.options.bar.vertical ? Appearance.sizes.verticalBarWidth : Appearance.sizes.barHeight
+            property int margin: isZoomInStyle ? barSize : barSize * 2
             margins { 
                 top: -margin
                 bottom: -margin
@@ -138,7 +140,7 @@ Scope {
                 }
                 SearchWidget {
                     id: searchWidget
-                    scale: showOpeningAnimation && isScrollingOverview ? zoomedRatio - scaleAnimated + 1 : defaultRatio
+                    scale: effectiveScale
                     anchors.horizontalCenter: parent.horizontalCenter
                     Synchronizer on searchingText {
                         property alias source: root.searchingText
@@ -149,10 +151,10 @@ Scope {
 
             Loader {
                 id: overviewLoader
-                anchors.topMargin: margin
+                scale: effectiveScale
                 anchors.top: searchWidgetWrapper.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
-                active: GlobalStates.overviewOpen && (Config?.options.overview.enable ?? true) && overviewStyle == "classic"
+                active: root.visible && (Config?.options.overview.enable ?? true) && overviewStyle == "classic"
                 sourceComponent: OverviewWidget {
                     panelWindow: root
                     visible: (root.searchingText == "")
@@ -162,10 +164,10 @@ Scope {
 
             Loader {
                 id: scrollingOverviewLoader
+                scale: effectiveScale
                 anchors.fill: parent
                 active: root.visible && (Config?.options.overview.enable ?? true) && overviewStyle == "scrolling"
                 sourceComponent: ScrollingOverviewWidget {
-                    scale: showOpeningAnimation ? zoomedRatio - scaleAnimated + 1 : defaultRatio
                     anchors.fill: parent
                     panelWindow: root
                     visible: (root.searchingText == "")

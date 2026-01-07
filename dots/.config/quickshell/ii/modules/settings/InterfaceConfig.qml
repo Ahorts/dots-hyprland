@@ -777,6 +777,43 @@ ContentPage {
                 ]
             }
         }
+
+        ConfigRow {
+            ConfigSwitch {
+                buttonIcon: "high_density"
+                text: Translation.tr("Enable zoom animation")
+                checked: Config.options.overview.scrollingStyle.showOpeningAnimation
+                onCheckedChanged: {
+                    Config.options.overview.scrollingStyle.showOpeningAnimation = checked;
+                }
+                StyledToolTip {
+                    text: Translation.tr("Using zoom-in style zoomes the wallpaper in default state, may look pixelated on crisp wallpapers")
+                }
+            }
+            Item {
+                Layout.fillWidth: true
+            }
+            ConfigSelectionArray {
+                Layout.fillWidth: false
+                enabled: Config.options.overview.scrollingStyle.showOpeningAnimation
+                currentValue: Config.options.overview.scrollingStyle.zoomStyle
+                onSelected: newValue => {
+                    Config.options.overview.scrollingStyle.zoomStyle = newValue
+                }
+                options: [
+                    {
+                        displayName: Translation.tr("In"),
+                        icon: "zoom_in_map",
+                        value: "in"
+                    },
+                    {
+                        displayName: Translation.tr("Out"),
+                        icon: "zoom_out_map",
+                        value: "out"
+                    }
+                ]
+            }
+        }
         
         ContentSubsection {
             title: Translation.tr("Classic overview style")
@@ -806,6 +843,7 @@ ContentPage {
                     }
                 }
             }
+
             ConfigSpinBox {
                 enabled: Config.options.overview.hyprscrollingImplementation.enable
                 icon: "width"
@@ -818,6 +856,7 @@ ContentPage {
                     Config.options.overview.hyprscrollingImplementation.maxWorkspaceWidth = value;
                 }
             }
+
             ConfigRow {
                 uniform: true
                 ConfigSelectionArray {
@@ -839,6 +878,7 @@ ContentPage {
                     ]
                 }
                 ConfigSelectionArray {
+                    Layout.leftMargin: 50
                     currentValue: Config.options.overview.orderBottomUp
                     onSelected: newValue => {
                         Config.options.overview.orderBottomUp = newValue
@@ -859,72 +899,32 @@ ContentPage {
             }
         }
 
-        ContentSubsection {
-            title: Translation.tr("Hyprscrolling overview style")
-            visible: Config.options.overview.style === "scrolling"
 
-            ConfigRow {
-                ConfigSwitch {
-                    buttonIcon: "high_density"
-                    text: Translation.tr("Enable zoom animation")
-                    checked: Config.options.overview.scrollingStyle.showOpeningAnimation
-                    onCheckedChanged: {
-                        Config.options.overview.scrollingStyle.showOpeningAnimation = checked;
-                    }
-                    StyledToolTip {
-                        text: Translation.tr("Using zoom-in style zoomes the wallpaper in default state, may look pixelated on crisp wallpapers")
-                    }
+        ContentSubsection {
+            title: Translation.tr("Background style")
+            visible: Config.options.overview.style === "scrolling"
+            ConfigSelectionArray {
+                currentValue: Config.options.overview.scrollingStyle.backgroundStyle
+                onSelected: newValue => {
+                    Config.options.overview.scrollingStyle.backgroundStyle = newValue
                 }
-                Item {
-                    Layout.fillWidth: true
-                }
-                ConfigSelectionArray {
-                    Layout.fillWidth: false
-                    enabled: Config.options.overview.scrollingStyle.showOpeningAnimation
-                    currentValue: Config.options.overview.scrollingStyle.zoomStyle
-                    onSelected: newValue => {
-                        Config.options.overview.scrollingStyle.zoomStyle = newValue
+                options: [
+                    {
+                        displayName: Translation.tr("Blur"),
+                        icon: "blur_on",
+                        value: "blur"
+                    },
+                    {
+                        displayName: Translation.tr("Dim"),
+                        icon: "ev_shadow",
+                        value: "dim"
+                    },
+                    {
+                        displayName: Translation.tr("Transparent"),
+                        icon: "opacity",
+                        value: "transparent"
                     }
-                    options: [
-                        {
-                            displayName: Translation.tr("In"),
-                            icon: "zoom_in_map",
-                            value: "in"
-                        },
-                        {
-                            displayName: Translation.tr("Out"),
-                            icon: "zoom_out_map",
-                            value: "out"
-                        }
-                    ]
-                }
-            }
-            
-            ContentSubsection {
-                title: Translation.tr("Background style")
-                ConfigSelectionArray {
-                    currentValue: Config.options.overview.scrollingStyle.backgroundStyle
-                    onSelected: newValue => {
-                        Config.options.overview.scrollingStyle.backgroundStyle = newValue
-                    }
-                    options: [
-                        {
-                            displayName: Translation.tr("Blur"),
-                            icon: "blur_on",
-                            value: "blur"
-                        },
-                        {
-                            displayName: Translation.tr("Dim"),
-                            icon: "ev_shadow",
-                            value: "dim"
-                        },
-                        {
-                            displayName: Translation.tr("Transparent"),
-                            icon: "opacity",
-                            value: "transparent"
-                        }
-                    ]
-                }
+                ]
             }
         }
 
