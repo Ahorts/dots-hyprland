@@ -174,9 +174,15 @@ Item {
         id: overviewBackground
         anchors.fill: parent
         color: "transparent"
+        property bool overviewOpen: GlobalStates.overviewOpen
         Component.onCompleted: {
-            const opacity = backgroundStyle == "dim" ? 0.5 : backgroundStyle == "blur" ? 0.8 : 0 // blur has to 0.8 to work
+            //? Blur is not actually a blur, it gets automatically applied when we set an item's opacity to >= 0.8
+            const opacity = backgroundStyle == "dim" ? Config.options.overview.scrollingStyle.dimPercentage / 100 : backgroundStyle == "blur" ? 0.8 : 0
             color = Qt.rgba(0,0,0,opacity)
+        }
+        onOverviewOpenChanged: {
+            if (overviewOpen) return
+            color = "transparent"
         }
         Behavior on color {
             animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
