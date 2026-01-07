@@ -15,167 +15,162 @@ Scope {
     id: overviewScope
     property bool dontAutoCancelSearch: false
     property string position: Config.options.overview.position
-    Variants {
-        id: overviewVariants
-        model: Quickshell.screens
-        PanelWindow {
-            id: root
-            required property var modelData
-            property string searchingText: ""
-            readonly property HyprlandMonitor monitor: Hyprland.monitorFor(root.screen)
-            property bool monitorIsFocused: (Hyprland.focusedMonitor?.id == monitor?.id)
-            property int monitorIndex: Quickshell.screens.indexOf(modelData)
-            property string overviewStyle: Config.options.overview.style
-            screen: modelData
+    PanelWindow {
+        id: root
+        property string searchingText: ""
+        readonly property HyprlandMonitor monitor: Hyprland.monitorFor(root.screen)
+        property bool monitorIsFocused: (Hyprland.focusedMonitor?.id == monitor?.id)
+        property int monitorIndex: monitor.id
+        property string overviewStyle: Config.options.overview.style
 
-            WlrLayershell.namespace: "quickshell:overview"
-            WlrLayershell.layer: WlrLayer.Overlay
-            // WlrLayershell.keyboardFocus: GlobalStates.overviewOpen ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
-            color: "transparent"
+        WlrLayershell.namespace: "quickshell:overview"
+        WlrLayershell.layer: WlrLayer.Overlay
+        // WlrLayershell.keyboardFocus: GlobalStates.overviewOpen ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
+        color: "transparent"
 
-            /* mask: Region { // if we enable this, we cant click or drag windows on overview
-                item: GlobalStates.overviewOpen ? columnLayout : null
-            } */
+        /* mask: Region { // if we enable this, we cant click or drag windows on overview
+            item: GlobalStates.overviewOpen ? columnLayout : null
+        } */
 
-            property var zoomLevels: {  // has to be reverted compared to background
-                "in": { default: 1, zoomed: 1.04 },
-                "out": { default: 1.04, zoomed: 1 }
+        property var zoomLevels: {  // has to be reverted compared to background
+            "in": { default: 1, zoomed: 1.04 },
+            "out": { default: 1.04, zoomed: 1 }
+        }
+
+        readonly property bool isZoomInStyle: Config.options.overview.scrollingStyle.zoomStyle === "in"
+        readonly property bool showOpeningAnimation: Config.options.overview.scrollingStyle.showOpeningAnimation
+
+        property real defaultRatio: isZoomInStyle ? zoomLevels.in.default : zoomLevels.out.default
+        property real zoomedRatio: isZoomInStyle ? zoomLevels.in.zoomed : zoomLevels.out.zoomed
+
+        property bool isResettingZoom: false 
+        property real scaleAnimated: showOpeningAnimation ? GlobalStates.overviewOpen ? zoomedRatio : defaultRatio : 1
+
+        property real effectiveScale: showOpeningAnimation ? zoomedRatio - scaleAnimated + 1 : 1 
+
+        onIsZoomInStyleChanged: isResettingZoom = true
+        onScaleAnimatedChanged: {
+            if (scaleAnimated === defaultRatio) {
+                isResettingZoom = false
             }
+        }
 
-            readonly property bool isZoomInStyle: Config.options.overview.scrollingStyle.zoomStyle === "in"
-            readonly property bool showOpeningAnimation: Config.options.overview.scrollingStyle.showOpeningAnimation
-
-            property real defaultRatio: isZoomInStyle ? zoomLevels.in.default : zoomLevels.out.default
-            property real zoomedRatio: isZoomInStyle ? zoomLevels.in.zoomed : zoomLevels.out.zoomed
-
-            property bool isResettingZoom: false 
-            property real scaleAnimated: showOpeningAnimation ? GlobalStates.overviewOpen ? zoomedRatio : defaultRatio : 1
-
-            property real effectiveScale: showOpeningAnimation ? zoomedRatio - scaleAnimated + 1 : 1 
-
-            onIsZoomInStyleChanged: isResettingZoom = true
-            onScaleAnimatedChanged: {
-                if (scaleAnimated === defaultRatio) {
-                    isResettingZoom = false
-                }
-            }
-
-            visible: {
-                if (isResettingZoom) return false // not showing when we are resetting 
-                if (!showOpeningAnimation) return GlobalStates.overviewOpen // no anim
-                
-                return isZoomInStyle ? scaleAnimated > defaultRatio : scaleAnimated < defaultRatio
-            }
-
-            Behavior on scaleAnimated {
-                animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(root)
-            }
-
-            anchors {
-                top: true
-                bottom: true
-                left: true
-                right: true
-            }
-            property int barSize: Config.options.bar.vertical ? Appearance.sizes.verticalBarWidth : Appearance.sizes.barHeight
-            property int margin: isZoomInStyle ? barSize : barSize * 2
-            margins { 
-                top: -margin
-                bottom: -margin
-                left: -margin
-                right: -margin
-            }
-
-            HyprlandFocusGrab {
-                id: grab
-                windows: [root]
-                property bool canBeActive: root.monitorIsFocused
-                active: false
-                onCleared: () => {
-                    if (!active)
-                        GlobalStates.overviewOpen = false;
-                }
-            }
-
-            Connections {
-                target: GlobalStates
-                function onOverviewOpenChanged() {
-                    if (!GlobalStates.overviewOpen) {
-                        searchWidget.disableExpandAnimation();
-                        overviewScope.dontAutoCancelSearch = false;
-                    } else {
-                        if (!overviewScope.dontAutoCancelSearch) {
-                            searchWidget.cancelSearch();
-                        }
-                        delayedGrabTimer.start();
-                    }
-                }
-            }
-
-            Timer {
-                id: delayedGrabTimer
-                interval: Config.options.hacks.arbitraryRaceConditionDelay
-                repeat: false
-                onTriggered: {
-                    if (!grab.canBeActive)
-                        return;
-                    grab.active = GlobalStates.overviewOpen;
-                }
-            }
-
-            function setSearchingText(text) {
-                searchWidget.setSearchingText(text);
-                searchWidget.focusFirstItem();
-            }
-
-            Item { // Wrapper for animation
-                id: searchWidgetWrapper
-                implicitHeight: searchWidget.implicitHeight
-                implicitWidth: searchWidget.implicitWidth
-                z: 999
-                anchors {
-                    horizontalCenter: parent.horizontalCenter
-                    top: parent.top
-                    topMargin: margin + Appearance.sizes.elevationMargin
-                }
-                SearchWidget {
-                    id: searchWidget
-                    scale: effectiveScale
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    Synchronizer on searchingText {
-                        property alias source: root.searchingText
-                    }
-                }
-            }
+        visible: {
+            if (isResettingZoom) return false // not showing when we are resetting 
+            if (!showOpeningAnimation) return GlobalStates.overviewOpen // no anim
             
+            return isZoomInStyle ? scaleAnimated > defaultRatio : scaleAnimated < defaultRatio
+        }
 
-            Loader {
-                id: overviewLoader
-                scale: effectiveScale
-                anchors.top: searchWidgetWrapper.bottom
-                anchors.horizontalCenter: parent.horizontalCenter
-                active: root.visible && (Config?.options.overview.enable ?? true) && overviewStyle == "classic"
-                sourceComponent: OverviewWidget {
-                    panelWindow: root
-                    visible: (root.searchingText == "")
-                    monitorIndex: root.monitorIndex
-                }
+        Behavior on scaleAnimated {
+            animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(root)
+        }
+
+        anchors {
+            top: true
+            bottom: true
+            left: true
+            right: true
+        }
+        property int barSize: Config.options.bar.vertical ? Appearance.sizes.verticalBarWidth : Appearance.sizes.barHeight
+        property int margin: isZoomInStyle ? barSize : barSize * 2
+        margins { 
+            top: -margin
+            bottom: -margin
+            left: -margin
+            right: -margin
+        }
+
+        HyprlandFocusGrab {
+            id: grab
+            windows: [root]
+            property bool canBeActive: root.monitorIsFocused
+            active: false
+            onCleared: () => {
+                if (!active)
+                    GlobalStates.overviewOpen = false;
             }
+        }
 
-            Loader {
-                id: scrollingOverviewLoader
-                scale: effectiveScale
-                anchors.fill: parent
-                active: root.visible && (Config?.options.overview.enable ?? true) && overviewStyle == "scrolling"
-                sourceComponent: ScrollingOverviewWidget {
-                    anchors.fill: parent
-                    panelWindow: root
-                    visible: (root.searchingText == "")
-                    monitorIndex: root.monitorIndex
+        Connections {
+            target: GlobalStates
+            function onOverviewOpenChanged() {
+                if (!GlobalStates.overviewOpen) {
+                    searchWidget.disableExpandAnimation();
+                    overviewScope.dontAutoCancelSearch = false;
+                } else {
+                    if (!overviewScope.dontAutoCancelSearch) {
+                        searchWidget.cancelSearch();
+                    }
+                    delayedGrabTimer.start();
                 }
             }
         }
+
+        Timer {
+            id: delayedGrabTimer
+            interval: Config.options.hacks.arbitraryRaceConditionDelay
+            repeat: false
+            onTriggered: {
+                if (!grab.canBeActive)
+                    return;
+                grab.active = GlobalStates.overviewOpen;
+            }
+        }
+
+        function setSearchingText(text) {
+            searchWidget.setSearchingText(text);
+            searchWidget.focusFirstItem();
+        }
+
+        Item { // Wrapper for animation
+            id: searchWidgetWrapper
+            implicitHeight: searchWidget.implicitHeight
+            implicitWidth: searchWidget.implicitWidth
+            z: 999
+            anchors {
+                horizontalCenter: parent.horizontalCenter
+                top: parent.top
+                topMargin: root.margin + Appearance.sizes.elevationMargin
+            }
+            SearchWidget {
+                id: searchWidget
+                scale: root.effectiveScale
+                anchors.horizontalCenter: parent.horizontalCenter
+                Synchronizer on searchingText {
+                    property alias source: root.searchingText
+                }
+            }
+        }
+        
+
+        Loader {
+            id: overviewLoader
+            scale: root.effectiveScale
+            anchors.top: searchWidgetWrapper.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
+            active: root.visible && (Config?.options.overview.enable ?? true) && root.overviewStyle == "classic"
+            sourceComponent: OverviewWidget {
+                panelWindow: root
+                visible: (root.searchingText == "")
+                monitorIndex: root.monitorIndex
+            }
+        }
+
+        Loader {
+            id: scrollingOverviewLoader
+            scale: root.effectiveScale
+            anchors.fill: parent
+            active: root.visible && (Config?.options.overview.enable ?? true) && root.overviewStyle == "scrolling"
+            sourceComponent: ScrollingOverviewWidget {
+                anchors.fill: parent
+                panelWindow: root
+                visible: (root.searchingText == "")
+                monitorIndex: root.monitorIndex
+            }
+        }
     }
+    
 
     function toggleClipboard() {
         if (GlobalStates.overviewOpen && overviewScope.dontAutoCancelSearch) {

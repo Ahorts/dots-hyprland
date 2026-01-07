@@ -605,7 +605,6 @@ Singleton {
                 
                 property string position: "center" // Options: top, center, bottom
                 property int centerTopPaddingRatio: 3
-                property bool showOnlyOnFocusedMonitor: true
             }
 
             property JsonObject regionSelector: JsonObject {

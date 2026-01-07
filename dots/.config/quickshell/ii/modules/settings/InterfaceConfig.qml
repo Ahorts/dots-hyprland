@@ -734,14 +734,6 @@ ContentPage {
             }
         }
         
-        ConfigSwitch {
-            buttonIcon: "monitor"
-            text: Translation.tr("Show only on focused monitor")
-            checked: Config.options.overview.showOnlyOnFocusedMonitor
-            onCheckedChanged: {
-                Config.options.overview.showOnlyOnFocusedMonitor = checked;
-            }
-        }
         ConfigRow {
             uniform: true
             ConfigSwitch {
