@@ -27,6 +27,29 @@ Rectangle {
     signal updated(var newList)
     signal sourceUpdated(var newList)
 
+    Component.onCompleted: {
+        initilizateLayout(listModel)
+    }
+
+
+    /*
+     * We have to initilize the layout because we don't define the default values in Config.qml file
+    */
+    function initilizateLayout(list) {
+        let initilizatedLayout = list.map(comp => initilizateComponent(comp))
+        root.updated(initilizatedLayout)
+    }
+
+    function initilizateComponent(comp) {
+        return {
+            id: comp.id,
+            icon: comp.icon,
+            title: comp.title,
+            centered: comp.centered !== undefined ? comp.centered : false,
+            visible: comp.visible !== undefined ? comp.visible : true
+        }
+    }
+
     function toggleCenter(idx, currentList) {
         if (currentList[idx].centered) {
             currentList[idx].centered = false
@@ -39,8 +62,6 @@ Rectangle {
 
         root.updated(currentList)
     }
-
-
 
     DelegateModel {
         id: visualModel
@@ -120,8 +141,12 @@ Rectangle {
                     root.sourceUpdated(sourceListModel);
                     return;
                 }
-                listModel.push(sourceListModel[root.selectedCompIndex]);
+
+                let newComp = initilizateComponent(sourceListModel[root.selectedCompIndex]);
+                listModel.push(newComp);
+
                 sourceListModel.splice(root.selectedCompIndex, 1);
+
                 root.sourceUpdated(sourceListModel);
                 root.updated(listModel);
             }

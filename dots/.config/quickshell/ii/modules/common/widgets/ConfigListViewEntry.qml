@@ -10,9 +10,10 @@ Item {
     
     required property var modelData
 
-    property color colBackground: visualIndex % 2 == 0 ? Appearance.colors.colLayer3 : Appearance.colors.colLayer2
-    property color colHover: visualIndex % 2 == 0 ? Appearance.colors.colLayer3Hover : Appearance.colors.colLayer2Hover
-    property color colActive: visualIndex % 2 == 0 ? Appearance.colors.colLayer3Active : Appearance.colors.colLayer2Active
+    property bool alternateColor: visualIndex % 2 == 0
+    property color colBackground: alternateColor ? Appearance.colors.colLayer3 : Appearance.colors.colLayer2
+    property color colHover: alternateColor ? Appearance.colors.colLayer3Hover : Appearance.colors.colLayer2Hover
+    property color colActive: alternateColor ? Appearance.colors.colLayer3Active : Appearance.colors.colLayer2Active
 
     property color colTitle: Appearance.colors.colOnLayer0
 
@@ -130,7 +131,6 @@ Item {
                 fill: 1
             }
 
-
             StyledText {
                 id: title
                 text: modelData.title
@@ -149,13 +149,13 @@ Item {
             }
 
             Loader {
-                active: modelData.scrollTo != ""
+                active: modelData.id in page.componentMap
                 sourceComponent: EntryButton {
                     iconText: "settings"
                     tooltip: Translation.tr("Settings")
 
                     onClicked: {
-                        page.scrollTo(modelData.scrollTo)
+                        page.scrollTo(modelData.id)
                     }
                 }
             }

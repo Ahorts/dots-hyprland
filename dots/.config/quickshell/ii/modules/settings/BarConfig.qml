@@ -16,7 +16,7 @@ ContentPage {
         "utility_buttons": utilityButtons,
         "system_tray": systemTray,
         "workspaces": workspaces,
-        "timerAndPomodoro": timerAndPomodoro,
+        "timer": timerAndPomodoro,
     })
 
     function scrollTo(stringId) {

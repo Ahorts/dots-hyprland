@@ -317,119 +317,29 @@ Singleton {
                     }
                 }
                 property JsonObject layouts: JsonObject {
-                    // Only adding place-essential components to left-center-right
-                    // And adding the dynamic components to leftover
+                    // Only adding place-essential components to left-center-right and adding the dynamic components to leftover
+                    // Not adding default values, they are initialized later
+                    // Scrolling is defined through component's id
                     property list<var> availableComps: [
-                        {
-                            id: "record_indicator", 
-                            icon: "screen_record", 
-                            title: "Record indicator", 
-                            centered: false, // centered or not (only in center section)
-                            visible: false, 
-                            scrollTo: "" // scroll to this component when clicked (has also to be configured in BarConfig)
-                        },
-                        {
-                            id: "screen_share_indicator",
-                            icon: "screen_share",
-                            title: "Screen share indicator",
-                            centered: false,
-                            visible: false,
-                            scrollTo: ""
-                        },
-                        {
-                            id: "date",
-                            icon: "date_range",
-                            title: "Date",
-                            centered: false,
-                            visible: true,
-                            scrollTo: ""
-                        },
-                        {
-                            id: "battery",
-                            icon: "battery_android_6",
-                            title: "Battery",
-                            centered: false,
-                            visible: true,
-                            scrollTo: ""
-                        },
-                        {
-                            id: "timer",
-                            icon: "timer",
-                            title: "Timer & Pomodoro",
-                            centered: false,
-                            visible: true,
-                            scrollTo: "timerAndPomodoro"
-                        },
-                        {
-                            id: "weather",
-                            icon: "weather_mix",
-                            title: "Weather",
-                            centered: false,
-                            visible: true,
-                            scrollTo: ""
-                        },
-                        {
-                            id: "utility_buttons",
-                            icon: "build",
-                            title: "Utility buttons",
-                            centered: false,
-                            visible: true,
-                            scrollTo: "utility_buttons"
-                        }
+                        { id: "record_indicator", icon: "screen_record", title: "Record indicator", visible: false },
+                        { id: "screen_share_indicator", icon: "screen_share", title: "Screen share indicator", visible: false },
+                        { id: "date", icon: "date_range", title: "Date" },
+                        { id: "battery", icon: "battery_android_6", title: "Battery" },
+                        { id: "timer", icon: "timer", title: "Timer & Pomodoro" },
+                        { id: "weather", icon: "weather_mix", title: "Weather" },
+                        { id: "utility_buttons", icon: "build", title: "Utility buttons" }
                     ]
                     property list<var> left: [
-                        {
-                            id: "active_window",
-                            icon: "label",
-                            title: "Active window",
-                            centered: false,
-                            visible: true,
-                            scrollTo: "active_window"
-                        },
+                        { id: "active_window", icon: "label", title: "Active window" },
                     ]
                     property list<var> center: [
-                        {
-                            id: "music_player",
-                            icon: "music_note",
-                            title: "Music player",
-                            centered: false,
-                            visible: true,
-                            scrollTo: "music_player"
-                        },
-                        {
-                            id: "workspaces",
-                            icon: "workspaces",
-                            title: "Workspaces",
-                            centered: true,
-                            visible: true,
-                            scrollTo: "workspaces"
-                        },
-                        {
-                            id: "system_monitor",
-                            icon: "monitor_heart",
-                            title: "System monitor",
-                            centered: false,
-                            visible: true,
-                            scrollTo: ""
-                        }
+                        { id: "music_player", icon: "music_note", title: "Music player" },
+                        { id: "workspaces", icon: "workspaces", title: "Workspaces", centered: true },
+                        { id: "system_monitor", icon: "monitor_heart", title: "System monitor" }
                     ]
                     property list<var> right: [
-                        {
-                            id: "clock",
-                            icon: "nest_clock_farsight_analog",
-                            title: "Clock",
-                            centered: false,
-                            visible: true,
-                            scrollTo: ""
-                        },
-                        {
-                            id: "system_tray",
-                            icon: "system_update_alt",
-                            title: "System tray",
-                            centered: false,
-                            visible: true,
-                            scrollTo: "system_tray"
-                        }
+                        { id: "clock", icon: "nest_clock_farsight_analog", title: "Clock" }, 
+                        { id: "system_tray", icon: "system_update_alt", title: "System tray" }
                     ]
 
                 }
