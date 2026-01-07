@@ -76,7 +76,6 @@ Please refer to [this repository's wiki](https://github.com/vaguesyntax/ii-vynx/
 - Bar rework  **_// security and timer indicators, custom ordering and more.._**
 - Workspaces widget rework **_// ability to show multiple windows in one workspace_**
 - Background media widget
-- Overview widget position settings
 - Settings color scheme previews **_// custom color schemes_**
 - Cookie clock improvements
 - File search functionality in launcher
