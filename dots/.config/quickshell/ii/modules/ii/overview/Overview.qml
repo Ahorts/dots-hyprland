@@ -14,7 +14,6 @@ import Quickshell.Hyprland
 Scope {
     id: overviewScope
     property bool dontAutoCancelSearch: false
-    property string position: Config.options.overview.position
     PanelWindow {
         id: root
         property string searchingText: ""
@@ -177,15 +176,9 @@ Scope {
             GlobalStates.overviewOpen = false;
             return;
         }
-        for (let i = 0; i < overviewVariants.instances.length; i++) {
-            let panelWindow = overviewVariants.instances[i];
-            if (panelWindow.modelData.name == Hyprland.focusedMonitor.name) {
-                overviewScope.dontAutoCancelSearch = true;
-                panelWindow.setSearchingText(Config.options.search.prefix.clipboard);
-                GlobalStates.overviewOpen = true;
-                return;
-            }
-        }
+        overviewScope.dontAutoCancelSearch = true;
+        panelWindow.setSearchingText(Config.options.search.prefix.clipboard);
+        GlobalStates.overviewOpen = true;
     }
 
     function toggleEmojis() {
@@ -193,15 +186,9 @@ Scope {
             GlobalStates.overviewOpen = false;
             return;
         }
-        for (let i = 0; i < overviewVariants.instances.length; i++) {
-            let panelWindow = overviewVariants.instances[i];
-            if (panelWindow.modelData.name == Hyprland.focusedMonitor.name) {
-                overviewScope.dontAutoCancelSearch = true;
-                panelWindow.setSearchingText(Config.options.search.prefix.emojis);
-                GlobalStates.overviewOpen = true;
-                return;
-            }
-        }
+        overviewScope.dontAutoCancelSearch = true;
+        panelWindow.setSearchingText(Config.options.search.prefix.emojis);
+        GlobalStates.overviewOpen = true;
     }
 
     IpcHandler {
