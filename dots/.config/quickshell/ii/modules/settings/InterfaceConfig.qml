@@ -791,7 +791,7 @@ ContentPage {
                 options: [
                     {
                         displayName: Translation.tr("Classic"),
-                        icon: "grid_view",
+                        icon: "radio",
                         value: "classic"
                     },
                     {

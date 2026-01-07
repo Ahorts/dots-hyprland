@@ -555,7 +555,7 @@ ContentPage {
                         value: "hide"
                     },
                     {
-                        displayName: Translation.tr("Sine (old)"),
+                        displayName: Translation.tr("Sine"),
                         icon: "waves",
                         value: "sine"
                     },
