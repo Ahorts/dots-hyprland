@@ -22,7 +22,11 @@ Rectangle {
     property real verticalPadding: 4
     property real horizontalPadding: 12
 
-    Column {
+    property bool showBrightness: Config.options.sidebar.quickSliders.showBrightness 
+    property bool showVolume: Config.options.sidebar.quickSliders.showVolume 
+    property bool showMic: Config.options.sidebar.quickSliders.showMic 
+
+    RowLayout {
         id: contentItem
         anchors {
             fill: parent
@@ -32,51 +36,39 @@ Rectangle {
             bottomMargin: root.verticalPadding
         }
 
-        Loader {
-            anchors {
-                left: parent.left
-                right: parent.right
+        spacing: 8
+
+
+        property int activeCount: {
+            let count = 0;
+            for (let i = 0; i < repeater.count; i++) {
+                if (repeater.itemAt(i) && repeater.itemAt(i).visible) count++;
             }
-            visible: active
-            active: Config.options.sidebar.quickSliders.showBrightness
-            sourceComponent: QuickSlider {
-                materialSymbol: "brightness_6"
-                value: root.brightnessMonitor.brightness
-                onMoved: {
-                    root.brightnessMonitor.setBrightness(value)
-                }
-            }
+            return count;
         }
 
-        Loader {
-            anchors {
-                left: parent.left
-                right: parent.right
-            }
-            visible: active
-            active: Config.options.sidebar.quickSliders.showVolume
-            sourceComponent: QuickSlider {
-                materialSymbol: "volume_up"
-                value: Audio.sink.audio.volume
-                onMoved: {
-                    Audio.sink.audio.volume = value
-                }
-            }
-        }
 
-        Loader {
-            anchors {
-                left: parent.left
-                right: parent.right
-            }
-            visible: active
-            active: Config.options.sidebar.quickSliders.showMic
-            sourceComponent: QuickSlider {
-                materialSymbol: "mic"
-                value: Audio.source.audio.volume
-                onMoved: {
-                    Audio.source.audio.volume = value
-                }
+        Repeater {
+            id: repeater
+            model: [
+                { show: showBrightness, icon: "brightness_6", 
+                getVal: () => root.brightnessMonitor.brightness, 
+                setVal: (v) => root.brightnessMonitor.setBrightness(v) },
+                { show: showVolume, icon: "volume_up", 
+                getVal: () => Audio.sink.audio.volume, 
+                setVal: (v) => { Audio.sink.audio.volume = v } },
+                { show: showMic, icon: "mic", 
+                getVal: () => Audio.source.audio.volume, 
+                setVal: (v) => { Audio.source.audio.volume = v } }
+            ]
+
+            QuickSlider {
+                required property var modelData
+                Layout.fillWidth: true
+                visible: modelData.show
+                materialSymbol: modelData.icon
+                value: modelData.getVal()
+                onMoved: modelData.setVal(value)
             }
         }
     }
@@ -89,7 +81,7 @@ Rectangle {
         
         MaterialSymbol {
             id: icon
-            property bool nearFull: quickSlider.value >= 0.9
+            property bool nearFull: quickSlider.value >= 0.82
             anchors {
                 verticalCenter: parent.verticalCenter
                 right: nearFull ? quickSlider.handle.right : parent.right

@@ -95,7 +95,7 @@ Slider {
 
     background: Item {
         anchors.verticalCenter: parent.verticalCenter
-        width: parent.width
+        implicitWidth: parent.width
         implicitHeight: trackWidth
         
         // Fill left
