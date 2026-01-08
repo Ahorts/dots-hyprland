@@ -56,6 +56,11 @@ Item { // Window
     property int scrollX
     property int scrollY
 
+    property real topLeftRadius
+    property real topRightRadius
+    property real bottomLeftRadius
+    property real bottomRightRadius
+
     x: hyprscrollingEnabled ? scrollX : initX
     y: hyprscrollingEnabled ? scrollY : initY
     width: !windowData.floating && hyprscrollingEnabled ? scrollWidth : targetWindowWidth
@@ -67,15 +72,13 @@ Item { // Window
         maskSource: Rectangle {
             width: root.width
             height: root.height
-            radius: root.windowRounding
+
+            topLeftRadius: !hyprscrollingEnabled ? root.topLeftRadius : root.windowRounding
+            topRightRadius: !hyprscrollingEnabled ? root.topRightRadius : root.windowRounding
+            bottomLeftRadius: !hyprscrollingEnabled ? root.bottomLeftRadius : root.windowRounding
+            bottomRightRadius: !hyprscrollingEnabled ? root.bottomRightRadius : root.windowRounding
         }
     }
-
-    property real topLeftRadius
-    property real topRightRadius
-    property real bottomLeftRadius
-    property real bottomRightRadius
-
 
     // We have to disable animations in the first frame or else some strange animations shows up
     property bool initialized: false
@@ -107,7 +110,13 @@ Item { // Window
         // Color overlay for interactions
         Rectangle {
             anchors.fill: parent
-            radius: root.windowRounding
+
+            topLeftRadius: !hyprscrollingEnabled ? root.topLeftRadius : root.windowRounding
+            topRightRadius: !hyprscrollingEnabled ? root.topRightRadius : root.windowRounding
+            bottomLeftRadius: !hyprscrollingEnabled ? root.bottomLeftRadius : root.windowRounding
+            bottomRightRadius: !hyprscrollingEnabled ? root.bottomRightRadius : root.windowRounding
+
+
             color: pressed ? ColorUtils.transparentize(Appearance.colors.colLayer2Active, 0.5) : 
                 hovered ? ColorUtils.transparentize(Appearance.colors.colLayer2Hover, 0.7) : 
                 ColorUtils.transparentize(Appearance.colors.colLayer2)
