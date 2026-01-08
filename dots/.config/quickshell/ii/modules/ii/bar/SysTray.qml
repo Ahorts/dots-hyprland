@@ -9,8 +9,8 @@ import qs.modules.common.widgets
 
 Item {
     id: root
-    implicitWidth: gridLayout.implicitWidth
-    implicitHeight: gridLayout.implicitHeight
+    implicitWidth: vertical ? gridLayout.implicitWidth : gridLayout.implicitWidth / 1.5
+    implicitHeight: vertical ? gridLayout.implicitHeight / 1.5 : gridLayout.implicitHeight
     property bool vertical: false
     property bool invertSide: Config?.options.bar.bottom
     property bool trayOverflowOpen: false
@@ -24,7 +24,7 @@ Item {
         if (unpinnedItems.length == 0) root.closeOverflowMenu();
     }
     onPinnedItemsChanged: {
-        rootItem.toggleVisible(pinnedItems.length > 0);
+        rootItem.toggleVisible(unpinnedItems.length > 0);
     }
 
     function grabFocus() {
@@ -66,7 +66,7 @@ Item {
     GridLayout {
         id: gridLayout
         columns: root.vertical ? 1 : -1
-        anchors.fill: parent
+        anchors.centerIn: parent
         rowSpacing: 8
         columnSpacing: 15
 
