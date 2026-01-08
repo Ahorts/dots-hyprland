@@ -37,15 +37,17 @@ Scope {
         }
 
         readonly property bool isZoomInStyle: Config.options.overview.scrollingStyle.zoomStyle === "in"
-        readonly property bool showOpeningAnimation: Config.options.overview.scrollingStyle.showOpeningAnimation
+        readonly property bool showZoomAnimation: Config.options.overview.scrollingStyle.showZoomAnimation
+        readonly property bool showOpacityAnimation: Config.options.overview.scrollingStyle.showOpacityAnimation
 
         property real defaultRatio: isZoomInStyle ? zoomLevels.in.default : zoomLevels.out.default
         property real zoomedRatio: isZoomInStyle ? zoomLevels.in.zoomed : zoomLevels.out.zoomed
 
         property bool isResettingZoom: false 
-        property real scaleAnimated: showOpeningAnimation ? GlobalStates.overviewOpen ? zoomedRatio : defaultRatio : 1
+        property real scaleAnimated: showZoomAnimation ? GlobalStates.overviewOpen ? zoomedRatio : defaultRatio : 1
 
-        property real effectiveScale: showOpeningAnimation ? zoomedRatio - scaleAnimated + 1 : 1 
+        property real opacityAnimated: showOpacityAnimation ? GlobalStates.overviewOpen ? 1 : 0 : 1
+        property real effectiveScale: showZoomAnimation ? zoomedRatio - scaleAnimated + 1 : 1 
 
         onIsZoomInStyleChanged: isResettingZoom = true
         onScaleAnimatedChanged: {
@@ -56,13 +58,16 @@ Scope {
 
         visible: {
             if (isResettingZoom) return false // not showing when we are resetting 
-            if (!showOpeningAnimation) return GlobalStates.overviewOpen // no anim
+            if (!showZoomAnimation) return GlobalStates.overviewOpen // no anim
             
             return isZoomInStyle ? scaleAnimated > defaultRatio : scaleAnimated < defaultRatio
         }
 
         Behavior on scaleAnimated {
             animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(root)
+        }
+        Behavior on opacityAnimated {
+            animation: Appearance.animation.elementMove.numberAnimation.createObject(root)
         }
 
         anchors {
@@ -134,6 +139,7 @@ Scope {
             }
             SearchWidget {
                 id: searchWidget
+                opacity: root.opacityAnimated
                 scale: root.effectiveScale
                 anchors.horizontalCenter: parent.horizontalCenter
                 Synchronizer on searchingText {
@@ -145,6 +151,7 @@ Scope {
 
         Loader {
             id: overviewLoader
+            opacity: root.opacityAnimated
             scale: root.effectiveScale
             anchors.top: searchWidgetWrapper.bottom
             anchors.horizontalCenter: parent.horizontalCenter
@@ -158,6 +165,7 @@ Scope {
 
         Loader {
             id: scrollingOverviewLoader
+            opacity: root.opacityAnimated
             scale: root.effectiveScale
             anchors.fill: parent
             active: root.visible && (Config?.options.overview.enable ?? true) && root.overviewStyle == "scrolling"

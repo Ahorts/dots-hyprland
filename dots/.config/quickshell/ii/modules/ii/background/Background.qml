@@ -77,11 +77,11 @@ Variants {
         property real zoomedRatio: zoomInStyle ? zoomLevels.in.zoomed : zoomLevels.out.zoomed
         
         readonly property bool zoomInStyle: Config.options.overview.scrollingStyle.zoomStyle === "in"
-        readonly property bool showOpeningAnimation: Config.options.overview.scrollingStyle.showOpeningAnimation
+        readonly property bool showZoomAnimation: Config.options.overview.scrollingStyle.showZoomAnimation
 
         property bool overviewOpen: GlobalStates.overviewOpen
 
-        property real scaleAnimated: GlobalStates.overviewOpen && showOpeningAnimation ? zoomedRatio : defaultRatio
+        property real scaleAnimated: GlobalStates.overviewOpen && showZoomAnimation ? zoomedRatio : defaultRatio
         Behavior on scaleAnimated {
             animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
         }
@@ -145,7 +145,7 @@ Variants {
             id: wallpaperItem
             anchors.fill: parent
             clip: true
-            scale: showOpeningAnimation && overviewOpen && Config.options.overview.style === "scrolling" ? zoomedRatio : defaultRatio
+            scale: showZoomAnimation && overviewOpen && Config.options.overview.style === "scrolling" ? zoomedRatio : defaultRatio
 
             Behavior on scale {
                 animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
