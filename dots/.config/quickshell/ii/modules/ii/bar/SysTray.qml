@@ -9,22 +9,30 @@ import qs.modules.common.widgets
 
 Item {
     id: root
-    implicitWidth: vertical ? gridLayout.implicitWidth : gridLayout.implicitWidth / 1.5
-    implicitHeight: vertical ? gridLayout.implicitHeight / 1.5 : gridLayout.implicitHeight
+    property real visualWidth: showOverflowMenu ? gridLayout.implicitWidth / 1.5 : gridLayout.implicitWidth
+    property real visualHeight: showOverflowMenu ? gridLayout.implicitHeight / 1.5 : gridLayout.implicitHeight
+    implicitWidth: visualWidth
+    implicitHeight: visualHeight
     property bool vertical: false
     property bool invertSide: Config?.options.bar.bottom
     property bool trayOverflowOpen: false
     property bool showSeparator: true
-    property bool showOverflowMenu: true
+    property bool showOverflowMenu: !Config.options.tray.invertPinnedItems
     property var activeMenu: null
 
     property list<var> pinnedItems: TrayService.pinnedItems
     property list<var> unpinnedItems: TrayService.unpinnedItems
+
     onUnpinnedItemsChanged: {
         if (unpinnedItems.length == 0) root.closeOverflowMenu();
+        if (showOverflowMenu) {
+            rootItem.toggleVisible(unpinnedItems.length > 0);
+        }
     }
     onPinnedItemsChanged: {
-        rootItem.toggleVisible(unpinnedItems.length > 0);
+        if (!showOverflowMenu) {
+            rootItem.toggleVisible(pinnedItems.length > 0);
+        }
     }
 
     function grabFocus() {
@@ -62,6 +70,8 @@ Item {
             }
         }
     }
+
+    
 
     GridLayout {
         id: gridLayout
