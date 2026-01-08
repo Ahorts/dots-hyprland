@@ -507,8 +507,7 @@ Singleton {
                     property int maxWorkspaceWidth: 1200
                 }
                 property JsonObject scrollingStyle: JsonObject {
-                    property bool showZoomAnimation: true
-                    property bool showOpacityAnimation: true 
+                    property bool showOpeningAnimation: true
                     property int dimPercentage: 50 // 0-75
                     property string backgroundStyle: "blur" // Options: transparent, blur, dim
                     property string zoomStyle: "in"         // Options: in, out

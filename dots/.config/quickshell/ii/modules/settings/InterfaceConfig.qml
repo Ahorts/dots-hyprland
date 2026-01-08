@@ -806,21 +806,13 @@ ContentPage {
         ConfigRow {
             ConfigSwitch {
                 buttonIcon: "high_density"
-                text: Translation.tr("Zoom animation")
-                checked: Config.options.overview.scrollingStyle.showZoomAnimation
+                text: Translation.tr("Enable zoom animation")
+                checked: Config.options.overview.scrollingStyle.showOpeningAnimation
                 onCheckedChanged: {
-                    Config.options.overview.scrollingStyle.showZoomAnimation = checked;
+                    Config.options.overview.scrollingStyle.showOpeningAnimation = checked;
                 }
                 StyledToolTip {
                     text: Translation.tr("Using zoom-in style zoomes the wallpaper in default state, may look pixelated on crisp wallpapers")
-                }
-            }
-            ConfigSwitch {
-                buttonIcon: "high_density"
-                text: Translation.tr("Opacity animation")
-                checked: Config.options.overview.scrollingStyle.showOpacityAnimation
-                onCheckedChanged: {
-                    Config.options.overview.scrollingStyle.showOpacityAnimation = checked;
                 }
             }
             Item {
@@ -828,7 +820,7 @@ ContentPage {
             }
             ConfigSelectionArray {
                 Layout.fillWidth: false
-                enabled: Config.options.overview.scrollingStyle.showZoomAnimation
+                enabled: Config.options.overview.scrollingStyle.showOpeningAnimation
                 currentValue: Config.options.overview.scrollingStyle.zoomStyle
                 onSelected: newValue => {
                     Config.options.overview.scrollingStyle.zoomStyle = newValue
