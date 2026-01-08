@@ -473,7 +473,7 @@ ContentPage {
                 Config.options.bar.workspaces.useWorkspaceMap = checked;
             }
             StyledToolTip {
-                text: Translation.tr('Edit the workspace start index for monitors in the config file')
+                text: Translation.tr("Only for multi-monitor setups, you must edit the workspace map manually in config.json\n Refer to the repo wiki for more information")
             }
         }
 
