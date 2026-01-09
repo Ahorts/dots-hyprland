@@ -14,10 +14,10 @@ import qs.modules.common.widgets
 import qs.modules.common.widgets.widgetCanvas
 import qs.modules.ii.background.widgets
 
-
-
 AbstractBackgroundWidget {
     id: root
+
+    signal requestReset()
 
     configEntryName: "media"
 
@@ -77,13 +77,19 @@ AbstractBackgroundWidget {
     // 'Switch button' visiblity on hover
     hoverEnabled: true
     onEntered: {
-        if (root.playerList.length <= 1) return
+        //if (root.playerList.length <= 1) return
         showSwitchButton = true
     }
     onExited: showSwitchButton = false
         
+    allowMiddleClick: true
+    onClicked: (event) => {
+        if (event.button === Qt.MiddleButton) {
+            root.requestReset()
+        }
+    }
 
-    Component.onCompleted: updatePlayer()
+    Component.onCompleted: Qt.callLater(() => updatePlayer())
     onArtFilePathChanged: updateArt()
 
     onPlayerListChanged: {
@@ -101,15 +107,11 @@ AbstractBackgroundWidget {
     
     function updatePlayer() {
         // console.log("[Media Player Widget]",filteredActivePlayer)
-        if (root.filteredPlayerList.length == 0) {
-            root.currentPlayer = null
-            return
-        }
         if (root.filteredPlayerList.length > 0) {
             root.currentPlayer = root.filteredPlayerList[0]
             return
         }
-        root.currentPlayer = MprisController.activePlayer
+        root.currentPlayer = root.playerList[0]
     }
 
     function nextPlayer() {

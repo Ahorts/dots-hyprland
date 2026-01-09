@@ -322,14 +322,30 @@ Variants {
                     }
                 }
 
+                Timer {
+                    id: mediaTimer
+                    interval: 200
+                    onTriggered: mediaLoader.enableLoading = true
+                }
+
                 FadeLoader {
-                    shown: Config.options.background.widgets.media.enable
+                    id: mediaLoader
+                    property bool enableLoading: true
+                    shown: Config.options.background.widgets.media.enable && enableLoading
                     sourceComponent: MediaWidget {
                         screenWidth: bgRoot.screen.width
                         screenHeight: bgRoot.screen.height
                         scaledScreenWidth: bgRoot.screen.width / bgRoot.effectiveWallpaperScale
                         scaledScreenHeight: bgRoot.screen.height / bgRoot.effectiveWallpaperScale
                         wallpaperScale: bgRoot.effectiveWallpaperScale
+                    }
+                    onLoaded: {
+                        if (item && item.requestReset) {
+                            item.requestReset.connect(() => { // hard reset
+                                mediaLoader.enableLoading = false
+                                mediaTimer.running = true
+                            })
+                        }
                     }
                 }
             }
