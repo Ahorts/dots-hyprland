@@ -280,7 +280,7 @@ AbstractBackgroundWidget {
                 anchors.fill: parent
                 points: root.visualizerPoints
                 live: root.currentPlayer?.isPlaying
-                color: dynamicColors.colPrimaryRipple
+                color: root.dynamicColors.colSecondaryBackground
                 waveOpacity: Config.options.background.widgets.media.visualizer.opacity
                 waveBlur: Config.options.background.widgets.media.visualizer.blur
                 smoothing: Config.options.background.widgets.media.visualizer.smoothing
