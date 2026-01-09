@@ -279,7 +279,7 @@ AbstractBackgroundWidget {
                 id: visualizer
                 anchors.fill: parent
                 points: root.visualizerPoints
-                live: root.currentPlayer?.isPlaying
+                live: root.currentPlayer?.isPlaying ?? false
                 color: root.dynamicColors.colSecondaryBackground
                 waveOpacity: Config.options.background.widgets.media.visualizer.opacity
                 waveBlur: Config.options.background.widgets.media.visualizer.blur
