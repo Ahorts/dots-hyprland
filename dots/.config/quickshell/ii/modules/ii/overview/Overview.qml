@@ -27,10 +27,6 @@ Scope {
         // WlrLayershell.keyboardFocus: GlobalStates.overviewOpen ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
         color: "transparent"
 
-        /* mask: Region { // if we enable this, we cant click or drag windows on overview
-            item: GlobalStates.overviewOpen ? columnLayout : null
-        } */
-
         property var zoomLevels: {  // has to be reverted compared to background
             "in": { default: 1, zoomed: 1.04 },
             "out": { default: 1.04, zoomed: 1 }
@@ -106,6 +102,15 @@ Scope {
             }
         }
 
+        Keys.onPressed: event => {
+            console.log("Key pressed:", event.key, "activeFocus:", root.activeFocus)
+            if (event.key === Qt.Key_Escape) {
+                GlobalStates.overviewOpen = false;
+            }
+        }
+
+        
+
         Timer {
             id: delayedGrabTimer
             interval: Config.options.hacks.arbitraryRaceConditionDelay
@@ -122,57 +127,75 @@ Scope {
             searchWidget.focusFirstItem();
         }
 
-        Item { // Wrapper for animation
-            id: searchWidgetWrapper
-            implicitHeight: searchWidget.implicitHeight
-            implicitWidth: searchWidget.implicitWidth
-            z: 999
-            anchors {
-                horizontalCenter: parent.horizontalCenter
-                top: parent.top
-                topMargin: root.margin + Appearance.sizes.elevationMargin
+        Item {
+            id: contentItem
+            anchors.fill: parent
+
+            MouseArea { // We could have used PanelWindow.mask to detect this, but this is more stable
+                anchors.fill: parent
+                onClicked: GlobalStates.overviewOpen = false;
             }
-            SearchWidget {
-                id: searchWidget
+
+            Item { // Wrapper for animation 
+                id: searchWidgetWrapper
+                implicitHeight: searchWidget.implicitHeight
+                implicitWidth: searchWidget.implicitWidth
+                z: 999
+
+                Keys.onPressed: event => {
+                    if (event.key === Qt.Key_Escape) {
+                        GlobalStates.overviewOpen = false;
+                    }
+                }
+
+                anchors {
+                    horizontalCenter: parent.horizontalCenter
+                    top: parent.top
+                    topMargin: root.margin + Appearance.sizes.elevationMargin
+                }
+                SearchWidget {
+                    id: searchWidget
+                    scale: root.effectiveScale
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    Synchronizer on searchingText {
+                        property alias source: root.searchingText
+                    }
+                }
+            }
+            
+
+            Loader { // Classic overview
+                id: overviewLoader
                 scale: root.effectiveScale
+                anchors.top: searchWidgetWrapper.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
-                Synchronizer on searchingText {
-                    property alias source: root.searchingText
+                active: root.visible && (Config?.options.overview.enable ?? true) && root.overviewStyle == "classic"
+                sourceComponent: OverviewWidget {
+                    panelWindow: root
+                    visible: (root.searchingText == "")
+                    monitorIndex: root.monitorIndex
+                }
+            }
+
+            Loader { // Scrolling overview
+                id: scrollingOverviewLoader
+                scale: root.effectiveScale
+                anchors.fill: parent
+                active: root.visible && (Config?.options.overview.enable ?? true) && root.overviewStyle == "scrolling"
+                sourceComponent: ScrollingOverviewWidget {
+                    anchors.fill: parent
+                    panelWindow: root
+                    visible: (root.searchingText == "")
+                    monitorIndex: root.monitorIndex
                 }
             }
         }
+
         
-
-        Loader {
-            id: overviewLoader
-            scale: root.effectiveScale
-            anchors.top: searchWidgetWrapper.bottom
-            anchors.horizontalCenter: parent.horizontalCenter
-            active: root.visible && (Config?.options.overview.enable ?? true) && root.overviewStyle == "classic"
-            sourceComponent: OverviewWidget {
-                panelWindow: root
-                visible: (root.searchingText == "")
-                monitorIndex: root.monitorIndex
-            }
-        }
-
-        Loader {
-            id: scrollingOverviewLoader
-            scale: root.effectiveScale
-            anchors.fill: parent
-            active: root.visible && (Config?.options.overview.enable ?? true) && root.overviewStyle == "scrolling"
-            sourceComponent: ScrollingOverviewWidget {
-                anchors.fill: parent
-                panelWindow: root
-                visible: (root.searchingText == "")
-                monitorIndex: root.monitorIndex
-            }
-        }
     }
     
 
     function toggleClipboard() {
-        console.log("AAAAAAAAAAAAA")
         if (GlobalStates.overviewOpen && overviewScope.dontAutoCancelSearch) {
             GlobalStates.overviewOpen = false;
             return;
