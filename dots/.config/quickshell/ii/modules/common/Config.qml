@@ -501,6 +501,7 @@ Singleton {
                 property bool centerIcons: true
                 property bool useWorkspaceMap: false
                 property list<var> workspaceMap: [0,10]
+                property bool showOpeningAnimation: true
 
                 property string style: "classic" // Options: classic, scrolling
 
@@ -509,7 +510,7 @@ Singleton {
                     property int maxWorkspaceWidth: 1200
                 }
                 property JsonObject scrollingStyle: JsonObject {
-                    property bool showOpeningAnimation: true
+                    
                     property int dimPercentage: 50 // 0-75
                     property string backgroundStyle: "blur" // Options: transparent, blur, dim
                     property string zoomStyle: "in"         // Options: in, out

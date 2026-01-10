@@ -33,7 +33,7 @@ Scope {
         }
 
         readonly property bool isZoomInStyle: Config.options.overview.scrollingStyle.zoomStyle === "in"
-        readonly property bool showOpeningAnimation: Config.options.overview.scrollingStyle.showOpeningAnimation
+        readonly property bool showOpeningAnimation: Config.options.overview.showOpeningAnimation
 
         property real defaultRatio: isZoomInStyle ? zoomLevels.in.default : zoomLevels.out.default
         property real zoomedRatio: isZoomInStyle ? zoomLevels.in.zoomed : zoomLevels.out.zoomed

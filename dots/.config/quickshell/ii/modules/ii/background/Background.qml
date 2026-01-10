@@ -77,7 +77,7 @@ Variants {
         property real zoomedRatio: zoomInStyle ? zoomLevels.in.zoomed : zoomLevels.out.zoomed
         
         readonly property bool zoomInStyle: Config.options.overview.scrollingStyle.zoomStyle === "in"
-        readonly property bool showOpeningAnimation: Config.options.overview.scrollingStyle.showOpeningAnimation
+        readonly property bool showOpeningAnimation: Config.options.overview.showOpeningAnimation
 
         property bool overviewOpen: GlobalStates.overviewOpen
 

@@ -106,7 +106,7 @@ RowLayout {
         Layout.bottomMargin: 4
         onClicked: {
             GlobalStates.overviewOpen = false;
-            const overviewAnimationEnabled = Config.options.overview.scrollingStyle.showOpeningAnimation
+            const overviewAnimationEnabled = Config.options.overview.showOpeningAnimation
 
             if (!overviewAnimationEnabled) {
                 Quickshell.execDetached(["qs", "-p", Quickshell.shellPath(""), "ipc", "call", "region", "search"]);
