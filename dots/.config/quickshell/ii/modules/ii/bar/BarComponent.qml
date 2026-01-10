@@ -34,11 +34,11 @@ Item {
         "system_monitor": [systemMonitorComp, systemMonitorCompVert],
         "clock": [clockComp, clockCompVert],
         "battery": [batteryComp, batteryCompVert],
-        "utility_buttons": [utilityButtonsComp, utilityButtonsCompVert],
-        "system_tray": [systemTrayComp, systemTrayCompVert],
-        "active_window": [activeWindowComp, activeWindowCompVert],
+        "utility_buttons": [utilityButtonsComp, utilityButtonsComp],
+        "system_tray": [systemTrayComp, systemTrayComp],
+        "active_window": [activeWindowComp, activeWindowComp],
         "date": [dateCompVert, dateCompVert],
-        "record_indicator": [recordIndicatorComp, recordIndicatorCompVert],
+        "record_indicator": [recordIndicatorComp, recordIndicatorComp],
         "screen_share_indicator": [screenshareIndicatorComp, screenshareIndicatorComp],
         "timer": [timerComp, timerCompVert],
         "weather": [weatherComp, weatherComp]
@@ -97,11 +97,9 @@ Item {
 
     Component { id: screenshareIndicatorComp; ScreenShareIndicator {} }
 
-    Component { id: recordIndicatorComp; RecordIndicator {} }
-    Component { id: recordIndicatorCompVert; RecordIndicator { vertical: true } }
+    Component { id: recordIndicatorComp; RecordIndicator { vertical: rootItem.vertical } }
 
-    Component { id: activeWindowCompVert; ActiveWindow { vertical: true } }
-    Component { id: activeWindowComp; ActiveWindow {} }
+    Component { id: activeWindowComp; ActiveWindow { vertical: rootItem.vertical } }
 
     Component { id: systemMonitorComp; Resources {} }
     Component { id: systemMonitorCompVert; Vertical.Resources {} }
@@ -109,8 +107,7 @@ Item {
     Component { id: musicPlayerCompVert; Vertical.VerticalMedia {} }
     Component { id: musicPlayerComp; Media {} }
 
-    Component { id: utilityButtonsCompVert; UtilButtons { vertical: true } }
-    Component { id: utilityButtonsComp; UtilButtons {} }
+    Component { id: utilityButtonsComp; UtilButtons { vertical: rootItem.vertical } }
 
     Component { id: batteryComp; BatteryIndicator {} }
     Component { id: batteryCompVert; Vertical.BatteryIndicator {} }
@@ -118,8 +115,7 @@ Item {
     Component { id: clockCompVert; Vertical.VerticalClockWidget {} }
     Component { id: clockComp; ClockWidget {} }
 
-    Component { id: systemTrayCompVert; SysTray { vertical: true } }
-    Component { id: systemTrayComp; SysTray {} }
+    Component { id: systemTrayComp; SysTray { vertical: rootItem.vertical } }
 
     Component { id: dateCompVert; Vertical.VerticalDateWidget {} }
 
