@@ -103,7 +103,6 @@ Scope {
         }
 
         Keys.onPressed: event => {
-            console.log("Key pressed:", event.key, "activeFocus:", root.activeFocus)
             if (event.key === Qt.Key_Escape) {
                 GlobalStates.overviewOpen = false;
             }
