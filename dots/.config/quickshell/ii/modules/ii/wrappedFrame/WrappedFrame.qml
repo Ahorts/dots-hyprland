@@ -104,6 +104,7 @@ Item {
                 property bool showBarBackground: monitorScope.hasActiveWindows && Config.options.bar.barBackgroundStyle === 2 || Config.options.bar.barBackgroundStyle === 1
 
                 Connections {
+                    enabled: Config.options.bar.barBackgroundStyle === 2
                     target: HyprlandData
                     function onWindowListChanged() {
                         const monitor = HyprlandData.monitors.find(m => m.id === monitorScope.index);
