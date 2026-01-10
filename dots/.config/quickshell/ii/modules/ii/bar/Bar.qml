@@ -12,8 +12,6 @@ import qs.modules.common.widgets
 
 Scope {
     id: bar
-    
-    property bool showBarBackground: Config.options.bar.barBackgroundStyle == 1
 
     Variants {
         // For each monitor
@@ -36,7 +34,24 @@ Scope {
             component: PanelWindow { // Bar window
                 id: barRoot
                 screen: barLoader.modelData
+
+                property int monitorIndex: barLoader.monitorIndex
+                property bool hasActiveWindows: false
+                property bool showBarBackground: barRoot.hasActiveWindows && Config.options.bar.barBackgroundStyle === 2 || Config.options.bar.barBackgroundStyle === 1
+
+                Connections {
+                    target: HyprlandData
+                    function onWindowListChanged() {
+                        const monitor = HyprlandData.monitors.find(m => m.id === monitorIndex);
+                        const wsId = monitor?.activeWorkspace?.id;
+
+                        const hasWindow = wsId ? HyprlandData.windowList.some(w => w.workspace.id === wsId && !w.floating) : false;
+
+                        barRoot.hasActiveWindows = hasWindow
+                    }
+                }
                 
+
                 Timer {
                     id: showBarTimer
                     interval: (Config?.options.bar.autoHide.showWhenPressingSuper.delay ?? 100)
@@ -109,7 +124,6 @@ Scope {
 
                     BarContent {
                         id: barContent
-                        monitorIndex: barLoader.monitorIndex
                         
                         implicitHeight: Appearance.sizes.barHeight
                         anchors {

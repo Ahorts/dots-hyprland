@@ -14,9 +14,6 @@ import qs.modules.common.functions
 Scope {
     id: bar
 
-    property bool showBarBackground: Config.options.bar.barBackgroundStyle == 1
-    
-
     Variants {
         id: barVariant
         // For each monitor
@@ -37,6 +34,22 @@ Scope {
                 id: barRoot
                 screen: barLoader.modelData
                 property var brightnessMonitor: Brightness.getMonitorForScreen(barLoader.modelData)
+
+                property int monitorIndex: barLoader.monitorIndex
+                property bool hasActiveWindows: false
+                property bool showBarBackground: barRoot.hasActiveWindows && Config.options.bar.barBackgroundStyle === 2 || Config.options.bar.barBackgroundStyle === 1
+
+                Connections {
+                    target: HyprlandData
+                    function onWindowListChanged() {
+                        const monitor = HyprlandData.monitors.find(m => m.id === monitorIndex);
+                        const wsId = monitor?.activeWorkspace?.id;
+
+                        const hasWindow = wsId ? HyprlandData.windowList.some(w => w.workspace.id === wsId && !w.floating) : false;
+
+                        barRoot.hasActiveWindows = hasWindow
+                    }
+                }
                 
                 Timer {
                     id: showBarTimer
