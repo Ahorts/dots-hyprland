@@ -120,20 +120,6 @@ Item { // Wrapper
             anchors.horizontalCenter: parent.horizontalCenter
             columns: 1
 
-            state: Config.options.overview.position === "center" ? "top" : Config.options.overview.position
-            states: [
-                State {
-                    name: "top"
-                    AnchorChanges { target: searchWidgetContent; anchors.top: parent.top; anchors.bottom: undefined; }
-                    AnchorChanges { target: gridLayout; anchors.top: parent.top; anchors.bottom: undefined; }
-                },
-                State {
-                    name: "bottom"
-                    AnchorChanges { target: searchWidgetContent; anchors.top: undefined; anchors.bottom: parent.bottom; }
-                    AnchorChanges { target: gridLayout; anchors.top: undefined; anchors.bottom: parent.bottom; }
-                }
-            ]
-
             // clip: true
             layer.enabled: true
             layer.effect: OpacityMask {
