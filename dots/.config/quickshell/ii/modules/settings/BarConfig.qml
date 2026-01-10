@@ -105,7 +105,7 @@ ContentPage {
 
     ContentSection {
         icon: "spoke"
-        title: Translation.tr("Positioning")
+        title: Translation.tr("Positioning & appearance")
 
         ConfigRow {
             ContentSubsection {
@@ -225,6 +225,7 @@ ContentPage {
 
         ContentSubsection {
             title: Translation.tr("Bar background style")
+            tooltip: Translation.tr("Adaptive style makes the bar background transparent when there are no active windows")
             Layout.fillWidth: false
 
             ConfigSelectionArray {
@@ -232,21 +233,25 @@ ContentPage {
                 onSelected: newValue => {
                     Config.options.bar.barBackgroundStyle = newValue;
                 }
-                options: [          
-                    {
-                        displayName: Translation.tr("Transparent"),
-                        icon: "opacity",
-                        value: 0
-                    },
+                options: [ 
                     {
                         displayName: Translation.tr("Visible"),
                         icon: "visibility",
                         value: 1
+                    }, 
+                    {
+                        displayName: Translation.tr("Adaptive"),
+                        icon: "masked_transitions",
+                        value: 2
+                    },        
+                    {
+                        displayName: Translation.tr("Transparent"),
+                        icon: "opacity",
+                        value: 0
                     }
                 ]
             }
         }
-        
     }
     
     ContentSection {

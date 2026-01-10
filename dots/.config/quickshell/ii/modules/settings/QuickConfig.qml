@@ -244,6 +244,7 @@ ContentPage {
     ContentSection {
         icon: "screenshot_monitor"
         title: Translation.tr("Bar & screen")
+        Layout.topMargin: -25
 
         
 
@@ -357,19 +358,49 @@ ContentPage {
                 Config.options.appearance.wrappedFrameThickness = value;
             }
         }
+
+        ContentSubsection {
+            title: Translation.tr("Bar background style")
+            tooltip: Translation.tr("Adaptive style makes the bar background transparent when there are no active windows")
+            Layout.fillWidth: false
+
+            ConfigSelectionArray {
+                currentValue: Config.options.bar.barBackgroundStyle
+                onSelected: newValue => {
+                    Config.options.bar.barBackgroundStyle = newValue;
+                }
+                options: [ 
+                    {
+                        displayName: Translation.tr("Visible"),
+                        icon: "visibility",
+                        value: 1
+                    }, 
+                    {
+                        displayName: Translation.tr("Adaptive"),
+                        icon: "masked_transitions",
+                        value: 2
+                    },        
+                    {
+                        displayName: Translation.tr("Transparent"),
+                        icon: "opacity",
+                        value: 0
+                    }
+                ]
+            }
+        }
     }
+
+    
+    
 
     NoticeBox {
         Layout.fillWidth: true
-        text: Translation.tr('Not all options are available in this app. You should also check the config file by hitting the "Config file" button on the topleft corner or opening %1 manually.').arg(Directories.shellConfigPath)
+        Layout.topMargin: -20
+        text: Translation.tr('Not all options are available in this app. You should also check the config file by hitting the "Config file" button on the topleft corner or opening ~/.config/illogical-impulse/config.json manually.')
 
-        Item {
-            Layout.fillWidth: true
-        }
         RippleButtonWithIcon {
             id: copyPathButton
             property bool justCopied: false
-            Layout.fillWidth: false
             buttonRadius: Appearance.rounding.small
             materialIcon: justCopied ? "check" : "content_copy"
             mainText: justCopied ? Translation.tr("Path copied") : Translation.tr("Copy path")

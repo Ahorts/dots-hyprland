@@ -36,10 +36,7 @@ Scope {
             component: PanelWindow { // Bar window
                 id: barRoot
                 screen: barLoader.modelData
-
                 
-                
-
                 Timer {
                     id: showBarTimer
                     interval: (Config?.options.bar.autoHide.showWhenPressingSuper.delay ?? 100)
@@ -112,6 +109,7 @@ Scope {
 
                     BarContent {
                         id: barContent
+                        monitorIndex: barLoader.monitorIndex
                         
                         implicitHeight: Appearance.sizes.barHeight
                         anchors {

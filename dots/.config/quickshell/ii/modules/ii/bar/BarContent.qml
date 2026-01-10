@@ -15,21 +15,25 @@ Item { // Bar content region
     id: root
 
     property var screen: root.QsWindow.window?.screen
+    property int monitorIndex
     property var brightnessMonitor: Brightness.getMonitorForScreen(screen)
     property real useShortenedForm: (Appearance.sizes.barHellaShortenScreenWidthThreshold >= screen?.width) ? 2 : (Appearance.sizes.barShortenScreenWidthThreshold >= screen?.width) ? 1 : 0
     readonly property int centerSideModuleWidth: (useShortenedForm == 2) ? Appearance.sizes.barCenterSideModuleWidthHellaShortened : (useShortenedForm == 1) ? Appearance.sizes.barCenterSideModuleWidthShortened : Appearance.sizes.barCenterSideModuleWidth
 
-    component VerticalBarSeparator: Rectangle {
-        Layout.topMargin: Appearance.sizes.baseBarHeight / 3
-        Layout.bottomMargin: Appearance.sizes.baseBarHeight / 3
-        Layout.fillHeight: true
-        implicitWidth: 1
-        color: Appearance.colors.colOutlineVariant
+    property bool hasActiveWindows: false
+    property bool showBarBackground: root.hasActiveWindows && Config.options.bar.barBackgroundStyle === 2 || Config.options.bar.barBackgroundStyle === 1
+
+    Connections {
+        target: HyprlandData
+        function onWindowListChanged() {
+            const monitor = HyprlandData.monitors.find(m => m.id === monitorIndex);
+            const wsId = monitor?.activeWorkspace?.id;
+
+            const hasWindow = wsId ? HyprlandData.windowList.some(w => w.workspace.id === wsId && !w.floating) : false;
+
+            root.hasActiveWindows = hasWindow
+        }
     }
-
-
-
-    property bool showBarBackground: Config.options.bar.barBackgroundStyle === 1
 
     ////// Definning places of center modules //////
     property var fullModel: Config.options.bar.layouts.center
@@ -55,7 +59,7 @@ Item { // Bar content region
 
     // Background shadow
     Loader {
-        active: root.showBarBackground === 1 && Config.options.bar.cornerStyle === 1 && Config.options.bar.floatStyleShadow
+        active: root.showBarBackground && Config.options.bar.cornerStyle === 1 && Config.options.bar.floatStyleShadow
         anchors.fill: barBackground
         sourceComponent: StyledRectangularShadow {
             anchors.fill: undefined // The loader's anchors act on this, and this should not have any anchor
@@ -74,6 +78,10 @@ Item { // Bar content region
         radius: Config.options.bar.cornerStyle === 1 ? Appearance.rounding.windowRounding : 0
         border.width: Config.options.bar.cornerStyle === 1 ? 1 : 0
         border.color: Appearance.colors.colLayer0Border
+
+        Behavior on color {
+            animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
+        }
     }
 
     FocusedScrollMouseArea { // Left side | scroll to change brightness
