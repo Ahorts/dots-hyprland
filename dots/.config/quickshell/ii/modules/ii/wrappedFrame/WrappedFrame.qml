@@ -18,9 +18,14 @@ Item {
 
     component HorizontalFrame: PanelWindow {
         id: cornerPanelWindow
+        property bool showBackground: true
 
-        color: Appearance.colors.colLayer0
+        color: showBackground ? Appearance.colors.colLayer0 : "transparent"
         implicitWidth: frameThickness;implicitHeight: frameThickness
+
+        Behavior on color {
+            animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
+        }
 
         anchors {
             left: true
@@ -30,9 +35,14 @@ Item {
 
     component VerticalFrame: PanelWindow {
         id: cornerPanelWindow
+        property bool showBackground: true
 
-        color: Appearance.colors.colLayer0
+        color: showBackground ? Appearance.colors.colLayer0 : "transparent"
         implicitWidth: frameThickness;implicitHeight: frameThickness
+
+        Behavior on color {
+            animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
+        }
 
         anchors {
             bottom: true
@@ -44,6 +54,7 @@ Item {
         id: screenCornerWindow
         property bool left
         property bool bottom
+        property bool showBackground: true
         screen: monitorScope.modelData
         anchors {
             bottom: bottom
@@ -65,7 +76,11 @@ Item {
             }
 
             implicitSize: Appearance.rounding.screenRounding
-            color: Appearance.colors.colLayer0 // // add option for showbarbackground
+            color: showBackground ? Appearance.colors.colLayer0 : "transparent"
+
+            Behavior on color {
+                animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
+            }
 
             corner: screenCornerWindow.left ? 
                 (screenCornerWindow.bottom ? RoundCorner.CornerEnum.BottomLeft : RoundCorner.CornerEnum.TopLeft) :
@@ -76,11 +91,29 @@ Item {
     Loader {
         active: Config.options.appearance.fakeScreenRounding == 3
         sourceComponent: Variants {
-            model: Quickshell.screens
+            id: wrappedFrameVariant
+            property var variantModel: Quickshell.screens
+            model: variantModel
 
             Scope {
                 id: monitorScope
                 required property var modelData
+
+                property int index: wrappedFrameVariant.variantModel.indexOf(monitorScope.modelData)
+                property bool hasActiveWindows: false
+                property bool showBarBackground: monitorScope.hasActiveWindows && Config.options.bar.barBackgroundStyle === 2 || Config.options.bar.barBackgroundStyle === 1
+
+                Connections {
+                    target: HyprlandData
+                    function onWindowListChanged() {
+                        const monitor = HyprlandData.monitors.find(m => m.id === monitorScope.index);
+                        const wsId = monitor?.activeWorkspace?.id;
+
+                        const hasWindow = wsId ? HyprlandData.windowList.some(w => w.workspace.id === wsId && !w.floating) : false;
+
+                        monitorScope.hasActiveWindows = hasWindow
+                    }
+                }
 
                 // SCREEN CORNERS
                 Loader {
@@ -88,6 +121,7 @@ Item {
                     sourceComponent: ScreenCorner {
                         left: true
                         bottom: true
+                        showBackground: monitorScope.showBarBackground
                     }
                 }
                 Loader {
@@ -95,6 +129,7 @@ Item {
                     sourceComponent: ScreenCorner {
                         left: true
                         bottom: false
+                        showBackground: showBarBackground
                     }
                 }
                 Loader {
@@ -102,6 +137,7 @@ Item {
                     sourceComponent: ScreenCorner {
                         left: false
                         bottom: false
+                        showBackground: monitorScope.showBarBackground
                     }
                 }
                 Loader {
@@ -109,6 +145,7 @@ Item {
                     sourceComponent: ScreenCorner {
                         left: false
                         bottom: true
+                        showBackground: showBarBackground
                     }
                 }
 
@@ -119,6 +156,7 @@ Item {
                     sourceComponent: HorizontalFrame {
                         screen: monitorScope.modelData
                         anchors.bottom: true
+                        showBackground: monitorScope.showBarBackground
                     }
                 }
                 Loader {
@@ -126,6 +164,7 @@ Item {
                     sourceComponent: HorizontalFrame {
                         screen: monitorScope.modelData
                         anchors.top: true
+                        showBackground: showBarBackground
                     }
                 }
                 Loader {
@@ -133,6 +172,7 @@ Item {
                     sourceComponent: VerticalFrame {
                         screen: monitorScope.modelData
                         anchors.right: true
+                        showBackground: showBarBackground
                     }
                 }
                 Loader {
@@ -140,6 +180,7 @@ Item {
                     sourceComponent: VerticalFrame {
                         screen: monitorScope.modelData
                         anchors.left: true
+                        showBackground: showBarBackground
                     }
                 }
             }
