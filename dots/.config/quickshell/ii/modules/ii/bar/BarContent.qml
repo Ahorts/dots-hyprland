@@ -112,7 +112,7 @@ Item { // Bar content region
             top: parent.top
             bottom: parent.bottom
             left: parent.left
-            leftMargin: Appearance.rounding.screenRounding / 2
+            leftMargin: Math.ceil(Appearance.rounding.screenRounding / 2)
         }
         width: 1
     }
@@ -206,7 +206,7 @@ Item { // Bar content region
             top: parent.top
             bottom: parent.bottom
             right: rightStopper.left
-            rightMargin: Appearance.rounding.screenRounding / 2
+            rightMargin: Math.ceil(Appearance.rounding.screenRounding / 2)
         }
         spacing: 4
 

@@ -90,7 +90,7 @@ Item { // Bar content region
             left: parent.left
             right: parent.right
             top: parent.top
-            topMargin: Appearance.rounding.screenRounding / 2.5
+            topMargin: Math.ceil(Appearance.rounding.screenRounding / 2.5)
         }
         height: 1
     }
@@ -201,7 +201,7 @@ Item { // Bar content region
             left: parent.left
             right: parent.right
             bottom: parent.bottom
-            bottomMargin: Appearance.rounding.screenRounding / 2.5
+            bottomMargin: Math.ceil(Appearance.rounding.screenRounding / 2.5)
         }
         height: 1
     }
