@@ -106,11 +106,25 @@ RowLayout {
         Layout.bottomMargin: 4
         onClicked: {
             GlobalStates.overviewOpen = false;
-            Quickshell.execDetached(["qs", "-p", Quickshell.shellPath(""), "ipc", "call", "region", "search"]);
+            const overviewAnimationEnabled = Config.options.overview.scrollingStyle.showOpeningAnimation
+
+            if (!overviewAnimationEnabled) {
+                Quickshell.execDetached(["qs", "-p", Quickshell.shellPath(""), "ipc", "call", "region", "search"]);
+                return
+            }
+            lensDelayTimer.start();
         }
         text: "image_search"
         StyledToolTip {
             text: Translation.tr("Google Lens")
+        }
+    }
+
+    Timer {
+        id: lensDelayTimer
+        interval: 201
+        onTriggered: {
+            Quickshell.execDetached(["qs", "-p", Quickshell.shellPath(""), "ipc", "call", "region", "search"]);
         }
     }
 
