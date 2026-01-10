@@ -50,7 +50,7 @@ Item { // Bar content region
 
     // Background shadow
     Loader {
-        active: root.showBarBackground
+        active: root.showBarBackground && Config.options.bar.cornerStyle === 1 && Config.options.bar.floatStyleShadow
         anchors.fill: barBackground
         sourceComponent: StyledRectangularShadow {
             anchors.fill: undefined // The loader's anchors act on this, and this should not have any anchor
