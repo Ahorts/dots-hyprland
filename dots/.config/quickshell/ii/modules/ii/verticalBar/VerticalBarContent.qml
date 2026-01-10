@@ -62,7 +62,14 @@ Item { // Bar content region
     FocusedScrollMouseArea { // Top section | scroll to change brightness
         id: barTopSectionMouseArea
         anchors.top: parent.top
-        implicitHeight: topSectionColumnLayout.implicitHeight
+        
+
+        anchors {
+            top: parent.top
+            bottom: middleSection.top
+            left: parent.left
+            right: parent.right
+        }
         implicitWidth: Appearance.sizes.baseVerticalBarWidth
         height: (root.height - middleSection.height) / 2
         width: Appearance.sizes.verticalBarWidth
@@ -210,7 +217,6 @@ Item { // Bar content region
             top: middleSection.bottom
         }
         implicitWidth: Appearance.sizes.baseVerticalBarWidth
-        implicitHeight: bottomSectionColumnLayout.implicitHeight
         
         onScrollDown: Audio.decrementVolume();
         onScrollUp: Audio.incrementVolume();
