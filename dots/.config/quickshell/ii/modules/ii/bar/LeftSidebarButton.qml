@@ -5,14 +5,9 @@ import qs.modules.common
 import qs.modules.common.widgets
 
 RippleButton {
-    id: root
+    id: leftSidebarButton
 
     property bool showPing: false
-
-    property bool aiChatEnabled: Config.options.policies.ai !== 0
-    property bool translatorEnabled: Config.options.sidebar.translator.enable
-    property bool animeEnabled: Config.options.policies.weeb !== 0
-    visible: aiChatEnabled || translatorEnabled || animeEnabled
 
     property real buttonPadding: 5
     implicitWidth: distroIcon.width + buttonPadding * 2
@@ -33,7 +28,7 @@ RippleButton {
         target: Ai
         function onResponseFinished() {
             if (GlobalStates.sidebarLeftOpen) return;
-            root.showPing = true;
+            leftSidebarButton.showPing = true;
         }
     }
 
@@ -41,14 +36,14 @@ RippleButton {
         target: Booru
         function onResponseFinished() {
             if (GlobalStates.sidebarLeftOpen) return;
-            root.showPing = true;
+            leftSidebarButton.showPing = true;
         }
     }
 
     Connections {
         target: GlobalStates
         function onSidebarLeftOpenChanged() {
-            root.showPing = false;
+            leftSidebarButton.showPing = false;
         }
     }
 
@@ -62,7 +57,7 @@ RippleButton {
         color: Appearance.colors.colOnLayer0
 
         Rectangle {
-            opacity: root.showPing ? 1 : 0
+            opacity: leftSidebarButton.showPing ? 1 : 0
             visible: opacity > 0
             anchors {
                 bottom: parent.bottom

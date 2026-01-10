@@ -12,7 +12,7 @@ MouseArea {
 
     property bool activelyRecording: Persistent.states.screenRecord.active
 
-    property color colBackground: Appearance.colors.colPrimary
+    property color backgroundColor: Appearance.colors.colPrimary
     property color colText: Appearance.colors.colOnPrimary
 
     hoverEnabled: true

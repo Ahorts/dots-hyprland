@@ -13,7 +13,7 @@ MouseArea {
     implicitWidth: 40
     implicitHeight: Appearance.sizes.barHeight
 
-    property color colBackground: Appearance.colors.colPrimary
+    property color backgroundColor: Appearance.colors.colPrimary
 
     property bool activelyScreenSharing: false
     

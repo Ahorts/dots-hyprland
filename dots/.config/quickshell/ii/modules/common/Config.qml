@@ -330,7 +330,8 @@ Singleton {
                         { id: "utility_buttons", icon: "build", title: "Utility buttons" }
                     ]
                     property list<var> left: [
-                        { id: "active_window", icon: "label", title: "Active window" },
+                        { id: "left_sidebar_button", icon: "star", title: "Left sidebar button" },
+                        { id: "active_window", icon: "label", title: "Active window" }
                     ]
                     property list<var> center: [
                         { id: "music_player", icon: "music_note", title: "Music player" },
@@ -339,7 +340,8 @@ Singleton {
                     ]
                     property list<var> right: [
                         { id: "clock", icon: "nest_clock_farsight_analog", title: "Clock" }, 
-                        { id: "system_tray", icon: "system_update_alt", title: "System tray" }
+                        { id: "system_tray", icon: "system_update_alt", title: "System tray" },
+                        { id: "right_sidebar_button", icon: "notifications", title: "Right sidebar button" }
                     ]
 
                 }

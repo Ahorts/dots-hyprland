@@ -26,8 +26,6 @@ Item { // Bar content region
         color: Appearance.colors.colOutlineVariant
     }
 
-    property int topSidebarButtonHeight
-    property int bottomSidebarButtonHeight: barBottomSectionMouseArea.implicitHeight - 24 // not sure about
 
     ////// Definning places of center modules //////
     property var fullModel: Config.options?.bar?.layouts?.center
@@ -77,33 +75,6 @@ Item { // Bar content region
                 GlobalStates.sidebarLeftOpen = !GlobalStates.sidebarLeftOpen;
         }
 
-        ColumnLayout { // Content
-            id: topSectionColumnLayout
-            anchors.fill: parent
-            spacing: 10
-
-            Bar.BarGroup {
-                id: topSidebarButtonGroup
-                vertical: true
-                Layout.alignment: Qt.AlignHCenter
-                Layout.topMargin: Appearance.rounding.screenRounding / 2
-
-                startRadius: Appearance.rounding.full
-                endRadius: Config.options.bar.layouts.left.length > 0 ? Appearance.rounding.verysmall : Appearance.rounding.full
-
-                Component.onCompleted: topSidebarButtonHeight = leftButton.height + 2
-
-                Bar.LeftSidebarButton {
-                    id: leftButton
-                    colBackground: barTopSectionMouseArea.hovered ? Appearance.colors.colLayer1Hover : ColorUtils.transparentize(Appearance.colors.colLayer1Hover, 1)
-                }
-            }
-            
-            Item {
-                Layout.fillHeight: true
-            }
-            
-        }
     }
 
     Item {
@@ -112,7 +83,7 @@ Item { // Bar content region
             left: parent.left
             right: parent.right
             top: parent.top
-            topMargin: Appearance.rounding.screenRounding + topSidebarButtonHeight
+            topMargin: Appearance.rounding.screenRounding / 2.5
         }
         height: 1
     }
@@ -223,7 +194,7 @@ Item { // Bar content region
             left: parent.left
             right: parent.right
             bottom: parent.bottom
-            bottomMargin: Appearance.rounding.screenRounding + bottomSidebarButtonHeight
+            bottomMargin: Appearance.rounding.screenRounding / 2.5
         }
         height: 1
     }
@@ -247,120 +218,6 @@ Item { // Bar content region
         onPressed: event => {
             if (event.button === Qt.LeftButton) {
                 GlobalStates.sidebarRightOpen = !GlobalStates.sidebarRightOpen;
-            }
-        }
-
-        ColumnLayout {
-            id: bottomSectionColumnLayout
-            anchors.fill: parent
-            spacing: 4
-
-            Item { 
-                Layout.fillWidth: true
-                Layout.fillHeight: true 
-            }
-
-            Bar.BarGroup {
-                vertical: true
-                Layout.alignment: Qt.AlignBottom | Qt.AlignHCenter
-                Layout.bottomMargin: Appearance.rounding.screenRounding / 2
-                Layout.fillHeight: false
-
-                startRadius: Config.options.bar.layouts.right.length > 0 ? Appearance.rounding.verysmall : Appearance.rounding.full
-                endRadius: Appearance.rounding.full
-
-                RippleButton { // Right sidebar button
-                    id: rightSidebarButton
-
-                    implicitHeight: indicatorsColumnLayout.implicitHeight + 4 * 2
-                    implicitWidth: indicatorsColumnLayout.implicitWidth + 6 * 2
-
-                    buttonRadius: Appearance.rounding.full
-                    colBackground: barBottomSectionMouseArea.hovered ? Appearance.colors.colLayer1Hover : ColorUtils.transparentize(Appearance.colors.colLayer1Hover, 1)
-                    colBackgroundHover: Appearance.colors.colLayer1Hover
-                    colRipple: Appearance.colors.colLayer1Active
-                    colBackgroundToggled: Appearance.colors.colSecondaryContainer
-                    colBackgroundToggledHover: Appearance.colors.colSecondaryContainerHover
-                    colRippleToggled: Appearance.colors.colSecondaryContainerActive
-                    toggled: GlobalStates.sidebarRightOpen
-                    property color colText: toggled ? Appearance.m3colors.m3onSecondaryContainer : Appearance.colors.colOnLayer0
-
-                    Behavior on colText {
-                        animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
-                    }
-
-                    onPressed: {
-                        GlobalStates.sidebarRightOpen = !GlobalStates.sidebarRightOpen;
-                    }
-
-                    ColumnLayout {
-                        id: indicatorsColumnLayout
-                        anchors.centerIn: parent
-                        property real realSpacing: 6
-                        spacing: 0
-
-                        Revealer {
-                            vertical: true
-                            reveal: Audio.sink?.audio?.muted ?? false
-                            Layout.fillWidth: true
-                            Layout.bottomMargin: reveal ? indicatorsColumnLayout.realSpacing : 0
-                            Behavior on Layout.bottomMargin {
-                                animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
-                            }
-                            MaterialSymbol {
-                                text: "volume_off"
-                                iconSize: Appearance.font.pixelSize.larger
-                                color: rightSidebarButton.colText
-                            }
-                        }
-                        Revealer {
-                            vertical: true
-                            reveal: Audio.source?.audio?.muted ?? false
-                            Layout.fillWidth: true
-                            Layout.bottomMargin: reveal ? indicatorsColumnLayout.realSpacing : 0
-                            Behavior on Layout.topMargin {
-                                animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
-                            }
-                            MaterialSymbol {
-                                text: "mic_off"
-                                iconSize: Appearance.font.pixelSize.larger
-                                color: rightSidebarButton.colText
-                            }
-                        }
-                        Bar.HyprlandXkbIndicator {
-                            vertical: true
-                            Layout.alignment: Qt.AlignHCenter
-                            Layout.bottomMargin: indicatorsColumnLayout.realSpacing
-                            color: rightSidebarButton.colText
-                        }
-                        Revealer {
-                            vertical: true
-                            reveal: Notifications.silent || Notifications.unread > 0
-                            Layout.fillWidth: true
-                            Layout.bottomMargin: reveal ? indicatorsColumnLayout.realSpacing : 0
-                            implicitHeight: reveal ? notificationUnreadCount.implicitHeight : 0
-                            implicitWidth: reveal ? notificationUnreadCount.implicitWidth : 0
-                            Behavior on Layout.bottomMargin {
-                                animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
-                            }
-                            Bar.NotificationUnreadCount {
-                                id: notificationUnreadCount
-                            }
-                        }
-                        MaterialSymbol {
-                            text: Network.materialSymbol
-                            iconSize: Appearance.font.pixelSize.larger
-                            color: rightSidebarButton.colText
-                        }
-                        MaterialSymbol {
-                            Layout.topMargin: indicatorsColumnLayout.realSpacing
-                            visible: BluetoothStatus.available
-                            text: BluetoothStatus.connected ? "bluetooth_connected" : BluetoothStatus.enabled ? "bluetooth" : "bluetooth_disabled"
-                            iconSize: Appearance.font.pixelSize.larger
-                            color: rightSidebarButton.colText
-                        }
-                    }
-                }
             }
         }
     }

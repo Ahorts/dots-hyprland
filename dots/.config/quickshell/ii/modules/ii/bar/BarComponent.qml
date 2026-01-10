@@ -41,12 +41,15 @@ Item {
         "record_indicator": [recordIndicatorComp, recordIndicatorComp],
         "screen_share_indicator": [screenshareIndicatorComp, screenshareIndicatorComp],
         "timer": [timerComp, timerCompVert],
-        "weather": [weatherComp, weatherComp]
+        "weather": [weatherComp, weatherComp],
+        "left_sidebar_button": [leftSidebarButtonComp, leftSidebarButtonComp],
+        "right_sidebar_button": [rightSidebarButtonComp, rightSidebarButtonCompVert],
     })
 
     
     property real startRadius: {
         if (barSection === 0) {
+            if (originalIndex == 0) return Appearance.rounding.full
             return Appearance.rounding.verysmall
         } else if (barSection === 2) {
             let hasVisibleLeft = list.slice(0, originalIndex).some(item => item.visible !== false)
@@ -60,6 +63,7 @@ Item {
 
     property real endRadius: {
         if (barSection === 2) {
+            if (originalIndex == list.length - 1) return Appearance.rounding.full
             return Appearance.rounding.verysmall
         } else if (barSection === 0) {
             let hasVisibleRight = list.slice(originalIndex + 1).some(item => item.visible !== false)
@@ -81,7 +85,7 @@ Item {
         
         startRadius: rootItem.startRadius
         endRadius: rootItem.endRadius
-        colBackground: itemLoader.item.colBackground ?? Appearance.colors.colLayer2
+        colBackground: itemLoader.item.backgroundColor ?? Appearance.colors.colLayer2
 
         items: Loader {
             id: itemLoader
@@ -120,4 +124,9 @@ Item {
     Component { id: dateCompVert; Vertical.VerticalDateWidget {} }
 
     Component { id: workspaceComp; Workspaces { vertical: rootItem.vertical } }
+
+    Component { id: leftSidebarButtonComp; LeftSidebarButton {} }
+    
+    Component { id: rightSidebarButtonComp; RightSidebarButton {} }
+    Component { id: rightSidebarButtonCompVert; VerticalRightSidebarButton {} }
 }
