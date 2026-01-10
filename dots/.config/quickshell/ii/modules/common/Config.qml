@@ -139,7 +139,7 @@ Singleton {
                     property string type: "auto" // Allowed: auto, scheme-content, scheme-expressive, scheme-fidelity, scheme-fruit-salad, scheme-monochrome, scheme-neutral, scheme-rainbow, scheme-tonal-spot
                     property string accentColor: ""
                 }
-                property list<string> customColorSchemes: ["gruvbox", "latte", "frappe", "angel", "angel_light", "nord", "dracula", "mocha", "kanagawa", "samurai", "sakura"]
+                property list<string> customColorSchemes: []
             }
 
             property JsonObject audio: JsonObject {

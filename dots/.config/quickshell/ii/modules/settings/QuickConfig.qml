@@ -168,11 +168,12 @@ ContentPage {
                         id: contentLayout
                         width: flickable.width
                         
-                        ColorPreviewGrid {} // default wallpaper color schemes
+                        ColorPreviewGrid { // default wallpaper color schemes
+                            customTheme: false
+                        } 
                         
                         ColorPreviewGrid {  // custom color schemes
                             customTheme: true
-                            colorSchemes: Config.options.appearance.customColorSchemes
                         }
                     }
                 }

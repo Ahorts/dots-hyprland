@@ -17,8 +17,13 @@ GridLayout {
     implicitWidth: parent.width
     columns: 3
 
+    readonly property list<string> builtinColorSchemes: ["angel_light", "angel", "ayu", "cobalt2", "cursor", "dracula", "flexoki", "frappe", "github", "gruvbox", "kanagawa", "latte", "macchiato", "material_ocean", "matrix", "mercury", "mocha", "nord", "open_code", "orng", "osaka_jade", "rose_pine", "sakura", "samurai", "synthwave84", "vercel", "vesper", "zen_burn", "zen_garden"]
+    property list<string> customColorSchemes: Config.options.appearance.palette.customColorSchemes ?? ""
+
+    readonly property list<string> wallpaperColorSchemes: ["scheme-auto", "scheme-content", "scheme-tonal-spot", "scheme-fidelity", "scheme-fruit-salad", "scheme-expressive", "scheme-rainbow", "scheme-neutral", "scheme-monochrome"]
+
     property bool customTheme: false
-    property list<string> colorSchemes: ["scheme-auto", "scheme-content", "scheme-tonal-spot", "scheme-fidelity", "scheme-fruit-salad", "scheme-expressive", "scheme-rainbow", "scheme-neutral", "scheme-monochrome"]
+    property list<string> colorSchemes: customTheme ? [...customColorSchemes, ...builtinColorSchemes] : root.wallpaperColorSchemes
 
     function formatText (text) {
         if (customTheme) return text.charAt(0).toUpperCase() + text.slice(1);
@@ -30,7 +35,7 @@ GridLayout {
         model: root.colorSchemes
         delegate: ColorPreviewButton {
             colorScheme: modelData
-            colorSchemeDisplayName: Translation.tr(formatText(modelData))
+            colorSchemeDisplayName: formatText(modelData)
             customTheme: root.customTheme
         }
     }
