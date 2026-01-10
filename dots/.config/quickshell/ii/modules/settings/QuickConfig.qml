@@ -9,8 +9,12 @@ import qs.modules.common.widgets
 import qs.modules.common.functions
 
 ContentPage {
+    id: page
     forceWidth: true
     interactive: false
+
+    property bool allowHeavyLoad: false
+    Component.onCompleted: Qt.callLater(() => page.allowHeavyLoad = true)
 
     Process {
         id: randomWallProc
@@ -164,17 +168,24 @@ ContentPage {
                     contentWidth: width
                     clip: true
 
+                    
                     ColumnLayout {
                         id: contentLayout
                         width: flickable.width
-                        
-                        ColorPreviewGrid { // default wallpaper color schemes
-                            customTheme: false
-                        } 
-                        
-                        ColorPreviewGrid {  // custom color schemes
-                            customTheme: true
+
+                        Repeater {
+                            model: [
+                                { customTheme: false, builtInTheme: false },
+                                { customTheme: false, builtInTheme: true },
+                                { customTheme: true, builtInTheme: false }
+                            ]
+                            
+                            delegate: ColorPreviewGrid {
+                                customTheme: modelData.customTheme
+                                builtInTheme: modelData.builtInTheme
+                            }
                         }
+
                     }
                 }
             }

@@ -11,13 +11,18 @@ import qs.modules.common.functions
 
 RippleButton {
     id: root
-    readonly property string themeDirectory: Directories.defaultThemes
+    readonly property string builtInThemeDirectory: Directories.defaultThemes
+    readonly property string customThemeDirectory: Directories.customThemes
 
     property string colorScheme: "scheme-auto"
     property string colorSchemeDisplayName: ""
 
+    property bool builtInTheme: false
+    readonly property string builtInThemeFilePath: builtInThemeDirectory + "/" + colorScheme + ".json"
+    readonly property string builtInThemeCommand: ` jq -r '.primary, .primary_container, .secondary' ${builtInThemeFilePath}`
+
     property bool customTheme: false
-    readonly property string customThemeFilePath: themeDirectory + "/" + colorScheme + ".json"
+    readonly property string customThemeFilePath: customThemeDirectory + "/" + colorScheme + ".json"
     readonly property string customThemeCommand: ` jq -r '.primary, .primary_container, .secondary' ${customThemeFilePath}`  
 
     property color accentColor
@@ -36,6 +41,7 @@ RippleButton {
     property color tertiaryColor: "transparent"
 
     property bool loaded: false
+    property bool shouldLoad: false
 
     colBackground: toggled ? Appearance.colors.colPrimaryContainer : Appearance.colors.colLayer2
     colBackgroundHover: toggled ? Appearance.colors.colPrimaryContainerHover : Appearance.colors.colLayer2Hover
@@ -50,16 +56,22 @@ RippleButton {
         if (customTheme) {
             Config.options.appearance.palette.type = root.colorScheme;
             Quickshell.execDetached(["bash", "-c", `cp ${root.customThemeFilePath} ${Directories.generatedMaterialThemePath}`]);
+        } else if (builtInTheme) {
+            Config.options.appearance.palette.type = root.colorScheme;
+            Quickshell.execDetached(["bash", "-c", `cp ${root.builtInThemeFilePath} ${Directories.generatedMaterialThemePath}`]);
         } else {
             Config.options.appearance.palette.type = root.colorScheme;
             Quickshell.execDetached(["bash", "-c", `${Directories.wallpaperSwitchScriptPath} --noswitch`]);
         }
     }
 
-    property var effectiveCommand: root.customTheme ? root.customThemeCommand : root.fullCommand
+    property var effectiveCommand: root.customTheme ? root.customThemeCommand : root.builtInTheme ? root.builtInThemeCommand : root.fullCommand
 
-    Component.onCompleted: colorFetchProccess.running = true
-    onWallpaperPathChanged: colorFetchProccess.running = true
+    onShouldLoadChanged: {
+        if (shouldLoad && !loaded) {
+            colorFetchProccess.running = true
+        }
+    }
 
     Process {
         id: colorFetchProccess
