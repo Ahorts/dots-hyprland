@@ -112,7 +112,7 @@ Item { // Bar content region
         RowLayout {
             id: leftSectionRowLayout
             anchors.fill: parent
-            spacing: 10
+            spacing: 0
 
             BarGroup {
                 id: leftSideButtonGroup
