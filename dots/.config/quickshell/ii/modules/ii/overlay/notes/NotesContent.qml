@@ -329,7 +329,11 @@ OverlayBackground {
                     root.scheduleCopylistUpdate(true);
                 }
 
-                
+                Keys.onPressed: event => {
+                    if (event.key === Qt.Key_Delete && event.modifiers & Qt.ShiftModifier) {
+                        root.deleteCurrentTab();
+                    }
+                }
                 
                 onHeightChanged: root.scheduleCopylistUpdate(true)
                 onContentHeightChanged: root.scheduleCopylistUpdate(true)
