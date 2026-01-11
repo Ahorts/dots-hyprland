@@ -79,6 +79,7 @@ Please refer to [this repository's wiki](https://github.com/vaguesyntax/ii-vynx/
 - Settings color scheme previews **_// custom color schemes_**
 - Cookie clock improvements
 - File search functionality in launcher
+- Multiple tab support in overlay/notes widget
 - Extended calendar functionality from this PR: https://github.com/end-4/dots-hyprland/pull/1887 _**// in sync with google calendar, tweaked**_
 - Current overview changes for [hyprscrolling plugin](https://github.com/vaguesyntax/hyprscrolling) 
 - New overview style for my hyprscrolling plugin:
