@@ -293,6 +293,11 @@ OverlayBackground {
             }
         }
         
+        Keys.onPressed: event => {
+            if (event.key === Qt.Key_Delete && event.modifiers & Qt.ShiftModifier) {
+                root.deleteCurrentTab();
+            }
+        }
 
         ScrollView {
             id: editorScrollView
@@ -302,6 +307,8 @@ OverlayBackground {
             clip: true
             ScrollBar.vertical.policy: ScrollBar.AsNeeded
             onWidthChanged: root.scheduleCopylistUpdate(true)
+
+            
 
             StyledTextArea { // This has to be a direct child of ScrollView for proper scrolling
                 id: textInput
@@ -322,11 +329,7 @@ OverlayBackground {
                     root.scheduleCopylistUpdate(true);
                 }
 
-                Keys.onPressed: event => {
-                    if (event.key === Qt.Key_Delete && event.modifiers & Qt.ShiftModifier) {
-                        root.deleteCurrentTab();
-                    }
-                }
+                
                 
                 onHeightChanged: root.scheduleCopylistUpdate(true)
                 onContentHeightChanged: root.scheduleCopylistUpdate(true)
