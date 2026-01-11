@@ -297,7 +297,7 @@ OverlayBackground {
                 id: textInput
                 anchors.fill: parent
                 wrapMode: TextEdit.Wrap
-                implicitWidth: parent.implicitWidth - padding * 2
+                implicitWidth: parent.implicitWidth - padding * 2 - 6
                 placeholderText: Translation.tr("Write something here...\nUse '-' to create copyable bullet points, like this:\n\nSheep fricker\n- 4x Slab\n- 1x Boat\n- 4x Redstone Dust\n- 1x Sticky Piston\n- 1x End Rod\n- 4x Redstone Repeater\n- 1x Redstone Torch\n- 1x Sheep")
                 selectByMouse: true
                 persistentSelection: true
@@ -339,7 +339,7 @@ OverlayBackground {
                         required property var modelData
                         readonly property real lineHeight: Math.min(Math.max(modelData.height, Appearance.font.pixelSize.normal + 6), root.maxCopyButtonSize)
                         readonly property real iconSizeLocal: Appearance.font.pixelSize.normal
-                        readonly property real hitPadding: 6
+                        readonly property real hitPadding: 4
                         property bool justCopied: false
 
                         implicitHeight: lineHeight
@@ -347,7 +347,7 @@ OverlayBackground {
                         buttonRadius: height / 2
                         y: modelData.y
                         anchors.right: parent.right
-                        anchors.rightMargin: 10
+                        anchors.rightMargin: -hitPadding
                         z: 5
 
                         Timer {
