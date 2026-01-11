@@ -223,9 +223,11 @@ OverlayBackground {
         id: contentItem
         anchors {
             fill: parent
-            margins: 26
+            leftMargin: 26
+            rightMargin: 26
+            topMargin: 26
         }
-        spacing: 10
+        spacing: 14
 
         RowLayout {
             Layout.fillWidth: true
@@ -286,6 +288,7 @@ OverlayBackground {
             id: editorScrollView
             Layout.fillWidth: true
             Layout.fillHeight: true
+            Layout.topMargin: -12
             clip: true
             ScrollBar.vertical.policy: ScrollBar.AsNeeded
             onWidthChanged: root.scheduleCopylistUpdate(true)
@@ -477,16 +480,14 @@ OverlayBackground {
         }
 
         EditInput {
-            visible: Config.options.overlay.notes.allowEditingIcon
             id: iconInput
-            implicitWidth: 100
+            visible: Config.options.overlay.notes.allowEditingIcon
             placeholderText: Translation.tr("Icon")
             text: root.tabsData.tabs[currentTabIndex].icon
         }
 
         EditInput {
             id: titleInput
-            implicitWidth: 150
             placeholderText: Translation.tr("Title")
             text: root.tabsData.tabs[currentTabIndex].title
         }        
@@ -497,6 +498,7 @@ OverlayBackground {
     component EditInput: MaterialTextArea {
         property int textAreaPadding: 6
 
+        implicitWidth: 150
         implicitHeight: parent.height
         placeholderTextColor: height >= 40 ? Appearance.m3colors.m3outline : "transparent"  
 
