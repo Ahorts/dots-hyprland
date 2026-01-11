@@ -221,68 +221,78 @@ OverlayBackground {
 
     ColumnLayout {
         id: contentItem
+        property int margin: Config.options.overlay.notes.showTabs ? 26 : 14
         anchors {
             fill: parent
-            leftMargin: 26
-            rightMargin: 26
-            topMargin: 26
+            leftMargin: margin
+            rightMargin: margin
+            topMargin: margin 
         }
         spacing: 14
 
-        RowLayout {
+        Loader {
             Layout.fillWidth: true
-
-            ConfigSelectionArray {
-                currentValue: root.currentTabIndex
+            active: Config.options.overlay.notes.showTabs
+            sourceComponent: RowLayout {
                 Layout.fillWidth: true
-                
-                onSelected: newValue => {
-                    if (root.tabEditModeEnabled) return;
 
-                    saveToFile();
-                    root.content = "";
-                    root.changeCurrentTab(newValue);
+                ConfigSelectionArray {
+                    currentValue: root.currentTabIndex
+                    Layout.fillWidth: true
+                    
+                    onSelected: newValue => {
+                        if (root.tabEditModeEnabled) return;
 
-                    Qt.callLater(() => loadTabContent(newValue));
+                        saveToFile();
+                        root.content = "";
+                        root.changeCurrentTab(newValue);
+
+                        Qt.callLater(() => loadTabContent(newValue));
+                    }
+
+                    options: root.tabOptions
                 }
 
-                options: root.tabOptions
-            }
-
-            ConfigSelectionArray {
-                currentValue: root.tabEditModeEnabled ? 0 : -1
-                Layout.fillWidth: false
-                options: [
-                    {
-                        displayName: "",
-                        icon: "edit",
-                        value: 0,
-                        releaseAction: (() => root.tabEditModeEnabled = !root.tabEditModeEnabled)
-                    },
-                    {
-                        displayName: "",
-                        icon: "add",
-                        value: 1,
-                        releaseAction: (() => root.addNewTab())
-                    }
-                ]
+                ConfigSelectionArray {
+                    currentValue: root.tabEditModeEnabled ? 0 : -1
+                    Layout.fillWidth: false
+                    options: [
+                        {
+                            displayName: "",
+                            icon: "edit",
+                            value: 0,
+                            releaseAction: (() => root.tabEditModeEnabled = !root.tabEditModeEnabled)
+                        },
+                        {
+                            displayName: "",
+                            icon: "add",
+                            value: 1,
+                            releaseAction: (() => root.addNewTab())
+                        }
+                    ]
+                }
             }
         }
         
-        RowLayout {
+        Loader {
             Layout.fillWidth: true
-            Item {
+            active: Config.options.overlay.notes.showTabs
+            sourceComponent: RowLayout {
                 Layout.fillWidth: true
-            }
-
-            Loader {
-                active: root.tabEditModeEnabled || (item && item.height > 0)
-                sourceComponent: TitleEditComp {
-                    Layout.fillWidth: false
+                Item {
+                    Layout.fillWidth: true
                 }
-                onLoaded: item.height = 50
+
+                Loader {
+                    active: root.tabEditModeEnabled || (item && item.height > 0)
+                    sourceComponent: TitleEditComp {
+                        Layout.fillWidth: false
+                    }
+                    onLoaded: item.height = 50
+                }
             }
         }
+        
 
         ScrollView {
             id: editorScrollView

@@ -489,6 +489,7 @@ Singleton {
                     property real scale: 0.5
                 }
                 property JsonObject notes: JsonObject {
+                    property bool showTabs: true
                     property bool allowEditingIcon: true
                 }
             }
