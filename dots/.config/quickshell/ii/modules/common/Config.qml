@@ -488,6 +488,9 @@ Singleton {
                     property string imageSource: "https://media.tenor.com/H5U5bJzj3oAAAAAi/kukuru.gif"
                     property real scale: 0.5
                 }
+                property JsonObject notes: JsonObject {
+                    property bool allowEditingIcon: true
+                }
             }
 
             property JsonObject overview: JsonObject {

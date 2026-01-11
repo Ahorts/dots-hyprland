@@ -314,11 +314,10 @@ OverlayBackground {
                 }
 
                 Keys.onPressed: event => {
-                    if (event.key === Qt.Key_Delete && event.modifiers & Qt.ControlModifier) {
+                    if (event.key === Qt.Key_Delete && event.modifiers & Qt.ShiftModifier) {
                         root.deleteCurrentTab();
                     }
                 }
-
                 
                 onHeightChanged: root.scheduleCopylistUpdate(true)
                 onContentHeightChanged: root.scheduleCopylistUpdate(true)
@@ -484,6 +483,7 @@ OverlayBackground {
         }
 
         EditInput {
+            visible: Config.options.overlay.notes.allowEditingIcon
             id: iconInput
             implicitWidth: 100
             placeholderText: Translation.tr("Icon")

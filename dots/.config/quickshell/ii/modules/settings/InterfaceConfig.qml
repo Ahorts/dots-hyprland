@@ -368,6 +368,21 @@ ContentPage {
     }
 
     ContentSection {
+        icon: "sticky_note_2"
+        title: Translation.tr("Overlay: Crosshair")
+
+        ConfigSwitch {
+            buttonIcon: "edit_note"
+            text: Translation.tr("Allow editing the icon")
+            checked: Config.options.overlay.notes.allowEditingIcon
+            onCheckedChanged: {
+                Config.options.overlay.notes.allowEditingIcon = checked;
+            }
+        }
+
+    }
+
+    ContentSection {
         icon: "screenshot_frame_2"
         title: Translation.tr("Region selector (screen snipping/Google Lens)")
 
