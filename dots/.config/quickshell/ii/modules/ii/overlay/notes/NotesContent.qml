@@ -223,9 +223,7 @@ OverlayBackground {
         id: contentItem
         anchors {
             fill: parent
-            topMargin: 26
-            leftMargin: 26
-            rightMargin: 26
+            margins: 26
         }
         spacing: 10
 
@@ -294,17 +292,13 @@ OverlayBackground {
 
             StyledTextArea { // This has to be a direct child of ScrollView for proper scrolling
                 id: textInput
-                anchors {
-                    left: parent.left
-                    right: parent.right
-                }
-                wrapMode: TextEdit.Wrap
+                anchors.fill: parent
                 placeholderText: Translation.tr("Write something here...\nUse '-' to create copyable bullet points, like this:\n\nSheep fricker\n- 4x Slab\n- 1x Boat\n- 4x Redstone Dust\n- 1x Sticky Piston\n- 1x End Rod\n- 4x Redstone Repeater\n- 1x Redstone Torch\n- 1x Sheep")
                 selectByMouse: true
                 persistentSelection: true
                 textFormat: TextEdit.PlainText
                 background: null
-                padding: 24
+                padding: 12
 
                 onTextChanged: {
                     if (textInput.activeFocus) {
