@@ -46,15 +46,7 @@ Item {
         anchors.fill: parent  
         spacing: 10  
           
-        PagePlaceholder {  
-            id: placeholderItem  
-            shown: root.responses.length === 0  
-            icon: "wallpaper"  
-            title: Translation.tr("Wallpapers")  
-            description: Translation.tr("Browse wallpapers from Unsplash and Wallhaven")  
-            shape: MaterialShape.Shape.Bun  
-            Layout.fillWidth: true  
-        }  
+         
           
         Item {  
             Layout.fillWidth: true  
@@ -103,6 +95,14 @@ Item {
                     }  
                 }  
             }  
+
+            PagePlaceholder {  
+                id: placeholderItem  
+                shown: root.responses.length === 0  
+                icon: "wallpaper"  
+                title: Translation.tr("Wallpapers")  
+                shape: MaterialShape.Shape.Cookie9Sided  
+            } 
               
             ScrollToBottomButton {  
                 z: 3  

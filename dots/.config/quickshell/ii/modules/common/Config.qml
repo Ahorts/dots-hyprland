@@ -705,7 +705,7 @@ Singleton {
             }
 
             property JsonObject wallpapers: JsonObject {  
-                property string service: "unsplash" // "unsplash" or "wallhaven"  
+                property string service: "wallhaven" // "unsplash" or "wallhaven"  
                 property bool enable: true  
             }
 
