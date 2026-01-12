@@ -54,7 +54,6 @@ Item {
             description: Translation.tr("Browse wallpapers from Unsplash and Wallhaven")  
             shape: MaterialShape.Shape.Bun  
             Layout.fillWidth: true  
-            Layout.fillHeight: true  
         }  
           
         Item {  
@@ -322,13 +321,18 @@ Item {
                     padding: 0  
                     Repeater {  
                         model: [  
-                            { name: "api" },  
-                            { name: "service" }  
+                            { name: "service" },  
+                            { name: "clear" }  
                         ]  
                         delegate: ApiCommandButton {  
                             property string commandRepresentation: `${root.commandPrefix}${modelData.name}`  
                             buttonText: commandRepresentation  
                             downAction: () => {  
+                                if (modelData.name == "clear") {
+                                    root.handleInput(commandRepresentation);
+                                    return;
+                                }
+                                
                                 searchInputField.text = commandRepresentation + " ";  
                                 searchInputField.cursorPosition = searchInputField.text.length;  
                                 searchInputField.forceActiveFocus();  
