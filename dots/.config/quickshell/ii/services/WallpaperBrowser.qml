@@ -22,7 +22,7 @@ Singleton {
     property var responses: []  
     property int runningRequests: 0  
     property var providerList: ["unsplash", "wallhaven"]  
-    property var currentProvider: Persistent.states.wallpapers?.provider ?? "unsplash"  
+    property var currentProvider: Config.options.wallpapers.service ?? "wallhaven" // defaulting to wallhaven bc it doesnt require api key
       
     property var providers: {  
         "system": { "name": Translation.tr("System") },  
@@ -116,8 +116,7 @@ Singleton {
     function setProvider(provider) {  
         provider = provider.toLowerCase()  
         if (providerList.indexOf(provider) !== -1) {  
-            Persistent.states.wallpapers = Persistent.states.wallpapers || {}  
-            Persistent.states.wallpapers.provider = provider  
+            Config.options.wallpapers.service = provider
             root.addSystemMessage(Translation.tr("Provider set to ") + providers[provider].name)  
         } else {  
             root.addSystemMessage(Translation.tr("Invalid API provider. Supported: \n- ") + providerList.join("\n- "))  

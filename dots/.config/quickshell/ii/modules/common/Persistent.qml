@@ -63,11 +63,6 @@ Singleton {
                 property real temperature: 0.5
             }
 
-            property JsonObject wallpapers: JsonObject {  
-                property string provider: "unsplash"  
-                property bool allowNsfw: false  
-            }
-
             property JsonObject cheatsheet: JsonObject {
                 property int tabIndex: 0
             }
