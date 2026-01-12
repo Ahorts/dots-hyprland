@@ -168,6 +168,57 @@ Singleton {
         }  
         return url  
     }  
+
+    function getTags(imageId, callback) {
+        if (currentProvider !== "wallhaven") {
+            console.log("[Wallpapers] getTags only works with wallhaven (for now, unsplash support will be added)")
+            return
+        }
+        
+        var url = `https://wallhaven.cc/api/v1/w/${imageId}`
+        // console.log("[Wallpapers] Fetching tags from " + url)
+        
+        var xhr = new XMLHttpRequest()
+        xhr.open("GET", url)
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                try {
+                    var response = JSON.parse(xhr.responseText)
+                    if (response.data && response.data.tags) {
+                        var tags = response.data.tags.map(tag => tag.name).join(" ")
+                        // console.log("[Wallpapers] Tags for " + imageId + ": " + tags)
+                        
+                        if (callback && typeof callback === "function") {
+                            callback(tags, response.data.tags)
+                        }
+                    }
+                } catch (e) {
+                    // console.log("[Wallpapers] Failed to parse tags response: " + e)
+                    if (callback && typeof callback === "function") {
+                        callback("", [])
+                    }
+                }
+            }
+            else if (xhr.readyState === XMLHttpRequest.DONE) {
+                // console.log("[Wallpapers] getTags failed with status: " + xhr.status)
+                if (callback && typeof callback === "function") {
+                    callback("", [])
+                }
+            }
+        }
+        
+        try {
+            if (root.wallhavenApiToken) {
+                xhr.setRequestHeader("X-API-Key", root.wallhavenApiToken)
+            }
+            xhr.send()
+        } catch (error) {
+            // console.log("[Wallpapers] Could not fetch tags:", error)
+            if (callback && typeof callback === "function") {
+                callback("", [])
+            }
+        }
+    }
   
     function makeRequest(tags, limit=20, page=1) {  
         var url = constructRequestUrl(tags, limit, page)  
