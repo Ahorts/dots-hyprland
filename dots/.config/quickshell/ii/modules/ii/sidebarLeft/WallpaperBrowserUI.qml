@@ -76,23 +76,11 @@ Item {
               
             StyledListView {  
                 id: responseListView  
-                visible: root.responses.length > 0  
+                //visible: root.responses.length > 0 FIXME
+
                 model: ScriptModel {  
                     values: root.responses  
                 }  
-                delegate: WallpaperResponse {  
-                    responseData: modelData  
-                    tagInputField: root.inputField  
-                    previewDownloadPath: root.previewDownloadPath  
-                    downloadPath: root.downloadPath  
-                    nsfwPath: root.nsfwPath  
-                }  
-            }
-                  
-                model: ScriptModel {  
-                    values: root.responses  
-                }  
-                  
                 delegate: WallpaperResponse {  
                     responseData: modelData  
                     tagInputField: root.inputField  
@@ -344,7 +332,7 @@ Item {
                 }  
             }  
         }  
-    }  
+    }
       
     property var allCommands: [  
         { name: "api", description: "Set API key for current service", execute: args => {  
