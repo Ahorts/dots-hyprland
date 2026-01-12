@@ -203,7 +203,7 @@ Item {
                     id: searchInputField  
                     Layout.fillWidth: true  
                     Layout.fillHeight: true  
-                    placeholderText: Translation.tr("Search wallpapers... (e.g., nature, abstract) or use /commands")  
+                    placeholderText: Translation.tr("Search wallpapers... (e.g., nature, abstract)")  
                       
                     onTextChanged: {  
                         if (searchInputField.text.length === 0) {  
@@ -265,31 +265,28 @@ Item {
                     }  
                 }  
                   
-                Button {  
+                RippleButton {  
                     id: searchButton  
                     Layout.preferredWidth: 40  
                     Layout.preferredHeight: 40  
                     enabled: searchInputField.text.trim().length > 0  
-                      
-                MaterialSymbol {  
-                    anchors.centerIn: parent  
-                    iconSize: Appearance.font.pixelSize.larger  
-                    color: searchButton.enabled ?   
-                           Appearance.colors.colOnLayer2 :   
-                           Appearance.colors.colOnLayer2Disabled  
-                    text: "search"  
-                }
-                      
-                    background: Rectangle {  
-                        color: searchButton.enabled ? Appearance.colors.colLayer2Active : Appearance.colors.colLayer2  
-                        radius: Appearance.rounding.normal  
-                    }  
-                      
+
+                    colBackground: enabled ? Appearance.colors.colPrimary : "transparent"
+                    colBackgroundHover: enabled ? Appearance.colors.colPrimaryHover : "transparent"
+                       
                     onClicked: {  
                         const inputText = searchInputField.text;  
                         searchInputField.clear();  
                         root.handleInput(inputText);  
                     }  
+
+                    contentItem: MaterialSymbol {
+                        anchors.centerIn: parent
+                        horizontalAlignment: Text.AlignHCenter
+                        iconSize: 22
+                        color: searchButton.enabled ? Appearance.colors.colOnPrimary : Appearance.colors.colOnLayer2Disabled
+                        text: "arrow_upward"
+                    }
                 }  
             }  
               
@@ -311,8 +308,8 @@ Item {
                   
                 ApiInputBoxIndicator {  
                     icon: "key"  
-                    text: "✓"  
-                    tooltipText: Translation.tr("API key is set\nChange with %1api YOUR_API_KEY").arg(root.commandPrefix)  
+                    text: ""  
+                    tooltipText: Translation.tr("API key is set\nChange with %1api YOUR_API_KEY").arg(root.commandPrefix) //FIXME: properly set the api key state 
                 }  
                   
                 Item { Layout.fillWidth: true }  
