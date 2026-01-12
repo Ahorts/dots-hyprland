@@ -227,7 +227,7 @@ Rectangle {
                         required property var modelData  
                         imageData: modelData  
                         rowHeight: imageRow.rowHeight  
-                        imageRadius: imageRow.modelData.images.length == 1 ? 50 : Appearance.rounding.normal  
+                        imageRadius: imageRow.modelData.images.length == 1 ? Appearance.rounding.small : Appearance.rounding.normal  
                         manualDownload: false // Wallpapers don't need manual download  
                         previewDownloadPath: root.previewDownloadPath  
                         downloadPath: root.downloadPath  
@@ -248,8 +248,7 @@ Rectangle {
             rightPadding: 5  
               
             onClicked: {  
-                tagInputField.text = `${responseData.tags.join(" ")} ${parseInt(root.responseData.page) + 1}`  
-                tagInputField.accept()  
+                responseListView.nextPage()
             }  
               
             buttonRadius: Appearance.rounding.small  

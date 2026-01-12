@@ -18,6 +18,7 @@ Item {
     property string currentService: WallpaperBrowser.currentProvider ?? "unsplash"  
     property var suggestionQuery: ""  
     property var suggestionList: []  
+    property int imageLimit: 20
       
     // Exact same pattern as Anime  
     readonly property var responses: WallpaperBrowser.responses  
@@ -79,6 +80,11 @@ Item {
                 id: responseListView  
                 anchors.fill: parent
                 visible: root.responses.length > 0 
+
+                function nextPage() {
+                    root.pullLoading = true  
+                    root.handleInput(`${root.commandPrefix}next`)
+                }
                 
                 model: ScriptModel {  
                     values: root.responses
@@ -91,11 +97,10 @@ Item {
                     nsfwPath: root.nsfwPath  
                 } 
 
-                onDragEnded: {  
+                onDragEnded: {  // pulling to go to next page
                     const gap = responseListView.verticalOvershoot  
                     if (gap > root.pullLoadingGap) {  
-                        root.pullLoading = true  
-                        root.handleInput(`${root.commandPrefix}next`)  
+                        responseListView.nextPage()
                     }  
                 }  
             }  
@@ -368,7 +373,7 @@ Item {
             if (root.responses.length > 0) {  
                 const lastResponse = root.responses[root.responses.length - 1];  
                 if (lastResponse.page > 0) {  
-                    WallpaperBrowser.makeRequest(lastResponse.tags, false, 20, lastResponse.page + 1);  
+                    WallpaperBrowser.makeRequest(lastResponse.tags, root.imageLimit, lastResponse.page + 1);  
                 }  
             }  
         } }  
@@ -400,7 +405,7 @@ Item {
             });  
               
             if (tags.length > 0) {  
-                WallpaperBrowser.makeRequest(tags, false, 20, page);  
+                WallpaperBrowser.makeRequest(tags, root.imageLimit, page);  
             }  
         }  
     }  
