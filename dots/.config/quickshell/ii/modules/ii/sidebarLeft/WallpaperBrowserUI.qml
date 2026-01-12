@@ -200,8 +200,6 @@ Item {
                     Layout.fillWidth: true  
                     Layout.fillHeight: true  
                     placeholderText: Translation.tr("Search wallpapers... (e.g., nature, abstract) or use /commands")  
-                    font.family: Appearance.font.family.reading  
-                    font.pixelSize: Appearance.font.pixelSize.normal  
                       
                     onTextChanged: {  
                         if (searchInputField.text.length === 0) {  
