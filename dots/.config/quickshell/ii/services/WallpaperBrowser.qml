@@ -157,7 +157,7 @@ Singleton {
             }  
             params.push("categories=111")  // General, Anime, People  
             params.push("purity=100")      // SFW only by default  
-            params.push("sorting=relevance")  
+            params.push("sorting=favorites")  
             params.push("page=" + page)  
         }  
           
