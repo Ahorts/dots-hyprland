@@ -41,6 +41,7 @@ Item {
     }  
       
     ColumnLayout {  
+        id: columnLayout
         anchors.fill: parent  
         spacing: 10  
           
@@ -62,11 +63,11 @@ Item {
             layer.enabled: true  
             layer.effect: OpacityMask {  
                 maskSource: Rectangle {  
-                    width: parent.width  
-                    height: parent.height  
+                    width: columnLayout.width  
+                    height: columnLayout.height  
                     radius: Appearance.rounding.small  
                 }  
-            }  
+            }
               
             ScrollEdgeFade {  
                 z: 1  
@@ -76,10 +77,11 @@ Item {
               
             StyledListView {  
                 id: responseListView  
-                //visible: root.responses.length > 0 FIXME
-
+                anchors.fill: parent
+                visible: root.responses.length > 0 
+                
                 model: ScriptModel {  
-                    values: root.responses  
+                    values: root.responses
                 }  
                 delegate: WallpaperResponse {  
                     responseData: modelData  
@@ -87,8 +89,8 @@ Item {
                     previewDownloadPath: root.previewDownloadPath  
                     downloadPath: root.downloadPath  
                     nsfwPath: root.nsfwPath  
-                }  
-                  
+                } 
+
                 onDragEnded: {  
                     const gap = responseListView.verticalOvershoot  
                     if (gap > root.pullLoadingGap) {  
@@ -103,7 +105,8 @@ Item {
                 target: responseListView  
             }  
               
-            MaterialLoadingIndicator {  
+            MaterialLoadingIndicator {
+                visible: WallpaperBrowser.runningRequests > 0
                 id: loadingIndicator  
                 z: 4  
                 anchors {  
