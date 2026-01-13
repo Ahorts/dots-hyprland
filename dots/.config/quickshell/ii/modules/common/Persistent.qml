@@ -164,10 +164,6 @@ Singleton {
                     property list<var> laps: []
                 }
             }
-
-            property JsonObject wallpapers: JsonObject { // may need to move it somewhere else in the future
-                property list<var> favouriteTags: []
-            }
         }
     }
 }

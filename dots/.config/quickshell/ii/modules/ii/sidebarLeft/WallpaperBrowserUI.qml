@@ -392,17 +392,6 @@ Item {
                     WallpaperBrowser.makeRequest(lastResponse.tags, root.imageLimit, lastResponse.page + 1);  
                 }  
             }  
-        } },
-        { name: "reset_favourite_tags", description: "Debug function: resets the favourite tags", execute: () => {  
-            Persistent.states.wallpapers.favouriteTags = []
-        } },
-        { name: "getTags", description: "Debug function: returns the top favourite tag keys", execute: args => {  
-            WallpaperBrowser.addSystemMessage(JSON.stringify(getTopTagKeys(args[0])));  
-        } },
-        { name: "surprise_me", description: "WIP: ", execute: args => { 
-            const topTabs = getTopTagKeys(args[0])
-            console.log(topTabs)
-            WallpaperBrowser.makeRequest(topTabs, root.imageLimit, 1);
         } }
     ]  
       

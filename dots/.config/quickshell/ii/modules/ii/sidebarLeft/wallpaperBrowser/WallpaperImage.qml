@@ -37,23 +37,6 @@ Button {
         radius: imageRadius  
         color: Appearance.colors.colLayer2  
     }  
-
-    /*
-     * To add tags to Persistent - wallpapers - favouriteTags
-    */
-    function addStringsToObjects(objectList, stringList) {
-        stringList.forEach(function(str) {
-            var existing = objectList.find(obj => obj.key === str)
-            if (existing) {
-                existing.count++
-            } else {
-                objectList.push({ "key": str, "count": 1 })
-            }
-        })
-        return objectList
-    }
-
-  
     contentItem: Item {  
         anchors.fill: parent  
   
@@ -151,35 +134,6 @@ Button {
                                 Hyprland.dispatch("keyword cursor:no_warps false")  
                             }  
                         }
-                        MenuButton {  
-                            id: addToFavouritesButton  
-                            Layout.fillWidth: true  
-                            buttonText: Translation.tr("Add to Favourites") 
-                            property var favouriteTags: [] 
-                            onFavouriteTagsChanged: {
-                                console.log("Tags string:", favouriteTags)
-                            }
-                            onClicked: {  
-                                root.showActions = false  
-                                Hyprland.dispatch("keyword cursor:no_warps true")
-                                let arrayOfTags = []
-                                WallpaperBrowser.getTags(root.imageData.id, function(tagsString, tagsArray) {
-                                    const arrayOfTags = tagsString.split(" ")
-                                    let objectList = Persistent.states.wallpapers.favouriteTags
-                                    arrayOfTags.forEach(function(str) {
-                                        var existing = objectList.find(obj => obj.key === str)
-                                        if (existing) {
-                                            existing.count++
-                                        } else {
-                                            objectList.push({ "key": str, "count": 1 })
-                                        }
-                                    })
-                                    
-                                    Persistent.states.wallpapers.favouriteTags = objectList
-                                })
-                                Hyprland.dispatch("keyword cursor:no_warps false")  
-                            }  
-                        }  
                         MenuButton {  
                             id: sourceButton  
                             visible: root.imageData.source && root.imageData.source.length > 0  
