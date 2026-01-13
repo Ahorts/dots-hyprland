@@ -107,7 +107,7 @@ Button {
                     visible: opacity > 0  
                     radius: Appearance.rounding.small  
                     color: Appearance.m3colors.m3surfaceContainer  
-                    implicitWidth: 160
+                    implicitWidth: 200 
                     implicitHeight: 125
                     clip: true
   

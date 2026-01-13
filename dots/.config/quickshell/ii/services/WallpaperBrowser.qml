@@ -205,7 +205,10 @@ Singleton {
     }  
 
     function moreLikeThisPicture(imageId, page=1) { // Uses built-in wallhaven's 'More like this picture' feature
-        console.log("[Wallpapers] Searching for more images like: " + imageId, page)
+        if (root.currentProvider !== "wallhaven") {
+            root.addSystemMessage(Translation.tr("'More like this picture' feature only works with wallhaven service"))
+            return;
+        }
         root.addSystemMessage(Translation.tr("Searching for more images like: %1").arg(imageId))
         makeRequest([], 20, page, imageId)       
     }
@@ -214,8 +217,8 @@ Singleton {
     function getTags(imageId, callback) {
         if (currentProvider !== "wallhaven") {
             // console.log("[Wallpapers] getTags only works with wallhaven (for now, unsplash support will be added)")
-            root.addSystemMessage(Translation.tr("getTags only works with wallhaven (for now, unsplash support will be added)"))
-            return
+            // root.addSystemMessage(Translation.tr("getTags only works with wallhaven (for now, unsplash support will be added)"))
+            return;
         }
         
         var url = `https://wallhaven.cc/api/v1/w/${imageId}`
