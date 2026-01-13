@@ -16,7 +16,7 @@ Singleton {
     signal tagSuggestion(string query, var suggestions)  
     signal responseFinished()  
   
-    property string unsplashApiToken: Config.options.unsplash?.apiKey ?? ""  
+    property string unsplashApiToken: KeyringStorage.keyringData.apiKeys.wallpapers_unsplash ?? ""
     property string wallhavenApiToken: Config.options.wallhaven?.apiKey ?? ""  
     property string failMessage: Translation.tr("That didn't work. Tips:\n- Check your search query\n- Try different keywords\n- Check your API key under settings")  
     property var responses: []  
@@ -29,10 +29,10 @@ Singleton {
         "unsplash": {  
             "name": "Unsplash",  
             "url": "https://unsplash.com",  
-            "api": "https://api.unsplash.com/photos/random",  
+            "api": "https://api.unsplash.com/search/photos",            
             "description": Translation.tr("High quality photos from Unsplash"),  
             "mapFunc": (response) => {  
-                const items = Array.isArray(response) ? response : [response];  
+                const items = Array.isArray(response.results) ? response.results : [];
                 return items.map(item => {  
                     return {  
                         "id": item.id,  
@@ -144,13 +144,18 @@ Singleton {
         var tagString = tags.join(" ")  
         var params = []  
           
-        if (currentProvider === "unsplash") {  
-            if (tagString.trim().length > 0) {  
-                params.push("query=" + encodeURIComponent(tagString))  
-            }  
-            params.push("count=" + Math.min(limit, 30))  
-            params.push("orientation=landscape")  
-        }  
+         if (currentProvider === "unsplash") {
+             if (tagString.trim().length > 0) {
+                 params.push("query=" + encodeURIComponent(tagString))
+             }
+             params.push("per_page=" + Math.min(limit, 30))
+             params.push("page=" + page)
+             params.push("orientation=landscape")
+         
+             // 🔑 THIS IS THE IMPORTANT PART
+             params.push("client_id=" + encodeURIComponent(root.unsplashApiToken))
+         }
+
         else if (currentProvider === "wallhaven") {  
             if (tagString.trim().length > 0) {  
                 params.push("q=" + encodeURIComponent(tagString))  
