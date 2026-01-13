@@ -47,8 +47,6 @@ Item {
         anchors.margins: 4
         spacing: 10  
           
-         
-          
         Item {  
             Layout.fillWidth: true  
             Layout.fillHeight: true  
@@ -307,7 +305,7 @@ Item {
                         horizontalAlignment: Text.AlignHCenter
                         iconSize: 22
                         color: searchButton.enabled ? Appearance.colors.colOnPrimary : Appearance.colors.colOnLayer2Disabled
-                        text: "arrow_upward"
+                        text: "image_search"
                     }
                 }  
             }  

@@ -24,7 +24,9 @@ Singleton {
     property var providerList: ["unsplash", "wallhaven"]  
     property var currentProvider: Config.options.wallpapers.service ?? "wallhaven" // defaulting to wallhaven bc it doesnt require api key
     property string currentSortType: Config.options.wallpapers.sort ?? "favourites" // Options for wallhaven: date_added, relevance, random, views, favourites, toplist // Options for unsplash: relevant, latest
-      
+    property string moreLikeThisId: ""    
+
+
     property var providers: {  
         "system": { "name": Translation.tr("System") },  
         "unsplash": {  
@@ -151,7 +153,7 @@ Singleton {
         })]  
     }  
   
-    function constructRequestUrl(tags, limit=20, page=1) {  
+    function constructRequestUrl(tags, limit=20, page=1, imageId="") {
         var provider = providers[currentProvider]  
         var baseUrl = provider.api  
         var url = baseUrl  
@@ -171,13 +173,23 @@ Singleton {
          }
 
         else if (currentProvider === "wallhaven") {  
-            if (tagString.trim().length > 0) {  
-                params.push("q=" + encodeURIComponent(tagString))  
-            }  
-            params.push("categories=111")  // General, Anime, People  
-            params.push("purity=100")      // SFW only by default  
-            params.push(`sorting=${root.currentSortType}`) 
-            params.push("page=" + page)  
+            //TODO: add more customizations such as resolution
+            if (tagString.trim().length > 0 && imageId == "") {  // normal search
+                if (tagString.trim().length > 0) {  
+                    params.push("q=" + encodeURIComponent(tagString))  
+                }  
+                params.push("categories=111")  
+                params.push("purity=100")      //swf
+                params.push("page=" + page)
+                params.push(`sorting=${root.currentSortType}`)
+            }
+
+            if (imageId !== "") { // 'More like this picture' feature
+                console.log("[Wallpapers] Searching for more images like: " + imageId)
+                params.push(`q=like%3A${imageId}`) // idk why but api has to be configured like this, learned it in the hard way
+                params.push(`sorting=relevance`)
+                params.push(`order=desc`)
+            }
         }  
           
         if (baseUrl.indexOf("?") === -1) {  
@@ -188,9 +200,16 @@ Singleton {
         return url  
     }  
 
+    function moreLikeThisPicture(imageId) { // Uses built-in wallhaven's 'More like this picture' feature
+        root.addSystemMessage(Translation.tr("Searching for more images like: %1").arg(imageId))
+        makeRequest([], 20, 1, imageId)       
+    }
+
+    // Not used for now, but could be usefull in the future
     function getTags(imageId, callback) {
         if (currentProvider !== "wallhaven") {
-            console.log("[Wallpapers] getTags only works with wallhaven (for now, unsplash support will be added)")
+            // console.log("[Wallpapers] getTags only works with wallhaven (for now, unsplash support will be added)")
+            root.addSystemMessage(Translation.tr("getTags only works with wallhaven (for now, unsplash support will be added)"))
             return
         }
         
@@ -239,8 +258,8 @@ Singleton {
         }
     }
   
-    function makeRequest(tags, limit=20, page=1) {  
-        var url = constructRequestUrl(tags, limit, page)  
+    function makeRequest(tags, limit=20, page=1, imageId="") { // image id is used for "more like this" feature
+        var url = constructRequestUrl(tags, limit, page, imageId)  
         console.log("[Wallpapers] Making request to " + url)  
   
         const newResponse = root.unsplashResponseDataComponent.createObject(null, {  
@@ -259,7 +278,11 @@ Singleton {
                     const provider = providers[currentProvider]  
                     let response = JSON.parse(xhr.responseText)  
                     response = provider.mapFunc(response)  
-                      
+
+                    /* if (currentProvider === "wallhaven") { // can be used to set a limit to wallhaven (currently there is not), but not using it as it breaks the page sync
+                        response = response.slice(0, limit)
+                    } */
+
                     newResponse.images = response  
                     newResponse.message = response.length > 0 ? "" : root.failMessage  
                       

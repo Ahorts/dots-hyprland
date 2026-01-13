@@ -107,8 +107,9 @@ Button {
                     visible: opacity > 0  
                     radius: Appearance.rounding.small  
                     color: Appearance.m3colors.m3surfaceContainer  
-                    implicitHeight: contextMenuColumnLayout.implicitHeight + radius * 2  
-                    implicitWidth: contextMenuColumnLayout.implicitWidth  
+                    implicitWidth: 160
+                    implicitHeight: 125
+                    clip: true
   
                     Behavior on opacity {  
                         NumberAnimation {  
@@ -117,58 +118,75 @@ Button {
                             easing.bezierCurve: Appearance.animation.elementMoveFast.bezierCurve  
                         }  
                     }  
+
+                    StyledFlickable {
+                        anchors.fill: parent
+                        contentWidth: width
+                        contentHeight: contextMenuColumnLayout.implicitHeight
+
+                        ColumnLayout {  
+                            id: contextMenuColumnLayout  
+                            anchors.fill: parent  
+                            spacing: 0  
+    
+                            MenuButton {  
+                                id: moreImageButton  
+                                Layout.fillWidth: true  
+                                buttonText: Translation.tr("More like this picture")  
+                                onClicked: {  
+                                    root.showActions = false  
+                                    WallpaperBrowser.moreLikeThisPicture(root.imageData.id) 
+                                }  
+                            }
+                            MenuButton {  
+                                id: openFileLinkButton  
+                                Layout.fillWidth: true  
+                                buttonText: Translation.tr("Open file link")  
+                                onClicked: {  
+                                    root.showActions = false  
+                                    Hyprland.dispatch("keyword cursor:no_warps true")  
+                                    Qt.openUrlExternally(root.imageData.file_url)  
+                                    Hyprland.dispatch("keyword cursor:no_warps false")  
+                                }  
+                            }
+                            MenuButton {  
+                                id: sourceButton  
+                                visible: root.imageData.source && root.imageData.source.length > 0  
+                                Layout.fillWidth: true  
+                                buttonText: Translation.tr("Go to source (%1)").arg(StringUtils.getDomain(root.imageData.source))  
+                                enabled: root.imageData.source && root.imageData.source.length > 0  
+                                onClicked: {  
+                                    root.showActions = false  
+                                    Hyprland.dispatch("keyword cursor:no_warps true")  
+                                    Qt.openUrlExternally(root.imageData.source)  
+                                    Hyprland.dispatch("keyword cursor:no_warps false")  
+                                }  
+                            }  
+                            MenuButton {  
+                                id: downloadButton  
+                                Layout.fillWidth: true  
+                                buttonText: Translation.tr("Download")  
+                                onClicked: {  
+                                    root.showActions = false;  
+                                    const targetPath = root.imageData.is_nsfw ? root.nsfwPath : root.downloadPath;  
+                                    Quickshell.execDetached(["bash", "-c",   
+                                        `mkdir -p '${targetPath}' && curl '${root.imageData.file_url}' -o '${targetPath}/${root.fileName}' && notify-send '${Translation.tr("Download complete")}' '${root.downloadPath}/${root.fileName}' -a 'Shell'`  
+                                    ])  
+                                }  
+                            }  
+                            MenuButton {  
+                                id: setWallpaperButton  
+                                Layout.fillWidth: true  
+                                buttonText: Translation.tr("Set as wallpaper")  
+                                onClicked: {  
+                                    root.showActions = false;  
+                                    Wallpapers.select(root.imageData.file_url, Appearance.m3colors.darkmode);  
+                                }  
+                            }  
+                        }  
+                    }
   
-                    ColumnLayout {  
-                        id: contextMenuColumnLayout  
-                        anchors.centerIn: parent  
-                        spacing: 0  
-  
-                        MenuButton {  
-                            id: openFileLinkButton  
-                            Layout.fillWidth: true  
-                            buttonText: Translation.tr("Open file link")  
-                            onClicked: {  
-                                root.showActions = false  
-                                Hyprland.dispatch("keyword cursor:no_warps true")  
-                                Qt.openUrlExternally(root.imageData.file_url)  
-                                Hyprland.dispatch("keyword cursor:no_warps false")  
-                            }  
-                        }
-                        MenuButton {  
-                            id: sourceButton  
-                            visible: root.imageData.source && root.imageData.source.length > 0  
-                            Layout.fillWidth: true  
-                            buttonText: Translation.tr("Go to source (%1)").arg(StringUtils.getDomain(root.imageData.source))  
-                            enabled: root.imageData.source && root.imageData.source.length > 0  
-                            onClicked: {  
-                                root.showActions = false  
-                                Hyprland.dispatch("keyword cursor:no_warps true")  
-                                Qt.openUrlExternally(root.imageData.source)  
-                                Hyprland.dispatch("keyword cursor:no_warps false")  
-                            }  
-                        }  
-                        MenuButton {  
-                            id: downloadButton  
-                            Layout.fillWidth: true  
-                            buttonText: Translation.tr("Download")  
-                            onClicked: {  
-                                root.showActions = false;  
-                                const targetPath = root.imageData.is_nsfw ? root.nsfwPath : root.downloadPath;  
-                                Quickshell.execDetached(["bash", "-c",   
-                                    `mkdir -p '${targetPath}' && curl '${root.imageData.file_url}' -o '${targetPath}/${root.fileName}' && notify-send '${Translation.tr("Download complete")}' '${root.downloadPath}/${root.fileName}' -a 'Shell'`  
-                                ])  
-                            }  
-                        }  
-                        MenuButton {  
-                            id: setWallpaperButton  
-                            Layout.fillWidth: true  
-                            buttonText: Translation.tr("Set as wallpaper")  
-                            onClicked: {  
-                                root.showActions = false;  
-                                Wallpapers.select(root.imageData.file_url, Appearance.m3colors.darkmode);  
-                            }  
-                        }  
-                    }  
+                    
                 }  
             }  
         }  
