@@ -341,51 +341,53 @@ Item {
         }  
     }
 
-    property var favouriteTags: Persistent.states.wallpapers.favouriteTags
-
-    function getTopTagKeys(limit = 2) {
-        return favouriteTags
-            .slice()
-            .sort(function(a, b) {
-                return b.count - a.count
-            })
-            .slice(0, limit)
-            .map(function(obj) {
-                return obj.key
-            })
-    }
-
-
     property var allCommands: [  
-        { name: "api", description: "Set API key for current service", execute: args => {  
+        { name: "api", description: Translation.tr("Set API key for current service"), execute: args => {  
             if (args.length === 0) {  
-                WallpaperBrowser.addSystemMessage("Usage: /api YOUR_API_KEY");  
-                return;  
-            }  
-            const currentService = root.currentService;  
+                const currentService = root.currentService;  
+                const unsplashApiKey = WallpaperBrowser.unsplashApiToken
+                
+                if (currentService === "unsplash") {
+                    if (unsplashApiKey != "") {
+                        WallpaperBrowser.addSystemMessage(Translation.tr("Unsplash API key is already set"));  
+                        return;
+                    } else {
+                        WallpaperBrowser.addSystemMessage(Translation.tr("Unsplash API key not set. To get an API key: \n- Go to https://unsplash.com/developers and sign up/in \n- Create a new app in your apps page \n- Get the API key from Access Key and set it with %1api YOUR_API_KEY").arg(root.commandPrefix));  
+                        return
+                    }
+                }
+            }
+
             if (currentService === "wallhaven") {  
-                WallpaperBrowser.addSystemMessage("Wallhaven doesn't require an API key");  
+                WallpaperBrowser.addSystemMessage(Translation.tr("Wallhaven doesn't require an API key"));  
                 return;  
-            }  
+            } 
+
+            if (args[0].length < 20) { // not a valid api key
+                WallpaperBrowser.addSystemMessage(Translation.tr("Please provide a valid API key")); 
+                KeyringStorage.setNestedField(["apiKeys", `wallpapers_${currentService}`], "");  
+                return; 
+            }
+              
             KeyringStorage.setNestedField(["apiKeys", `wallpapers_${currentService}`], args[0].trim());  
-            WallpaperBrowser.addSystemMessage(`API key set for ${currentService}`);  
+            WallpaperBrowser.addSystemMessage(Translation.tr(`API key set for %1`).arg(currentService));  
         } },  
-        { name: "service", description: "Change wallpaper service", execute: args => {  
+        { name: "service", description: Translation.tr("Change wallpaper service"), execute: args => {  
             if (args.length === 0) {  
-                WallpaperBrowser.addSystemMessage("Available services: unsplash, wallhaven");  
+                WallpaperBrowser.addSystemMessage(Translation.tr("Available services: unsplash, wallhaven"));  
                 return;  
             }  
             const service = args[0].toLowerCase();  
             if (service === "unsplash" || service === "wallhaven") {  
                 WallpaperBrowser.setProvider(service);  
             } else {  
-                WallpaperBrowser.addSystemMessage("Invalid service. Use: unsplash or wallhaven");  
+                WallpaperBrowser.addSystemMessage(Translation.tr("Invalid service. Use: unsplash or wallhaven"));  
             }  
         } },  
-        { name: "clear", description: "Clear the current list of images", execute: () => {  
+        { name: "clear", description: Translation.tr("Clear the current list of images"), execute: () => {  
             WallpaperBrowser.clearResponses();  
         } },  
-        { name: "next", description: "Load next page", execute: () => {  
+        { name: "next", description: Translation.tr("Load next page"), execute: () => {  
             if (root.responses.length > 0) {  
                 const lastResponse = root.responses[root.responses.length - 1];  
                 if (lastResponse.page > 0) {  
@@ -403,7 +405,7 @@ Item {
             if (commandObj) {  
                 commandObj.execute(args);  
             } else {  
-                WallpaperBrowser.addSystemMessage(`Unknown command: ${command}`);  
+                WallpaperBrowser.addSystemMessage(Translation.tr(`Unknown command: %1`).arg(command));  
             }  
         } else {  
             // Parse page number if present  
