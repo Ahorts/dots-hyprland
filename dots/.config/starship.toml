@@ -10,7 +10,8 @@ add_newline = false
 # $character
 # """
 format = """
-$cmd_duration 󰜥 $directory $git_branch$git_status $all $nodejs ${custom.typescript} ${custom.react} 
+$cmd_duration 󰜥 $directory $git_branch$git_status $username$hostname 
+$all $nodejs${custom.nextjs}${custom.typescript}${custom.react}${custom.tailwind}
 
 $character
 """
@@ -273,33 +274,66 @@ style = 'bold red'
 symbol = '🦬 '
 
 [custom.react]
-# The 'via' and 'v' are now part of the echo, so they only show if $ver exists.
+# We wrap the logic in "sh -c" so Fish doesn't try to parse the Bash syntax.
 command = '''
+sh -c '
 if [ -f package.json ]; then
-  ver=$(grep '"react":' package.json | head -n1 | sed -E 's/.*: *"([^"]*)".*/\1/' | sed 's/[\^~]//g')
+  ver=$(grep "\"react\":" package.json | head -n1 | sed -E "s/.*: *\"([^\"]*)\".*/\1/" | sed "s/[\^~]//g")
   if [ -n "$ver" ]; then
     echo "via React  v$ver"
   fi
 fi
+'
 '''
 detect_files = ['package.json']
-# Remove the static text from format; it now just displays the $output
 format = '[$output ](bold blue)'
 
 [custom.typescript]
 command = '''
+sh -c '
 if [ -f package.json ]; then
-  ver=$(grep '"typescript":' package.json | head -n1 | sed -E 's/.*: *"([^"]*)".*/\1/' | sed 's/[\^~]//g')
+  ver=$(grep "\"typescript\":" package.json | head -n1 | sed -E "s/.*: *\"([^\"]*)\".*/\1/" | sed "s/[\^~]//g")
   if [ -n "$ver" ]; then
     echo "via TypeScript  v$ver"
     exit 0
   fi
 fi
-# Fallback to global tsc if not in package.json but .ts files exist
 if ls *.ts *.tsx >/dev/null 2>&1; then
-  echo "via TypeScript  v$(tsc --version | cut -d ' ' -f 2)"
+  echo "via TypeScript  v$(tsc --version | cut -d \" \" -f 2)"
 fi
+'
 '''
 detect_files = ['package.json', 'tsconfig.json']
 detect_extensions = ['ts', 'tsx']
 format = '[$output ](bold blue)'
+
+
+[custom.nextjs]
+command = '''
+sh -c '
+if [ -f package.json ]; then
+  ver=$(grep "\"next\":" package.json | head -n1 | sed -E "s/.*: *\"([^\"]*)\".*/\1/" | sed "s/[\^~]//g")
+  if [ -n "$ver" ]; then
+    echo "using Next.js  v$ver"
+  fi
+fi
+'
+'''
+detect_files = ['next.config.js', 'next.config.mjs', 'package.json']
+format = '[$output ](bold white)'
+
+
+
+[custom.tailwind]
+command = '''
+sh -c '
+if [ -f package.json ]; then
+  ver=$(grep "\"tailwindcss\":" package.json | head -n1 | sed -E "s/.*: *\"([^\"]*)\".*/\1/" | sed "s/[\^~]//g")
+  if [ -n "$ver" ]; then
+    echo "with Tailwind 󱏿 v$ver"
+  fi
+fi
+'
+'''
+detect_files = ['tailwind.config.js', 'tailwind.config.cjs', 'tailwind.config.mjs', 'tailwind.config.ts','package.json']
+format = '[$output ](bold cyan)'
