@@ -213,9 +213,30 @@ Item {
                         } else if (searchInputField.text.startsWith(`${root.commandPrefix}service`)) {  
                             root.suggestionQuery = searchInputField.text.split(" ").slice(1).join(" ");  
                             root.suggestionList = [  
-                                { name: `${root.commandPrefix}service unsplash`, description: "Use Unsplash (requires API key)" },  
-                                { name: `${root.commandPrefix}service wallhaven`, description: "Use Wallhaven (no API key required)" }  
+                                { name: `${root.commandPrefix}service unsplash`, description: Translation.tr("Use Unsplash (requires API key)") },  
+                                { name: `${root.commandPrefix}service wallhaven`, description: Translation.tr("Use Wallhaven (no API key required)") }  
                             ];  
+                        } else if (searchInputField.text.startsWith(`${root.commandPrefix}sort`)) {  
+                            // Options for wallhaven: date_added, relevance, random, views, favourites, toplist // Options for unsplash: relevant, latest
+                            root.suggestionQuery = searchInputField.text.split(" ").slice(1).join(" "); 
+                            const currentService = root.currentService 
+                            if (currentService === "wallhaven") {
+                                root.suggestionList = [  
+                                    { name: `${root.commandPrefix}sort date_added`, description: "" },  
+                                    { name: `${root.commandPrefix}sort relevance `, description: "" },
+                                    { name: `${root.commandPrefix}sort random`, description: "" },
+                                    { name: `${root.commandPrefix}sort views`, description: "" },
+                                    { name: `${root.commandPrefix}sort favourites`, description: "" },
+                                    { name: `${root.commandPrefix}sort toplist`, description: "" }  
+                                ]; 
+                            }
+                            if (currentService === "unsplash") {
+                                root.suggestionList = [  
+                                    { name: `${root.commandPrefix}sort relevant`, description: "" },  
+                                    { name: `${root.commandPrefix}sort latest`, description: "" }  
+                                ]; 
+                            }
+                             
                         } else if (searchInputField.text.startsWith(`${root.commandPrefix}api`)) {  
                             root.suggestionQuery = searchInputField.text.split(" ").slice(1).join(" ");  
                             if (root.currentService === "wallhaven") {  
@@ -304,12 +325,18 @@ Item {
                     icon: "wallpaper"  
                     text: currentService === "wallhaven" ? "Wallhaven" : "Unsplash"  
                     tooltipText: Translation.tr("Current service: %1\nSet it with %2service SERVICE").arg(currentService === "wallhaven" ? "Wallhaven" : "Unsplash").arg(root.commandPrefix)  
+                } 
+
+                ApiInputBoxIndicator {  
+                    icon: "filter_alt"  
+                    text: WallpaperBrowser.currentSortType  
+                    tooltipText: Translation.tr("Current sort type: %1\nSet it with %2sort SORT_TYPE").arg(WallpaperBrowser.currentSortType).arg(root.commandPrefix)  
                 }  
                   
                 ApiInputBoxIndicator {  
                     icon: "key"  
                     text: ""  
-                    tooltipText: Translation.tr("API key is set\nChange with %1api YOUR_API_KEY").arg(root.commandPrefix) //FIXME: properly set the api key state 
+                    tooltipText: Translation.tr("API key is set\nChange with %1api YOUR_API_KEY").arg(root.commandPrefix) 
                 }  
                   
                 Item { Layout.fillWidth: true }  
@@ -340,6 +367,8 @@ Item {
             }  
         }  
     }
+
+    
 
     property var allCommands: [  
         { name: "api", description: Translation.tr("Set API key for current service"), execute: args => {  
@@ -383,7 +412,38 @@ Item {
             } else {  
                 WallpaperBrowser.addSystemMessage(Translation.tr("Invalid service. Use: unsplash or wallhaven"));  
             }  
-        } },  
+        } }, 
+        { name: "sort", description: Translation.tr("Sort results"), execute: args => {  
+            const currentService = root.currentService;
+            if (args.length === 0) {  
+                if (currentService === "unsplash") {
+                    WallpaperBrowser.addSystemMessage(Translation.tr("Please add a sort option\nAvailable sorts: relevant, latest"));
+                    return;
+                }
+
+                if (currentService === "wallhaven") {
+                    WallpaperBrowser.addSystemMessage(Translation.tr("Please add a sort option\nAvailable sorts: date_added, relevance, random, views, favourites, toplist"));
+                    return;
+                }
+            }  
+            const sort = args[0].toLowerCase(); 
+            if (currentService === "unsplash") {
+                if (sort === "relevant" || sort === "latest") {
+                    WallpaperBrowser.addSystemMessage(Translation.tr("Sort option is set to %1").arg(sort));
+                    WallpaperBrowser.setSort(sort);
+                } else {
+                    WallpaperBrowser.addSystemMessage(Translation.tr("Invalid sort option. Use: relevant or latest"));
+                }
+            }
+            if (currentService === "wallhaven") {
+                if (sort === "date_added" || sort === "relevance" || sort === "random" || sort === "views" || sort === "favourites" || sort === "toplist") {
+                    WallpaperBrowser.addSystemMessage(Translation.tr("Sort option is set to %1").arg(sort));
+                    WallpaperBrowser.setSort(sort);
+                } else {
+                    WallpaperBrowser.addSystemMessage(Translation.tr("Invalid sort option. Use: date_added, relevance, random, views, favourites, toplist"));
+                }
+            }
+        } }, 
         { name: "clear", description: Translation.tr("Clear the current list of images"), execute: () => {  
             WallpaperBrowser.clearResponses();  
         } },  

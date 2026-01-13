@@ -23,6 +23,7 @@ Singleton {
     property int runningRequests: 0  
     property var providerList: ["unsplash", "wallhaven"]  
     property var currentProvider: Config.options.wallpapers.service ?? "wallhaven" // defaulting to wallhaven bc it doesnt require api key
+    property string currentSortType: Config.options.wallpapers.sort ?? "favourites" // Options for wallhaven: date_added, relevance, random, views, favourites, toplist // Options for unsplash: relevant, latest
       
     property var providers: {  
         "system": { "name": Translation.tr("System") },  
@@ -112,15 +113,28 @@ Singleton {
             }  
         }  
     }  
+
+    function setSort(sort) {
+        sort = sort.toLowerCase() 
+        Config.options.wallpapers.sort = sort
+    }
   
     function setProvider(provider) {  
         provider = provider.toLowerCase()  
         if (providerList.indexOf(provider) !== -1) {  
             Config.options.wallpapers.service = provider
-            root.addSystemMessage(Translation.tr("Provider set to ") + providers[provider].name)  
+            root.addSystemMessage(Translation.tr("Provider set to ") + providers[provider].name) 
+            if (provider === "unsplash") {
+                root.currentSortType = "relevance" // default value
+            } 
+            if (provider === "wallhaven") {
+                root.currentSortType = "favourites" // default value
+            }
         } else {  
             root.addSystemMessage(Translation.tr("Invalid API provider. Supported: \n- ") + providerList.join("\n- "))  
         }  
+
+        
     }  
   
     function clearResponses() {  
@@ -150,9 +164,9 @@ Singleton {
              }
              params.push("per_page=" + Math.min(limit, 30))
              params.push("page=" + page)
+             params.push(`order_by=${root.currentSortType}`)
              params.push("orientation=landscape")
          
-             // 🔑 THIS IS THE IMPORTANT PART
              params.push("client_id=" + encodeURIComponent(root.unsplashApiToken))
          }
 
@@ -162,7 +176,7 @@ Singleton {
             }  
             params.push("categories=111")  // General, Anime, People  
             params.push("purity=100")      // SFW only by default  
-            params.push("sorting=favorites")  
+            params.push(`sorting=${root.currentSortType}`) 
             params.push("page=" + page)  
         }  
           
