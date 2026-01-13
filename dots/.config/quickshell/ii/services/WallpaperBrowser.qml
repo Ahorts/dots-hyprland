@@ -24,8 +24,8 @@ Singleton {
     property var providerList: ["unsplash", "wallhaven"]  
     property var currentProvider: Config.options.wallpapers.service ?? "wallhaven" // defaulting to wallhaven bc it doesnt require api key
     property string currentSortType: Config.options.wallpapers.sort ?? "favourites" // Options for wallhaven: date_added, relevance, random, views, favourites, toplist // Options for unsplash: relevant, latest
-    property string moreLikeThisId: ""    
 
+    property string similarImageId: ""
 
     property var providers: {  
         "system": { "name": Translation.tr("System") },  
@@ -182,13 +182,17 @@ Singleton {
                 params.push("purity=100")      //swf
                 params.push("page=" + page)
                 params.push(`sorting=${root.currentSortType}`)
+                root.similarImageId = ""
             }
 
             if (imageId !== "") { // 'More like this picture' feature
-                console.log("[Wallpapers] Searching for more images like: " + imageId)
+                // console.log("[Wallpapers] Searching for more images like: " + imageId)
+
                 params.push(`q=like%3A${imageId}`) // idk why but api has to be configured like this, learned it in the hard way
                 params.push(`sorting=relevance`)
+                params.push(`page=${page}`)
                 params.push(`order=desc`)
+                root.similarImageId = imageId
             }
         }  
           
@@ -200,9 +204,10 @@ Singleton {
         return url  
     }  
 
-    function moreLikeThisPicture(imageId) { // Uses built-in wallhaven's 'More like this picture' feature
+    function moreLikeThisPicture(imageId, page=1) { // Uses built-in wallhaven's 'More like this picture' feature
+        console.log("[Wallpapers] Searching for more images like: " + imageId, page)
         root.addSystemMessage(Translation.tr("Searching for more images like: %1").arg(imageId))
-        makeRequest([], 20, 1, imageId)       
+        makeRequest([], 20, page, imageId)       
     }
 
     // Not used for now, but could be usefull in the future

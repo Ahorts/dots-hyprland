@@ -447,9 +447,15 @@ Item {
             WallpaperBrowser.clearResponses();  
         } },  
         { name: "next", description: Translation.tr("Load next page"), execute: () => {  
+            console.log("[Wallpapers] Next page")
             if (root.responses.length > 0) {  
                 const lastResponse = root.responses[root.responses.length - 1];  
                 if (lastResponse.page > 0) {  
+                    if (WallpaperBrowser.similarImageId != "") { // more like this feature
+                        WallpaperBrowser.moreLikeThisPicture(WallpaperBrowser.similarImageId, lastResponse.page + 1)
+                        return;
+                    }
+                    // normal search, next page
                     WallpaperBrowser.makeRequest(lastResponse.tags, root.imageLimit, lastResponse.page + 1);  
                 }  
             }  
