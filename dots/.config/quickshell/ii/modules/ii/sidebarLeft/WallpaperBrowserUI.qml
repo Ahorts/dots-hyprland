@@ -44,6 +44,7 @@ Item {
     ColumnLayout {  
         id: columnLayout
         anchors.fill: parent  
+        anchors.margins: 4
         spacing: 10  
           
          
