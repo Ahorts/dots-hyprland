@@ -10,8 +10,7 @@ add_newline = false
 # $character
 # """
 format = """
-$cmd_duration 󰜥 $directory $git_branch$git_status $username$hostname 
-$all $nodejs${custom.nextjs}${custom.typescript}${custom.react}${custom.tailwind}
+$cmd_duration 󰜥 $directory $git_branch$git_status $username$hostname$all $nodejs${custom.nextjs} ${custom.typescript}${custom.react}${custom.tailwind}
 
 $character
 """
@@ -114,54 +113,54 @@ symbol = "conda "
 symbol = "cr "
 
 [cmake]
-symbol = "cmake  "
+symbol = " "
 
 [daml]
 symbol = "daml "
 
 [dart]
-symbol = "dart  "
+symbol = "  "
 
 [deno]
-symbol = "deno  "
+symbol = " "
 
 [dotnet]
-symbol = " 󰪮 "
+symbol = "󰪮  "
 
 
 [docker_context]
-symbol = "docker  "
+symbol = "  "
 
 [elixir]
-symbol = "exs  "
+symbol = "  "
 
 [elm]
 symbol = "elm "
 
 
 [golang]
-symbol = "go 󰟓 "
+symbol = " 󰟓 "
 
 [guix_shell]
-symbol = "guix  "
+symbol = "  "
 
 [hg_branch]
 symbol = "hg "
 
 [java]
-symbol = "java  "
+symbol = "  "
 
 [julia]
-symbol = "jl  "
+symbol = "  "
 
 [kotlin]
-symbol = "kt 󱈙 "
+symbol = " 󱈙 "
 
 [lua]
-symbol = "lua  "
+symbol = "  "
 
 [nodejs]
-symbol = "nodejs 󰎙 "
+symbol = "󰎙 "
 
 [meson]
 symbol = "meson "
@@ -170,7 +169,7 @@ symbol = "meson "
 symbol = "nim "
 
 [nix_shell]
-symbol = "nix  "
+symbol = "  "
 
 [ocaml]
 symbol = "ml "
@@ -182,7 +181,7 @@ symbol = "opa "
 Alpine = "alp "
 Amazon = "amz "
 Android = "andr "
-Arch = "arch 󰣇 "
+Arch = " 󰣇 "
 CentOS = "cent "
 Debian = "deb "
 DragonFly = "dfbsd "
@@ -217,13 +216,13 @@ Unknown = "unk "
 Windows = "win "
 
 [package]
-symbol = "pkg 󰏗 "
+symbol = " 󰏗 "
 
 [perl]
-symbol = "pl  "
+symbol = "  "
 
 [php]
-symbol = "php  "
+symbol = "  "
 
 [pulumi]
 symbol = "pulumi "
@@ -232,16 +231,16 @@ symbol = "pulumi "
 symbol = "purs "
 
 [python]
-symbol = "py  "
+symbol = "  "
 
 [raku]
 symbol = "raku "
 
 [ruby]
-symbol = "rb  "
+symbol = "  "
 
 [rust]
-symbol = "rs 󱘗 "
+symbol = " 󱘗 "
 
 [scala]
 symbol = "scala "
@@ -253,13 +252,13 @@ symbol = "spack "
 symbol = "sudo "
 
 [swift]
-symbol = "swift  "
+symbol = " "
 
 [terraform]
 symbol = "terraform "
 
 [zig]
-symbol = "zig  "
+symbol = "  "
 
 
 [battery]
@@ -280,7 +279,7 @@ sh -c '
 if [ -f package.json ]; then
   ver=$(grep "\"react\":" package.json | head -n1 | sed -E "s/.*: *\"([^\"]*)\".*/\1/" | sed "s/[\^~]//g")
   if [ -n "$ver" ]; then
-    echo "via React  v$ver"
+    echo "on  v$ver"
   fi
 fi
 '
@@ -294,12 +293,12 @@ sh -c '
 if [ -f package.json ]; then
   ver=$(grep "\"typescript\":" package.json | head -n1 | sed -E "s/.*: *\"([^\"]*)\".*/\1/" | sed "s/[\^~]//g")
   if [ -n "$ver" ]; then
-    echo "via TypeScript  v$ver"
+    echo "via  v$ver"
     exit 0
   fi
 fi
 if ls *.ts *.tsx >/dev/null 2>&1; then
-  echo "via TypeScript  v$(tsc --version | cut -d \" \" -f 2)"
+  echo "via  v$(tsc --version | cut -d \" \" -f 2)"
 fi
 '
 '''
@@ -314,7 +313,7 @@ sh -c '
 if [ -f package.json ]; then
   ver=$(grep "\"next\":" package.json | head -n1 | sed -E "s/.*: *\"([^\"]*)\".*/\1/" | sed "s/[\^~]//g")
   if [ -n "$ver" ]; then
-    echo "using Next.js  v$ver"
+    echo "using  v$ver"
   fi
 fi
 '
@@ -330,7 +329,7 @@ sh -c '
 if [ -f package.json ]; then
   ver=$(grep "\"tailwindcss\":" package.json | head -n1 | sed -E "s/.*: *\"([^\"]*)\".*/\1/" | sed "s/[\^~]//g")
   if [ -n "$ver" ]; then
-    echo "with Tailwind 󱏿 v$ver"
+    echo "with 󱏿 v$ver"
   fi
 fi
 '
