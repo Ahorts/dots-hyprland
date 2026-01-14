@@ -96,8 +96,9 @@ Item {
             PagePlaceholder {  
                 id: placeholderItem  
                 shown: root.responses.length === 0  
-                icon: "wallpaper"  
-                title: Translation.tr("Wallpapers")  
+                icon: "wallpaper"
+                description: Translation.tr("Type %1service to get started").arg(root.commandPrefix)  
+                title: Translation.tr("Wallpapers (beta)")  
                 shape: MaterialShape.Shape.Cookie9Sided  
             } 
               
@@ -405,7 +406,7 @@ Item {
         } },  
         { name: "service", description: Translation.tr("Change wallpaper service"), execute: args => {  
             if (args.length === 0) {  
-                WallpaperBrowser.addSystemMessage(Translation.tr("Available services: unsplash, wallhaven"));  
+                WallpaperBrowser.addSystemMessage(Translation.tr("Usage: %1service SERVICE, available services: \n\n Unsplash: \n- Requires API key, type %1api to get started. \n\nWallhaven: \n- Doesn't require API key \n- You can search similar images").arg(root.commandPrefix));  
                 return;  
             }  
             const service = args[0].toLowerCase();  
