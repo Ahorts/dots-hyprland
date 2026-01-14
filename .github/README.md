@@ -12,9 +12,6 @@
 | <img width="1919" height="1078" alt="image" src="https://github.com/user-attachments/assets/9297bec7-63b4-47bf-8905-9a4baa8de4e9" /> | <img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/5192be27-7705-4d51-9c8e-fc0e3add3ed6" /> |  
 | <img width="1917" height="1078" alt="image" src="https://github.com/user-attachments/assets/b35f2b3d-3b8c-470b-aa9a-db85703944ce" /> | <img width="1920" height="1078" alt="image" src="https://github.com/user-attachments/assets/aa822b97-cc55-46fe-a2e0-3ebdbdb247c6" /> |
 
-
-
-
 </div>
 
 <div align="center">
@@ -25,6 +22,8 @@ These dots are not mine! You can access original dots from : https://github.com/
 
 This repo contains my PRs and tweaks to original dots. (mostly up to date with original dots). This is my current daily driver.
 However there can (and will) be bugs **so don't expect stability here**. Use these dots if you know what you are doing.
+
+Before saying “these dots are bloated,” keep in mind that there’s a toggle for everything.
 
 <div align="center">
     <h2>• installation •</h2>
@@ -55,6 +54,17 @@ If something breaks, you can always restore your backup (original dots):
 ```
 mv ~/.config/quickshell/ii.backup ~/.config/quickshell/ii
 ```
+
+<div align="center">
+    <h2>• updating •</h2>
+</div>
+
+1. Run `git pull` in the directory you have cloned the repository. Or clone the repo again.
+2. Copy the `ii` folder config from repo into your Quickshell config directory:
+```
+cp -r ii-vynx/dots/.config/quickshell/ii ~/.config/quickshell/
+```
+3. Restart the shell with `SUPER+CTRL+R`.
 
 <div align="center">
     <h2>• wiki •</h2>
