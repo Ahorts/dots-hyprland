@@ -23,7 +23,9 @@ Singleton {
     property int runningRequests: 0  
     property var providerList: ["unsplash", "wallhaven"]  
     property var currentProvider: Config.options.wallpapers.service ?? "wallhaven" // defaulting to wallhaven bc it doesnt require api key
+
     property string currentSortType: Config.options.wallpapers.sort ?? "favourites" // Options for wallhaven: date_added, relevance, random, views, favourites, toplist // Options for unsplash: relevant, latest
+    property bool showAnimeResults: Config.options.wallpapers.showAnimeResults ?? false
 
     property string similarImageId: ""
 
@@ -120,6 +122,10 @@ Singleton {
         sort = sort.toLowerCase() 
         Config.options.wallpapers.sort = sort
     }
+
+    function setAnimeResults(show) {
+        Config.options.wallpapers.showAnimeResults = show
+    }
   
     function setProvider(provider) {  
         provider = provider.toLowerCase()  
@@ -173,12 +179,19 @@ Singleton {
          }
 
         else if (currentProvider === "wallhaven") {  
-            //TODO: add more customizations such as resolution
             if (tagString.trim().length > 0 && imageId == "") {  // normal search
+
+                const safeQuery = `${tagString} -people -portrait -face` // filter to not see people and faces
                 if (tagString.trim().length > 0) {  
-                    params.push("q=" + encodeURIComponent(tagString))  
+                    params.push("q=" + encodeURIComponent(safeQuery))  
                 }  
-                params.push("categories=111")  
+
+                if (root.showAnimeResults) {
+                    params.push("categories=110")
+                } else {
+                    params.push("categories=100")
+                }
+                
                 params.push("purity=100")      //swf
                 params.push("page=" + page)
                 params.push(`sorting=${root.currentSortType}`)

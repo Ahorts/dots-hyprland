@@ -240,13 +240,18 @@ Item {
                             root.suggestionQuery = searchInputField.text.split(" ").slice(1).join(" ");  
                             if (root.currentService === "wallhaven") {  
                                 root.suggestionList = [  
-                                    { name: `${root.commandPrefix}api`, description: "Wallhaven doesn't require an API key" }  
+                                    { name: `${root.commandPrefix}api`, description: Translation.tr("Wallhaven doesn't require an API key") }  
                                 ];  
                             } else {  
                                 root.suggestionList = [  
-                                    { name: `${root.commandPrefix}api YOUR_KEY`, description: "Set your Unsplash API key" }  
+                                    { name: `${root.commandPrefix}api YOUR_KEY`, description: Translation.tr("Set your Unsplash API key") }  
                                 ];  
-                            }  
+                            } 
+                        } else if (searchInputField.text.startsWith(`${root.commandPrefix}anime`)) {  
+                            root.suggestionList = [  
+                                { name: `${root.commandPrefix}anime show`, description: Translation.tr("Shows anime-related results") },  
+                                { name: `${root.commandPrefix}anime hide`, description: Translation.tr("Hides anime-related results") }  
+                            ];   
                         } else if (searchInputField.text.startsWith(root.commandPrefix)) {  
                             root.suggestionQuery = searchInputField.text;  
                             root.suggestionList = root.allCommands.filter(cmd => cmd.name.startsWith(searchInputField.text.substring(1))).map(cmd => {  
@@ -412,6 +417,24 @@ Item {
                 WallpaperBrowser.addSystemMessage(Translation.tr("Invalid service. Use: unsplash or wallhaven"));  
             }  
         } }, 
+        { name: "anime", description: Translation.tr("Toggle anime results"), execute: args => {  
+            const currentProvider = root.currentService;
+            if (currentProvider !== "wallhaven") {
+                WallpaperBrowser.addSystemMessage(Translation.tr("Anime toggle only works with wallhaven service"))
+                return;
+            }
+            if (args.length === 0) {  
+                WallpaperBrowser.addSystemMessage(Translation.tr(`Anime results: %1. Available options: show, hide`).arg(WallpaperBrowser.showAnimeResults ? "visible" : "hidden"));  
+                return;  
+            }  
+            if (args[0] !== "show" && args[0] !== "hide") {
+                WallpaperBrowser.addSystemMessage(Translation.tr(`Available options: show, hide`));  
+                return;
+            }
+            const showAnime = args[0] === "show" ? true : false; 
+            WallpaperBrowser.addSystemMessage(Translation.tr(`Anime results: %1`).arg(showAnime ? "visible" : "hidden"));
+            WallpaperBrowser.setAnimeResults(showAnime);  
+        } },
         { name: "sort", description: Translation.tr("Sort results"), execute: args => {  
             const currentService = root.currentService;
             if (args.length === 0) {  

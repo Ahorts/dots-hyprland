@@ -707,7 +707,7 @@ Singleton {
             property JsonObject wallpapers: JsonObject {  
                 property string service: "wallhaven" // "unsplash" or "wallhaven"  
                 property string sort: "favourites"
-                property bool enable: true  
+                property bool showAnimeResults: false // only for wallhaven service
             }
 
             property JsonObject waffles: JsonObject {
