@@ -54,7 +54,8 @@ Singleton {
                         "file_ext": "jpg",  
                         "source": item.links.html,  
                         "author": item.user.name,  
-                        "author_url": item.user.links.html  
+                        "author_url": item.user.links.html,
+                        "color": item.color || ""
                     }  
                 })  
             },  
@@ -101,7 +102,8 @@ Singleton {
                         "sample_url": item.thumbs && item.thumbs.small ? item.thumbs.small : item.path,  
                         "file_url": item.path,  
                         "file_ext": item.file_type ? item.file_type.split('/')[1] : 'jpg',  
-                        "source": item.source || "",  
+                        "source": item.source || "",
+                        "color": item.colors[0] || ""  
                     }  
                 })  
             },  

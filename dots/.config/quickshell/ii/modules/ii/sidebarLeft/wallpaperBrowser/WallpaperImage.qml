@@ -179,13 +179,14 @@ Button {
                                 buttonText: Translation.tr("Set as wallpaper")  
                                 onClicked: {  
                                     root.showActions = false;  
-                                    Wallpapers.select(root.imageData.file_url, Appearance.m3colors.darkmode);  
+                                    Wallpapers.select(root.imageData.file_url);
+                                    if (root.imageData.color != "") {
+                                        Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--noswitch", "--color", root.imageData.color]);  
+                                    }
                                 }  
                             }  
                         }  
                     }
-  
-                    
                 }  
             }  
         }  
