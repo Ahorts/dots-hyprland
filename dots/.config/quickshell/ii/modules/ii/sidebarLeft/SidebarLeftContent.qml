@@ -13,7 +13,7 @@ Item {
     property int sidebarPadding: 10
     anchors.fill: parent
     property bool aiChatEnabled: Config.options.policies.ai !== 0  
-    property bool translatorEnabled: Config.options.sidebar.translator.enable  
+    property bool translatorEnabled: Config.options.policies.translator !== 0
     property bool animeEnabled: Config.options.policies.weeb !== 0  
     property bool animeCloset: Config.options.policies.weeb === 2  
     property bool wallpapersEnabled: Config.options.policies.wallpapers !== 0  

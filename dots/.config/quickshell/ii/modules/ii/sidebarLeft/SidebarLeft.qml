@@ -90,9 +90,9 @@ Scope { // Scope
             property bool extend: false
             property real sidebarWidth: {
                 const aiEnabled = Config.options.policies.ai !== 0
-                const weebEnabled = Config.options.policies.weeb === 1
-                const wallpapersEnabled = Config.options.policies.wallpapers === 1
-                const translatorEnabled = Config.options.sidebar.translator.enable
+                const weebEnabled = Config.options.policies.weeb == 1
+                const wallpapersEnabled = Config.options.policies.wallpapers !== 0
+                const translatorEnabled = Config.options.policies.translator !== 0
 
 
                 if (aiEnabled && weebEnabled && wallpapersEnabled && translatorEnabled) {
