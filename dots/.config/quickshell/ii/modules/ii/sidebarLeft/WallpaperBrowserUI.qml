@@ -74,6 +74,9 @@ Item {
                     root.pullLoading = true  
                     root.handleInput(`${root.commandPrefix}next`)
                 }
+
+                property var modelValues: root.responses
+                onModelValuesChanged: responseListView.positionViewAtEnd()
                 
                 model: ScriptModel {  
                     values: root.responses
@@ -497,7 +500,8 @@ Item {
         } }
     ]  
       
-    function handleInput(inputText) {  
+    function handleInput(inputText) {
+        responseListView.positionViewAtEnd()
         if (inputText.startsWith(root.commandPrefix)) {  
             const command = inputText.split(" ")[0].substring(1);  
             const args = inputText.split(" ").slice(1);  

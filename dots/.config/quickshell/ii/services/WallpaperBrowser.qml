@@ -143,8 +143,6 @@ Singleton {
         } else {  
             root.addSystemMessage(Translation.tr("Invalid API provider. Supported: \n- ") + providerList.join("\n- "))  
         }  
-
-        
     }  
   
     function clearResponses() {  
