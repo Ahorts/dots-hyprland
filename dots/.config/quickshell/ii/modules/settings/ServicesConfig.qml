@@ -225,6 +225,21 @@ ContentPage {
     }
 
     ContentSection {
+        icon: "file_open"
+        title: Translation.tr("Wallpaper Browser")
+
+        MaterialTextArea {
+            Layout.fillWidth: true
+            placeholderText: Translation.tr("Download path")
+            text: Config.options.wallpapers.paths.download
+            wrapMode: TextEdit.Wrap
+            onTextChanged: {
+                Config.options.wallpapers.paths.download = text;
+            }
+        }
+    }
+
+    ContentSection {
         icon: "weather_mix"
         title: Translation.tr("Weather")
         ConfigRow {

@@ -15,7 +15,6 @@ Rectangle {
     id: root  
     property var responseData  
     property var tagInputField  
-    property string previewDownloadPath  
     property string downloadPath  
     property string nsfwPath  
       
@@ -228,7 +227,6 @@ Rectangle {
                         imageData: modelData  
                         rowHeight: imageRow.rowHeight  
                         imageRadius: imageRow.modelData.images.length == 1 ? Appearance.rounding.small : Appearance.rounding.normal  
-                        previewDownloadPath: root.previewDownloadPath  
                         downloadPath: root.downloadPath  
                         nsfwPath: root.nsfwPath  
                     }  

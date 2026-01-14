@@ -16,11 +16,9 @@ Button {
     id: root  
     property var imageData  
     property var rowHeight  
-    property string previewDownloadPath  
     property string downloadPath  
     property string nsfwPath  
     property string fileName: decodeURIComponent((imageData.file_url).substring((imageData.file_url).lastIndexOf('/') + 1))  
-    property string filePath: `${root.previewDownloadPath}/${root.fileName}`  
     property int maxTagStringLineLength: 50  
     property real imageRadius: Appearance.rounding.small  
   

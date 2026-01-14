@@ -25,9 +25,8 @@ Item {
     property int lastResponseLength: 0  
       
     // Download paths  
-    property string previewDownloadPath: Config.options?.downloads?.previewPath ?? `${SystemInfo.homeDir}/.cache/wallpapers/previews`  
-    property string downloadPath: Config.options?.downloads?.wallpaperPath ?? `${SystemInfo.homeDir}/Pictures/Wallpapers`  
-    property string nsfwPath: Config.options?.downloads?.nsfwPath ?? `${SystemInfo.homeDir}/Pictures/Wallpapers/NSFW`  
+    property string downloadPath: Config.options.wallpapers.paths.download 
+    property string nsfwPath: Config.options.wallpapers.paths.nsfw // not sure if needed
       
     // Pagination properties  
     property real scrollOnNewResponse: 100  
@@ -82,7 +81,6 @@ Item {
                 delegate: WallpaperResponse {  
                     responseData: modelData  
                     tagInputField: root.inputField  
-                    previewDownloadPath: root.previewDownloadPath  
                     downloadPath: root.downloadPath  
                     nsfwPath: root.nsfwPath  
                 } 

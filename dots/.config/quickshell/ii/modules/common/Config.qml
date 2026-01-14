@@ -708,6 +708,10 @@ Singleton {
                 property string service: "wallhaven" // "unsplash" or "wallhaven"  
                 property string sort: "favourites"
                 property bool showAnimeResults: false // only for wallhaven service
+                property JsonObject paths: JsonObject {
+                    property string download: FileUtils.trimFileProtocol(`${Directories.home}/Pictures/Wallpapers`)
+                    property string nsfw: FileUtils.trimFileProtocol(`${Directories.home}/Pictures/Wallpapers/NSFW`)
+                }
             }
 
             property JsonObject waffles: JsonObject {
