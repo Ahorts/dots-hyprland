@@ -228,7 +228,6 @@ Rectangle {
                         imageData: modelData  
                         rowHeight: imageRow.rowHeight  
                         imageRadius: imageRow.modelData.images.length == 1 ? Appearance.rounding.small : Appearance.rounding.normal  
-                        manualDownload: false // Wallpapers don't need manual download  
                         previewDownloadPath: root.previewDownloadPath  
                         downloadPath: root.downloadPath  
                         nsfwPath: root.nsfwPath  

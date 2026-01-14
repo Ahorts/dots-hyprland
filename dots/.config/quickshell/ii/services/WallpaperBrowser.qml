@@ -46,7 +46,7 @@ Singleton {
                         "rating": "s",  
                         "is_nsfw": false,  
                         "md5": item.id,  
-                        "preview_url": item.urls.full,  
+                        "preview_url": item.urls.small,  
                         "sample_url": item.urls.full,  
                         "file_url": item.urls.full,  
                         "file_ext": "jpg",  
@@ -95,8 +95,8 @@ Singleton {
                         "rating": item.purity === 'sfw' ? 's' : item.purity === 'sketchy' ? 'q' : 'e',  
                         "is_nsfw": item.purity !== 'sfw',  
                         "md5": item.id,  
-                        "preview_url": item.thumbs && item.thumbs.small ? item.thumbs.small : item.path,  
-                        "sample_url": item.thumbs && item.thumbs.large ? item.thumbs.large : item.path,  
+                        "preview_url": item.thumbs && item.thumbs.original ? item.thumbs.original : item.path,  
+                        "sample_url": item.thumbs && item.thumbs.small ? item.thumbs.small : item.path,  
                         "file_url": item.path,  
                         "file_ext": item.file_type ? item.file_type.split('/')[1] : 'jpg',  
                         "source": item.source || "",  
@@ -182,6 +182,7 @@ Singleton {
                 params.push("purity=100")      //swf
                 params.push("page=" + page)
                 params.push(`sorting=${root.currentSortType}`)
+                params.push("atleast=1920x1080")
                 root.similarImageId = ""
             }
 
