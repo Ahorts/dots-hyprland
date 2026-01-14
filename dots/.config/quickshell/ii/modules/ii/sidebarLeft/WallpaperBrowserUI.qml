@@ -415,6 +415,19 @@ Item {
                 WallpaperBrowser.addSystemMessage(Translation.tr("Invalid service. Use: unsplash or wallhaven"));  
             }  
         } }, 
+        { name: "similar", description: Translation.tr("Find similar images (only for Wallhaven)"), execute: args => {
+            const currentProvider = root.currentService;
+            if (currentProvider !== "wallhaven") {
+                WallpaperBrowser.addSystemMessage(Translation.tr("Similar images only works with wallhaven service"))
+                return;
+            }
+            if (args.length === 0) {  
+                WallpaperBrowser.addSystemMessage(Translation.tr("Usage: %1similar WALLHAVEN_IMAGE_ID").arg(root.commandPrefix));  
+                return;  
+            }  
+            WallpaperBrowser.moreLikeThisPicture(args[0], 1);
+            return; 
+        } },
         { name: "anime", description: Translation.tr("Toggle anime results"), execute: args => {  
             const currentProvider = root.currentService;
             if (currentProvider !== "wallhaven") {
