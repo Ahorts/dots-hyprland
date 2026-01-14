@@ -189,84 +189,77 @@ ContentPage {
                 }  
             }  
         }  
-    }  
-  
-ContentSection {  
-    icon: "rule"  
-    title: Translation.tr("Policies")  
-  
-    // First row: AI and Weeb  
-    ConfigRow {  
-        // AI policy  
-        ColumnLayout {  
-            ContentSubsectionLabel {  
-                text: Translation.tr("AI")  
-            }  
-  
-            ConfigSelectionArray {  
-                currentValue: Config.options.policies.ai  
-                onSelected: newValue => {  
-                    Config.options.policies.ai = newValue;  
-                }  
-                options: [  
-                    {  
-                        displayName: Translation.tr("No"),  
-                        icon: "close",  
-                        value: 0  
-                    },  
-                    {  
-                        displayName: Translation.tr("Yes"),  
-                        icon: "check",  
-                        value: 1  
-                    },  
-                    {  
-                        displayName: Translation.tr("Local only"),  
-                        icon: "sync_saved_locally",  
-                        value: 2  
+    } 
+
+    ContentSection {
+        icon: "rule"
+        title: Translation.tr("Policies")
+
+        ConfigRow {
+            Layout.fillHeight: false
+
+            ContentSubsection {
+                title: Translation.tr("AI")
+                Layout.fillWidth: true
+
+                ConfigSelectionArray {  
+                    currentValue: Config.options.policies.ai  
+                    onSelected: newValue => {  
+                        Config.options.policies.ai = newValue;  
                     }  
-                ]  
-            }  
-        }  
-  
-        // Weeb policy  
-        ColumnLayout {  
-            ContentSubsectionLabel {  
-                text: Translation.tr("Weeb")  
-            }  
-  
-            ConfigSelectionArray {  
-                currentValue: Config.options.policies.weeb  
-                onSelected: newValue => {  
-                    Config.options.policies.weeb = newValue;  
-                }  
-                options: [  
-                    {  
-                        displayName: Translation.tr("No"),  
-                        icon: "close",  
-                        value: 0  
-                    },  
-                    {  
-                        displayName: Translation.tr("Yes"),  
-                        icon: "check",  
-                        value: 1  
-                    },  
-                    {  
-                        displayName: Translation.tr("Closet"),  
-                        icon: "ev_shadow",  
-                        value: 2  
+                    options: [  
+                        {  
+                            displayName: Translation.tr("No"),  
+                            icon: "close",  
+                            value: 0  
+                        },  
+                        {  
+                            displayName: Translation.tr("Yes"),  
+                            icon: "check",  
+                            value: 1  
+                        },  
+                        {  
+                            displayName: Translation.tr("Local only"),  
+                            icon: "sync_saved_locally",  
+                            value: 2  
+                        }  
+                    ]  
+                } 
+            }
+
+            ContentSubsection {
+                title: Translation.tr("Weeb")
+                Layout.fillWidth: false
+
+                ConfigSelectionArray {  
+                    currentValue: Config.options.policies.weeb  
+                    onSelected: newValue => {  
+                        Config.options.policies.weeb = newValue;  
                     }  
-                ]  
-            }  
-        }  
-    }  
-  
-    // Second row: Wallpapers  
-    ConfigRow {  
-        ColumnLayout {  
-            ContentSubsectionLabel {  
-                text: Translation.tr("Wallpapers")  
-            }  
-  
+                    options: [  
+                        {  
+                            displayName: Translation.tr("No"),  
+                            icon: "close",  
+                            value: 0  
+                        },  
+                        {  
+                            displayName: Translation.tr("Yes"),  
+                            icon: "check",  
+                            value: 1  
+                        },  
+                        {  
+                            displayName: Translation.tr("Closet"),  
+                            icon: "ev_shadow",  
+                            value: 2  
+                        }  
+                    ]  
+                }
+            }
+        }
+        
+        ContentSubsection {
+            title: Translation.tr("Wallpaper browser")
+            
             ConfigSelectionArray {  
                 currentValue: Config.options.policies.wallpapers  
                 onSelected: newValue => {  
@@ -284,10 +277,9 @@ ContentSection {
                         value: 1  
                     }  
                 ]  
-            }  
-        }  
-    }  
-}
+            }
+        }
+    }
   
     ContentSection {  
         icon: "notification_sound"  
