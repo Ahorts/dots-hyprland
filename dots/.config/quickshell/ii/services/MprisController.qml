@@ -25,6 +25,11 @@ Singleton {
 
 	property var activeTrack;
 
+	onPlayersChanged: {
+		if (players.length !== 1) return;
+		activePlayer = players[0];
+	}
+
 	property bool hasPlasmaIntegration: false
     Process {
         id: plasmaIntegrationAvailabilityCheckProc

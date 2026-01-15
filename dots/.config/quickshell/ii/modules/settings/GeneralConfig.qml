@@ -390,7 +390,7 @@ ContentPage {
 
         ContentSubsection {
             title: Translation.tr("Format")
-            tooltip: ""
+            tooltip: Translation.tr("Changes the date format in the bar")
 
             ConfigSelectionArray {
                 currentValue: Config.options.time.dateFormat
