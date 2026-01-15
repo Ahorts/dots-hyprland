@@ -212,6 +212,7 @@ ContentPage {
         }
         ContentSubsection {
             title: Translation.tr("File search")
+
             MaterialTextArea {
                 Layout.fillWidth: true
                 placeholderText: Translation.tr("Search directory")
@@ -221,6 +222,16 @@ ContentPage {
                     Config.options.search.fileSearchDirectory = text;
                 }
             }
+
+            ConfigSwitch {
+                buttonIcon: "hide_image"
+                text: Translation.tr("Blur file search result previews")
+                checked: Config.options.search.blurFileSearchResultPreviews
+                onCheckedChanged: {
+                    Config.options.search.blurFileSearchResultPreviews = checked;
+                }
+            }
+
         }
     }
 
