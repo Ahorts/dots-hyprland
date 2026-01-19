@@ -26,12 +26,28 @@ Item {
 
     LrclibLyrics {
         id: lrclibLyrics
-        enabled: (root.activePlayer?.trackTitle?.length > 0) && (root.activePlayer?.trackArtist?.length > 0)
+        enabled: (root.activePlayer?.trackTitle?.length > 0) && (root.activePlayer?.trackArtist?.length > 0) && root.visible
         title: root.activePlayer?.trackTitle ?? ""
         artist: root.activePlayer?.trackArtist ?? ""
         duration: root.activePlayer?.length ?? 0
         position: root.activePlayer?.position ?? 0
         selectedId: LyricsService.selectedId
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        acceptedButtons: Qt.MiddleButton | Qt.BackButton | Qt.ForwardButton | Qt.RightButton | Qt.LeftButton
+        onPressed: (event) => {
+            if (event.button === Qt.MiddleButton) {
+                activePlayer.togglePlaying();
+            } else if (event.button === Qt.BackButton) {
+                activePlayer.previous();
+            } else if (event.button === Qt.ForwardButton || event.button === Qt.RightButton) {
+                activePlayer.next();
+            } else if (event.button === Qt.LeftButton) {
+                GlobalStates.mediaControlsOpen = !GlobalStates.mediaControlsOpen
+            }
+        }
     }
 
     Item {
