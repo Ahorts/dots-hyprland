@@ -252,6 +252,7 @@ Singleton {
                 property JsonObject activeWindow: JsonObject {
                     property bool fixedSize: false
                 }
+                
                 property JsonObject autoHide: JsonObject {
                     property bool enable: false
                     property int hoverRegionWidth: 2
@@ -261,6 +262,7 @@ Singleton {
                         property int delay: 140
                     }
                 }
+                
                 property bool bottom: false // Instead of top
                 property int cornerStyle: 0 // 0: Hug | 1: Float | 2: Plain rectangle
                 property bool floatStyleShadow: true // Show shadow behind bar when cornerStyle == 1 (Float)
@@ -269,10 +271,17 @@ Singleton {
                 property int barBackgroundStyle: 1 // 0: Transparent | 1: Visible | 2: Adaptive
                 property bool verbose: true
                 property bool vertical: false
+                
                 property JsonObject mediaPlayer: JsonObject {
                     property bool useCustomSize: false
                     property int customSize: 300
+                    property bool shrinkWhenLyricsVisible: true
                 }
+
+                property JsonObject mediaLyrics: JsonObject {
+                    
+                }
+                
                 property JsonObject resources: JsonObject {
                     property bool alwaysShowSwap: true
                     property bool alwaysShowCpu: true
@@ -281,6 +290,7 @@ Singleton {
                     property int cpuWarningThreshold: 90
                 }
                 property list<string> screenList: [] // List of names, like "eDP-1", find out with 'hyprctl monitors' command
+                
                 property JsonObject timers: JsonObject {
                     property bool showPomodoro: true
                     property bool showStopwatch: true
@@ -329,7 +339,8 @@ Singleton {
                         { id: "battery", icon: "battery_android_6", title: "Battery" },
                         { id: "timer", icon: "timer", title: "Timer & Pomodoro" },
                         { id: "weather", icon: "weather_mix", title: "Weather" },
-                        { id: "utility_buttons", icon: "build", title: "Utility buttons" }
+                        { id: "utility_buttons", icon: "build", title: "Utility buttons" },
+                        { id: "lyrics", icon: "lyrics", title: "Media lyrics" }
                     ]
                     property list<var> left: [
                         { id: "left_sidebar_button", icon: "star", title: "Left sidebar button" },

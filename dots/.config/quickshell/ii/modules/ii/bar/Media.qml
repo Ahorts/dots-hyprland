@@ -3,7 +3,6 @@ import qs.modules.common.widgets
 import qs.services
 import qs
 import qs.modules.common.functions
-
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Services.Mpris
@@ -19,15 +18,19 @@ Item {
     property bool useCustomSize: Config.options.bar.mediaPlayer.useCustomSize 
 
     property int maxWidth: 300
+
+    readonly property bool shrinkWhenLyricsVisible: Config.options.bar.mediaPlayer.shrinkWhenLyricsVisible
+    readonly property bool lyricsComponentVisible: !Config.options.bar.layouts.availableComps.some(comp => comp.id === "lyrics")
+    readonly property bool shouldShrink: shrinkWhenLyricsVisible && lyricsComponentVisible
     
 
     Layout.fillHeight: true
-    implicitWidth: useCustomSize ? customSize : Math.min(rowLayout.implicitWidth + rowLayout.spacing * 10, maxWidth)
+    implicitWidth: useCustomSize ? customSize : Math.min(rowLayout.implicitWidth + rowLayout.spacing, maxWidth)
     implicitHeight: Appearance.sizes.barHeight
 
     Timer {
         running: activePlayer?.playbackState == MprisPlaybackState.Playing
-        interval: Config.options.resources.updateInterval
+        interval: lyricsComponentVisible ? 250 : Config.options.resources.updateInterval
         repeat: true
         onTriggered: activePlayer.positionChanged()
     }
@@ -79,7 +82,7 @@ Item {
         }
 
         StyledText {
-            visible: Config.options.bar.verbose
+            visible: Config.options.bar.verbose && !shouldShrink
             width: rowLayout.width - (CircularProgress.size + rowLayout.spacing * 2)
             Layout.alignment: Qt.AlignVCenter
             Layout.fillWidth: true // Ensures the text takes up available space

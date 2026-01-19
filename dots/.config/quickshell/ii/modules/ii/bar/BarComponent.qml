@@ -44,6 +44,7 @@ Item {
         "weather": [weatherComp, weatherComp],
         "left_sidebar_button": [leftSidebarButtonComp, leftSidebarButtonComp],
         "right_sidebar_button": [rightSidebarButtonComp, rightSidebarButtonCompVert],
+        "lyrics": [mediaLyricsComp, mediaLyricsComp] //FIXME: no vertical version
     })
 
     
@@ -93,6 +94,9 @@ Item {
             sourceComponent: compMap[modelData.id][vertical ? 1 : 0]
         }
     }
+
+
+    Component { id: mediaLyricsComp; MediaLyrics {} }
 
     Component { id: weatherComp; WeatherBar { vertical: rootItem.vertical } }
 
