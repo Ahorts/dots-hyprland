@@ -344,6 +344,7 @@ ContentPage {
             ConfigRow {
                 uniform: true
                 ConfigSwitch {
+                    enabled: Config.options.bar.mediaPlayer.lyrics.enable && Config.options.bar.mediaPlayer.lyrics.style === "scrolling"
                     buttonIcon: "gradient"
                     text: Translation.tr("Use gradient mask")
                     checked: Config.options.bar.mediaPlayer.lyrics.useGradientMask
@@ -352,6 +353,7 @@ ContentPage {
                     }
                 }
                 ConfigSwitch {
+                    enabled: Config.options.bar.mediaPlayer.lyrics.enable
                     buttonIcon: "clock_loader_60"
                     text: Translation.tr("Show loading indicator")
                     checked: Config.options.bar.mediaPlayer.lyrics.showLoadingIndicator
