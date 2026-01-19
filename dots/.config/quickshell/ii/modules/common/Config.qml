@@ -280,6 +280,7 @@ Singleton {
 
                 property JsonObject mediaLyrics: JsonObject {
                     property int width: 300
+                    property bool useGradientMask: true
                 }
                 
                 property JsonObject resources: JsonObject {

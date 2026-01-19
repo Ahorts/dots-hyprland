@@ -327,6 +327,15 @@ ContentPage {
             }
         }
 
+        ConfigSwitch {
+            buttonIcon: "gradient"
+            text: Translation.tr("Use gradient mask")
+            checked: Config.options.bar.mediaLyrics.useGradientMask
+            onCheckedChanged: {
+                Config.options.bar.mediaLyrics.useGradientMask = checked;
+            }
+        }
+
     }
 
     ContentSection {

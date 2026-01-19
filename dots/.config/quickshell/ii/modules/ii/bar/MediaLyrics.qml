@@ -10,11 +10,13 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell.Services.Mpris
 import Quickshell.Hyprland
+import Qt5Compat.GraphicalEffects
 
 Item {
     id: root
 
     readonly property MprisPlayer activePlayer: MprisController.activePlayer
+    readonly property bool useGradientMask: Config.options.bar.mediaLyrics.useGradientMask
 
     Layout.fillHeight: true
     implicitHeight: Appearance.sizes.barHeight
@@ -116,6 +118,8 @@ Item {
             LyricLine {
                 text: lyricScroller.targetPrev
                 highlight: false
+                useGradient: true
+                gradientDirection: "top"
                 
                 opacity: (lyricScroller.isMovingForward) 
                     ? lyricScroller.dimOpacity + (lyricScroller.activeOpacity - lyricScroller.dimOpacity) * lyricScroller.animProgress
@@ -129,6 +133,7 @@ Item {
             LyricLine {
                 text: lyricScroller.targetCurrent
                 highlight: true
+                useGradient: false
                 
                 opacity: lyricScroller.activeOpacity - (lyricScroller.activeOpacity - lyricScroller.dimOpacity) * lyricScroller.animProgress
                 scale: 1.0 - (1.0 - lyricScroller.downScale) * lyricScroller.animProgress
@@ -137,6 +142,8 @@ Item {
             LyricLine {
                 text: lyricScroller.targetNext
                 highlight: false
+                useGradient: true
+                gradientDirection: "bottom"
                 
                 opacity: (!lyricScroller.isMovingForward)
                     ? lyricScroller.dimOpacity + (lyricScroller.activeOpacity - lyricScroller.dimOpacity) * lyricScroller.animProgress
@@ -149,17 +156,59 @@ Item {
         }
     }
 
-    component LyricLine: StyledText {
+    component LyricLine: Item {
+        id: lyricLineItem
+        required property string text
         property bool highlight: false
-
-        color: highlight ? Appearance.colors.colOnLayer1 : Appearance.colors.colSubtext
+        property bool useGradient: false
+        property string gradientDirection: "top" // "top" or "bottom"
+        property bool reallyUseGradient: useGradient && root.useGradientMask
 
         width: parent.width
         height: lyricScroller.rowHeight
-        font.pixelSize: Appearance.font.pixelSize.smallie
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignVCenter
-        elide: Text.ElideRight
-    }
 
+        StyledText { // text for middle line
+            id: lyricText
+            anchors.fill: parent
+            text: lyricLineItem.text
+            color: lyricLineItem.highlight ? Appearance.colors.colOnLayer1 : Appearance.colors.colSubtext
+            font.pixelSize: Appearance.font.pixelSize.smallie
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            elide: Text.ElideRight
+            visible: !lyricLineItem.reallyUseGradient
+        }
+
+        Item {
+            anchors.fill: parent
+            visible: lyricLineItem.reallyUseGradient
+            layer.enabled: visible
+            layer.effect: OpacityMask {
+                maskSource: Rectangle {
+                    width: lyricLineItem.width
+                    height: lyricLineItem.height
+                    gradient: Gradient {
+                        GradientStop { 
+                            position: 0.0
+                            color: lyricLineItem.gradientDirection === "top" ? "transparent" : "black" // colShadow makes it look bad
+                        }
+                        GradientStop { 
+                            position: 1.0
+                            color: lyricLineItem.gradientDirection === "top" ?  "black" : "transparent"
+                        }
+                    }
+                }
+            }
+
+            StyledText { // text with gradient mask
+                anchors.fill: parent
+                text: lyricLineItem.text
+                color: Appearance.colors.colSubtext
+                font.pixelSize: Appearance.font.pixelSize.smallie
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+            }
+        }
+    }
 }
