@@ -23,6 +23,7 @@ Item {
     readonly property bool showLoadingIndicator: Config.options.bar.mediaPlayer.lyrics.showLoadingIndicator
     readonly property bool lyricsEnabled: Config.options.bar.mediaPlayer.lyrics.enable
     readonly property bool useGradientMask: Config.options.bar.mediaPlayer.lyrics.useGradientMask
+    readonly property string lyricsStyle: Config.options.bar.mediaPlayer.lyrics.style
 
     Layout.fillHeight: true
     implicitWidth: useCustomSize ? customSize : Math.min(rowLayout.implicitWidth + rowLayout.spacing, maxWidth)
@@ -165,16 +166,23 @@ Item {
 
             property int lastIndex: -1
             property bool isMovingForward: true
+
+            readonly property real animProgress: Math.abs(scrollOffset) / rowHeight
+            readonly property real dimOpacity: 0.6
+            readonly property real activeOpacity: 1.0
+
+            property real scrollOffset: 0
+
+            property int staticLineAnimDuration: 100 // a config option maybe? but it may be an overkill
             
             onTargetCurrentIndexChanged: {
                 if (targetCurrentIndex !== lastIndex) {
+                    staticLyricBlinkAnimation.start()
                     isMovingForward = targetCurrentIndex > lastIndex;
                     lastIndex = targetCurrentIndex;
                     scrollAnimation.restart();
                 }
             }
-
-            property real scrollOffset: 0
             
             SequentialAnimation {
                 id: scrollAnimation
@@ -192,54 +200,92 @@ Item {
                 }
             }
 
-            readonly property real animProgress: Math.abs(scrollOffset) / rowHeight
-            readonly property real dimOpacity: 0.6
-            readonly property real activeOpacity: 1.0
-
-            Column {
-                width: parent.width
-                spacing: 0
-                y: lyricScroller.baseY - lyricScroller.scrollOffset
-
-                LyricLine {
-                    text: lyricScroller.targetPrev
-                    highlight: false
-                    useGradient: true
-                    gradientDirection: "top"
-                    
-                    opacity: (lyricScroller.isMovingForward) 
-                        ? lyricScroller.dimOpacity + (lyricScroller.activeOpacity - lyricScroller.dimOpacity) * lyricScroller.animProgress
-                        : lyricScroller.dimOpacity
-                        
-                    scale: (lyricScroller.isMovingForward)
-                        ? lyricScroller.downScale + (1.0 - lyricScroller.downScale) * lyricScroller.animProgress
-                        : lyricScroller.downScale
+            SequentialAnimation {
+                id: staticLyricBlinkAnimation
+                
+                NumberAnimation {
+                    target: staticLyricLine
+                    property: "opacity"
+                    from: 1.0
+                    to: 0.0
+                    duration: staticLineAnimDuration
+                    easing.type: Easing.InOutSine
                 }
 
-                LyricLine {
-                    text: lyricScroller.targetCurrent
-                    highlight: true
-                    useGradient: false
-                    
-                    opacity: lyricScroller.activeOpacity - (lyricScroller.activeOpacity - lyricScroller.dimOpacity) * lyricScroller.animProgress
-                    scale: 1.0 - (1.0 - lyricScroller.downScale) * lyricScroller.animProgress
+                PropertyAction {
+                    target: staticLyricLine
+                    property: "text"
+                    value: lyricScroller.targetCurrent 
                 }
 
-                LyricLine {
-                    text: lyricScroller.targetNext
-                    highlight: false
-                    useGradient: true
-                    gradientDirection: "bottom"
-                    
-                    opacity: (!lyricScroller.isMovingForward)
-                        ? lyricScroller.dimOpacity + (lyricScroller.activeOpacity - lyricScroller.dimOpacity) * lyricScroller.animProgress
-                        : lyricScroller.dimOpacity
-
-                    scale: (!lyricScroller.isMovingForward)
-                        ? lyricScroller.downScale + (1.0 - lyricScroller.downScale) * lyricScroller.animProgress
-                        : lyricScroller.downScale
+                NumberAnimation {
+                    target: staticLyricLine
+                    property: "opacity"
+                    from: 0.0
+                    to: 1.0
+                    duration: staticLineAnimDuration
+                    easing.type: Easing.InOutSine
                 }
             }
+
+            LyricLine {
+                id: staticLyricLine
+                highlight: true
+                opacity: 0
+                anchors.centerIn: parent
+                text: "♪"
+                visible: root.lyricsStyle == "static"
+            }
+            
+            Loader {
+                anchors.fill: parent
+                active: root.lyricsStyle == "scrolling"
+                sourceComponent: Column {
+                    width: parent.width
+                    spacing: 0
+                    y: lyricScroller.baseY - lyricScroller.scrollOffset
+
+                    LyricLine {
+                        text: lyricScroller.targetPrev
+                        highlight: false
+                        useGradient: true
+                        gradientDirection: "top"
+                        
+                        opacity: (lyricScroller.isMovingForward) 
+                            ? lyricScroller.dimOpacity + (lyricScroller.activeOpacity - lyricScroller.dimOpacity) * lyricScroller.animProgress
+                            : lyricScroller.dimOpacity
+                            
+                        scale: (lyricScroller.isMovingForward)
+                            ? lyricScroller.downScale + (1.0 - lyricScroller.downScale) * lyricScroller.animProgress
+                            : lyricScroller.downScale
+                    }
+
+                    LyricLine {
+                        text: lyricScroller.targetCurrent
+                        highlight: true
+                        useGradient: false
+                        
+                        opacity: lyricScroller.activeOpacity - (lyricScroller.activeOpacity - lyricScroller.dimOpacity) * lyricScroller.animProgress
+                        scale: 1.0 - (1.0 - lyricScroller.downScale) * lyricScroller.animProgress
+                    }
+
+                    LyricLine {
+                        text: lyricScroller.targetNext
+                        highlight: false
+                        useGradient: true
+                        gradientDirection: "bottom"
+                        
+                        opacity: (!lyricScroller.isMovingForward)
+                            ? lyricScroller.dimOpacity + (lyricScroller.activeOpacity - lyricScroller.dimOpacity) * lyricScroller.animProgress
+                            : lyricScroller.dimOpacity
+
+                        scale: (!lyricScroller.isMovingForward)
+                            ? lyricScroller.downScale + (1.0 - lyricScroller.downScale) * lyricScroller.animProgress
+                            : lyricScroller.downScale
+                    }
+                }
+            }
+            
         }
     }
 

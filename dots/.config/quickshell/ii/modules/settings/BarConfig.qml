@@ -303,11 +303,10 @@ ContentPage {
             title: Translation.tr("Lyrics")
 
             ConfigRow {
-                uniform: true
-
                 ConfigSwitch {
                     buttonIcon: "check"
                     text: Translation.tr("Enable")
+                    Layout.fillWidth: false
                     checked: Config.options.bar.mediaPlayer.lyrics.enable
                     onCheckedChanged: {
                         Config.options.bar.mediaPlayer.lyrics.enable = checked;
@@ -317,6 +316,33 @@ ContentPage {
                     }
                 }
 
+                Item {
+                    Layout.fillWidth: true
+                }
+
+                ConfigSelectionArray {
+                    Layout.fillWidth: false
+                    currentValue: Config.options.bar.mediaPlayer.lyrics.style
+                    onSelected: newValue => {
+                        Config.options.bar.mediaPlayer.lyrics.style = newValue
+                    }
+                    options: [
+                        {
+                            displayName: Translation.tr("Static"),
+                            icon: "text_fields",
+                            value: "static"
+                        },
+                        {
+                            displayName: Translation.tr("Scrolling"),
+                            icon: "swap_vert",
+                            value: "scrolling"
+                        }
+                    ]
+                }
+            }
+
+            ConfigRow {
+                uniform: true
                 ConfigSwitch {
                     buttonIcon: "gradient"
                     text: Translation.tr("Use gradient mask")
@@ -325,16 +351,22 @@ ContentPage {
                         Config.options.bar.mediaPlayer.lyrics.useGradientMask = checked;
                     }
                 }
-            }
-
-            ConfigSwitch {
-                buttonIcon: "clock_loader_60"
-                text: Translation.tr("Show loading indicator when fetching lyrics")
-                checked: Config.options.bar.mediaPlayer.lyrics.showLoadingIndicator
-                onCheckedChanged: {
-                    Config.options.bar.mediaPlayer.lyrics.showLoadingIndicator = checked;
+                ConfigSwitch {
+                    buttonIcon: "clock_loader_60"
+                    text: Translation.tr("Show loading indicator")
+                    checked: Config.options.bar.mediaPlayer.lyrics.showLoadingIndicator
+                    onCheckedChanged: {
+                        Config.options.bar.mediaPlayer.lyrics.showLoadingIndicator = checked;
+                    }
+                    StyledToolTip {
+                        text: Translation.tr("Show an indicator while lyrics are being fetched")
+                    }
                 }
             }
+
+            
+
+            
         }
 
     }
