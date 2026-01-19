@@ -276,12 +276,14 @@ Singleton {
                     property bool useCustomSize: false
                     property int customSize: 300
                     property bool shrinkWhenLyricsVisible: true
+                    property JsonObject lyrics: JsonObject {
+                        property bool enable: true
+                        property int width: 300
+                        property bool useGradientMask: true
+                    }
                 }
 
-                property JsonObject mediaLyrics: JsonObject {
-                    property int width: 300
-                    property bool useGradientMask: true
-                }
+                
                 
                 property JsonObject resources: JsonObject {
                     property bool alwaysShowSwap: true

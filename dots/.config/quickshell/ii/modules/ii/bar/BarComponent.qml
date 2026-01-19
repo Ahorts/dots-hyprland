@@ -43,8 +43,7 @@ Item {
         "timer": [timerComp, timerCompVert],
         "weather": [weatherComp, weatherComp],
         "left_sidebar_button": [leftSidebarButtonComp, leftSidebarButtonComp],
-        "right_sidebar_button": [rightSidebarButtonComp, rightSidebarButtonCompVert],
-        "lyrics": [mediaLyricsComp, mediaLyricsComp]
+        "right_sidebar_button": [rightSidebarButtonComp, rightSidebarButtonCompVert]
     })
 
     
@@ -95,8 +94,6 @@ Item {
         }
     }
 
-
-    Component { id: mediaLyricsComp; MediaLyrics { visible: !rootItem.vertical } } // FIXME: no vertical version
 
     Component { id: weatherComp; WeatherBar { vertical: rootItem.vertical } }
 

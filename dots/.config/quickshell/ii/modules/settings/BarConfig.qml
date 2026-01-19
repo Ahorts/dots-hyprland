@@ -308,35 +308,49 @@ ContentPage {
                 Config.options.bar.mediaPlayer.shrinkWhenLyricsVisible = checked;
             }
         }
-    }
 
-    ContentSection {
-        id: lyrics
-        icon: "lyrics"
-        title: Translation.tr("Media lyrics")
+        ContentSubsection {
+            id: lyrics
+            title: Translation.tr("Lyrics")
 
-        ConfigSpinBox {
-            icon: "width_full"
-            text: Translation.tr("Width")
-            value: Config.options.bar.mediaLyrics.width
-            from: 50
-            to: 500
-            stepSize: 25
-            onValueChanged: {
-                Config.options.bar.mediaLyrics.width = value;
+            ConfigRow {
+                uniform: true
+                ConfigSwitch {
+                    buttonIcon: "check"
+                    text: Translation.tr("Enable")
+                    checked: Config.options.bar.mediaPlayer.lyrics.enable
+                    onCheckedChanged: {
+                        Config.options.bar.mediaPlayer.lyrics.enable = checked;
+                    }
+                    StyledToolTip {
+                        text: Translation.tr("Lyrics will be visible when they are fetched with API")
+                    }
+                }
+                ConfigSwitch {
+                    buttonIcon: "gradient"
+                    text: Translation.tr("Use gradient mask")
+                    checked: Config.options.bar.mediaPlayer.lyrics.useGradientMask
+                    onCheckedChanged: {
+                        Config.options.bar.mediaPlayer.lyrics.useGradientMask = checked;
+                    }
+                }
+            }
+
+            ConfigSpinBox {
+                icon: "width_full"
+                text: Translation.tr("Width")
+                value: Config.options.bar.mediaPlayer.lyrics.width
+                from: 50
+                to: 500
+                stepSize: 25
+                onValueChanged: {
+                    Config.options.bar.mediaPlayer.lyrics.width = value;
+                }
             }
         }
 
-        ConfigSwitch {
-            buttonIcon: "gradient"
-            text: Translation.tr("Use gradient mask")
-            checked: Config.options.bar.mediaLyrics.useGradientMask
-            onCheckedChanged: {
-                Config.options.bar.mediaLyrics.useGradientMask = checked;
-            }
-        }
-
     }
+    
 
     ContentSection {
         icon: "notifications"
