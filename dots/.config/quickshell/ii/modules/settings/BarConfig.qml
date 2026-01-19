@@ -17,6 +17,7 @@ ContentPage {
         "system_tray": systemTray,
         "workspaces": workspaces,
         "timer": timerAndPomodoro,
+        "lyrics": lyrics
     })
 
     function scrollTo(stringId) {
@@ -272,6 +273,7 @@ ContentPage {
         id: musicPlayer
         icon: "music_cast"
         title: Translation.tr("Media player")
+
         ConfigSwitch {
             enabled: !Config.options.bar.vertical
             buttonIcon: "crop_free"
@@ -284,6 +286,7 @@ ContentPage {
                 text: Translation.tr("Only available in horizontal mode")
             }
         }
+
         ConfigSpinBox {
             enabled: !Config.options.bar.vertical
             icon: "width_full"
@@ -296,6 +299,34 @@ ContentPage {
                 Config.options.bar.mediaPlayer.customSize = value;
             }
         }
+
+        ConfigSwitch {
+            buttonIcon: "close_fullscreen"
+            text: Translation.tr("Shrink when lyrics are used")
+            checked: Config.options.bar.mediaPlayer.shrinkWhenLyricsVisible
+            onCheckedChanged: {
+                Config.options.bar.mediaPlayer.shrinkWhenLyricsVisible = checked;
+            }
+        }
+    }
+
+    ContentSection {
+        id: lyrics
+        icon: "lyrics"
+        title: Translation.tr("Media lyrics")
+
+        ConfigSpinBox {
+            icon: "width_full"
+            text: Translation.tr("Width")
+            value: Config.options.bar.mediaLyrics.width
+            from: 50
+            to: 500
+            stepSize: 25
+            onValueChanged: {
+                Config.options.bar.mediaLyrics.width = value;
+            }
+        }
+
     }
 
     ContentSection {

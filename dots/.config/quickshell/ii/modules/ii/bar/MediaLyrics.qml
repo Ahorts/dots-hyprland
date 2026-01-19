@@ -18,7 +18,11 @@ Item {
 
     Layout.fillHeight: true
     implicitHeight: Appearance.sizes.barHeight
-    implicitWidth: 300
+    implicitWidth: Config.options.bar.mediaLyrics.width
+
+    Behavior on implicitWidth {
+        animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+    }
 
     LrclibLyrics {
         id: lrclibLyrics

@@ -279,7 +279,7 @@ Singleton {
                 }
 
                 property JsonObject mediaLyrics: JsonObject {
-                    
+                    property int width: 300
                 }
                 
                 property JsonObject resources: JsonObject {
