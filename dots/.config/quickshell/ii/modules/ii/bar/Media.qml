@@ -20,6 +20,7 @@ Item {
     property bool useCustomSize: Config.options.bar.mediaPlayer.useCustomSize 
     readonly property int maxWidth: 300
 
+    readonly property bool showLoadingIndicator: Config.options.bar.mediaPlayer.lyrics.showLoadingIndicator
     readonly property bool lyricsEnabled: Config.options.bar.mediaPlayer.lyrics.enable
     readonly property bool useGradientMask: Config.options.bar.mediaPlayer.lyrics.useGradientMask
     readonly property int lyricsWidth: Config.options.bar.mediaPlayer.lyrics.width 
@@ -107,6 +108,38 @@ Item {
             text: `${cleanedTitle}${activePlayer?.trackArtist ? ' • ' + activePlayer.trackArtist : ''}`
         }
 
+        Loader {
+            id: loadingIndLoader
+            active: root.showLoadingIndicator && !lyricScroller.hasSyncedLines
+            visible: active
+            
+            Layout.preferredWidth: active ? item.implicitWidth : 0
+            Layout.preferredHeight: active ? item.implicitHeight : 0
+
+            Timer {
+                id: loadingIndicatorDissappearTimer
+                interval: 1500
+                onTriggered: loadingIndLoader.active = false
+            }
+
+            sourceComponent: MaterialLoadingIndicator {
+                id: lyricsLoadingIndicator
+                property bool couldntFetch: lyricsLoader.item?.error === "No synced lyrics" 
+                
+                //visible: root.lyricsEnabled && !lyricScroller.hasSyncedLines
+                loading: !couldntFetch
+                color: couldntFetch ? Appearance.colors.colErrorContainer : Appearance.colors.colPrimaryContainer
+                shapeColor: couldntFetch ? Appearance.colors.colOnErrorContainer : Appearance.colors.colOnPrimaryContainer
+                implicitSize: 24
+
+                onCouldntFetchChanged: {
+                    if (couldntFetch) {
+                        loadingIndicatorDissappearTimer.start()
+                    }
+                }
+            }
+        }
+
         //TODO: i hate putting these to a loader rn, add this to a loader later
         Item {
             id: lyricScroller
@@ -114,7 +147,7 @@ Item {
             Layout.preferredWidth: hasSyncedLines ? root.lyricsWidth : 0
             Layout.preferredHeight: parent.height
             Layout.alignment: Qt.AlignCenter
-            Layout.fillWidth: hasSyncedLines
+            Layout.fillWidth: true
             clip: true
 
             readonly property bool hasSyncedLines: visible ? lyricsLoader.item?.lines.length > 0 : false

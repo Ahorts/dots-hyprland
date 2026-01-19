@@ -278,6 +278,7 @@ Singleton {
                     property bool shrinkWhenLyricsVisible: true
                     property JsonObject lyrics: JsonObject {
                         property bool enable: true
+                        property bool showLoadingIndicator: true
                         property int width: 300
                         property bool useGradientMask: true
                     }
