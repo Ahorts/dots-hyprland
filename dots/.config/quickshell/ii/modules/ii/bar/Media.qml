@@ -113,7 +113,7 @@ Item {
 
         Loader {
             id: loadingIndLoader
-            active: root.showLoadingIndicator && !lyricScroller.hasSyncedLines && root.lyricsEnabled
+            active: root.showLoadingIndicator && !lyricScroller.hasSyncedLines && root.lyricsEnabled && (root.activePlayer?.trackTitle?.length > 0) && (root.activePlayer?.trackArtist?.length > 0)
             visible: active
             
             Layout.preferredWidth: active ? item.implicitWidth : 0
