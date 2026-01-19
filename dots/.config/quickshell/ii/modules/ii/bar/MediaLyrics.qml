@@ -66,7 +66,6 @@ Item {
         readonly property string targetCurrent: hasSyncedLines ? (lrclibLyrics.currentLineText || "♪") : lrclibLyrics.displayText
         readonly property string targetNext: hasSyncedLines ? lrclibLyrics.nextLineText : ""
 
-        // Track index changes for animation
         property int lastIndex: -1
         property bool isMovingForward: true
         
@@ -78,7 +77,6 @@ Item {
             }
         }
 
-        // Animation for smooth scrolling effect
         property real scrollOffset: 0
         
         SequentialAnimation {
@@ -106,15 +104,9 @@ Item {
             spacing: 0
             y: lyricScroller.baseY - lyricScroller.scrollOffset
 
-            StyledText {
-                width: parent.width
-                height: lyricScroller.rowHeight
+            LyricLine {
                 text: lyricScroller.targetPrev
-                color: Appearance.colors.colSubtext
-                font.pixelSize: Appearance.font.pixelSize.smallie
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                elide: Text.ElideRight
+                highlight: false
                 
                 opacity: (lyricScroller.isMovingForward) 
                     ? lyricScroller.dimOpacity + (lyricScroller.activeOpacity - lyricScroller.dimOpacity) * lyricScroller.animProgress
@@ -125,29 +117,17 @@ Item {
                     : lyricScroller.downScale
             }
 
-            StyledText {
-                width: parent.width
-                height: lyricScroller.rowHeight
+            LyricLine {
                 text: lyricScroller.targetCurrent
-                color: Appearance.colors.colOnLayer1
-                font.pixelSize: Appearance.font.pixelSize.smallie
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                elide: Text.ElideRight
+                highlight: true
                 
                 opacity: lyricScroller.activeOpacity - (lyricScroller.activeOpacity - lyricScroller.dimOpacity) * lyricScroller.animProgress
                 scale: 1.0 - (1.0 - lyricScroller.downScale) * lyricScroller.animProgress
             }
 
-            StyledText {
-                width: parent.width
-                height: lyricScroller.rowHeight
+            LyricLine {
                 text: lyricScroller.targetNext
-                color: Appearance.colors.colSubtext
-                font.pixelSize: Appearance.font.pixelSize.smallie
-                horizontalAlignment: Text.AlignHCenter
-                verticalAlignment: Text.AlignVCenter
-                elide: Text.ElideRight
+                highlight: false
                 
                 opacity: (!lyricScroller.isMovingForward)
                     ? lyricScroller.dimOpacity + (lyricScroller.activeOpacity - lyricScroller.dimOpacity) * lyricScroller.animProgress
@@ -158,6 +138,19 @@ Item {
                     : lyricScroller.downScale
             }
         }
+    }
+
+    component LyricLine: StyledText {
+        property bool highlight: false
+
+        color: highlight ? Appearance.colors.colOnLayer1 : Appearance.colors.colSubtext
+
+        width: parent.width
+        height: lyricScroller.rowHeight
+        font.pixelSize: Appearance.font.pixelSize.smallie
+        horizontalAlignment: Text.AlignHCenter
+        verticalAlignment: Text.AlignVCenter
+        elide: Text.ElideRight
     }
 
 }
