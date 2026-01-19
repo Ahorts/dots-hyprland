@@ -75,8 +75,40 @@ Item {
         spacing: 4
         anchors.fill: parent
 
+        Loader {
+            id: loadingIndLoader
+            active: root.showLoadingIndicator && !lyricScroller.hasSyncedLines && root.lyricsEnabled && (root.activePlayer?.trackTitle?.length > 0) && (root.activePlayer?.trackArtist?.length > 0)
+            visible: active
+            
+            Layout.preferredWidth: active ? item.implicitWidth : 0
+            Layout.preferredHeight: active ? item.implicitHeight : 0
+
+            Timer {
+                id: loadingIndicatorDissappearTimer
+                interval: 1500
+                onTriggered: loadingIndLoader.active = false
+            }
+
+            sourceComponent: MaterialLoadingIndicator {
+                id: lyricsLoadingIndicator
+                property bool couldntFetch: lyricsLoader.item?.error === "No synced lyrics" 
+                
+                loading: !couldntFetch
+                color: couldntFetch ? Appearance.colors.colErrorContainer : Appearance.colors.colPrimaryContainer
+                shapeColor: couldntFetch ? Appearance.colors.colOnErrorContainer : Appearance.colors.colOnPrimaryContainer
+                implicitSize: 24
+
+                onCouldntFetchChanged: {
+                    if (couldntFetch) {
+                        loadingIndicatorDissappearTimer.start()
+                    }
+                }
+            }
+        }
+
         ClippedFilledCircularProgress {
             id: mediaCircProg
+            visible: !loadingIndLoader.active
             Layout.alignment: Qt.AlignVCenter
             lineWidth: Appearance.rounding.unsharpen
             value: activePlayer?.position / activePlayer?.length
@@ -109,37 +141,6 @@ Item {
             elide: Text.ElideRight // Truncates the text on the right
             color: Appearance.colors.colOnLayer1
             text: `${cleanedTitle}${activePlayer?.trackArtist ? ' • ' + activePlayer.trackArtist : ''}`
-        }
-
-        Loader {
-            id: loadingIndLoader
-            active: root.showLoadingIndicator && !lyricScroller.hasSyncedLines && root.lyricsEnabled && (root.activePlayer?.trackTitle?.length > 0) && (root.activePlayer?.trackArtist?.length > 0)
-            visible: active
-            
-            Layout.preferredWidth: active ? item.implicitWidth : 0
-            Layout.preferredHeight: active ? item.implicitHeight : 0
-
-            Timer {
-                id: loadingIndicatorDissappearTimer
-                interval: 1500
-                onTriggered: loadingIndLoader.active = false
-            }
-
-            sourceComponent: MaterialLoadingIndicator {
-                id: lyricsLoadingIndicator
-                property bool couldntFetch: lyricsLoader.item?.error === "No synced lyrics" 
-                
-                loading: !couldntFetch
-                color: couldntFetch ? Appearance.colors.colErrorContainer : Appearance.colors.colPrimaryContainer
-                shapeColor: couldntFetch ? Appearance.colors.colOnErrorContainer : Appearance.colors.colOnPrimaryContainer
-                implicitSize: 24
-
-                onCouldntFetchChanged: {
-                    if (couldntFetch) {
-                        loadingIndicatorDissappearTimer.start()
-                    }
-                }
-            }
         }
 
         //TODO: i hate putting these to a loader rn, add this to a loader later
