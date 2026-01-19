@@ -2,6 +2,7 @@ pragma ComponentBehavior: Bound
 
 import QtQuick
 import Quickshell.Io
+import qs.modules.common
 import qs.modules.common.functions
 
 /*
@@ -25,6 +26,7 @@ Item {
     property string error: ""
     property bool instrumental: false
     property var lines: []
+    property var _cache: ({})
 
     property string loadedKey: ""
     property string requestKey: ""
@@ -371,10 +373,56 @@ Item {
         onTriggered: root.ensureFetched()
     }
 
-    onQueryKeyChanged: {
+    onFetchKeyChanged: {
         root.resetState();
-        if (root.enabled)
+        
+        const cached = getCached(root.queryTitle, root.queryArtist, root.queryDuration);
+        if (cached) {
+            // console.log("[Cache] Save found:", root.queryTitle);
+            root.instrumental = cached.instrumental || false;
+            root.lines = cached.lines || [];
+            root.loading = false;
+            root.error = "";
+            root.loadedKey = root.fetchKey;
+        } else if (root.enabled) {
+            // console.log("[Cache] Save NOT found:", root.queryTitle);
             fetchDebounce.restart();
+        }
+    }
+
+    function getCached(track, artist, duration) {
+        const key = `${track}||${artist}||${duration}`;
+        return root._cache[key] || null;
+    }
+
+    function setCache(track, artist, duration, data) {
+        const key = `${track}||${artist}||${duration}`;
+        root._cache[key] = data;
+        saveCache();
+    }
+
+    function saveCache() {
+        // console.log("[Lyrics] Sacing, total songs:", Object.keys(root._cache).length);
+        lyricFileView.setText(JSON.stringify(root._cache, null, 2)); 
+    }
+
+    FileView {
+        id: lyricFileView
+        path: Directories.lyricsPath
+        property bool isInitialLoad: true
+        
+        onLoaded: {
+            if (isInitialLoad) {
+                try {
+                    const loaded = JSON.parse(lyricFileView.text() || "{}");
+                    root._cache = loaded;
+                    // console.log("[Cache] Loaded, total songs:", Object.keys(loaded).length);
+                } catch (e) {
+                    root._cache = {};
+                }
+                isInitialLoad = false;
+            }
+        }
     }
 
     onSelectedIdChanged: {
@@ -451,6 +499,24 @@ Item {
                         root.fetchAttempt(requestId);
                         return;
                     }
+
+                    root.loading = false;
+                    root.error = root.lines.length === 0 && root.instrumental ? "Instrumental" : "";
+                    root.loadedKey = requestKey;
+
+                    root.instrumental = best.instrumental ?? false;
+                    root.lines = root.parseSyncedLyrics(best.syncedLyrics ?? "");
+
+                    if (root.lines.length === 0 && !root.instrumental) {
+                        root.attempt += 1;
+                        root.fetchAttempt(requestId);
+                        return;
+                    }
+
+                    root.setCache(root.queryTitle, root.queryArtist, root.queryDuration, {
+                        instrumental: root.instrumental,
+                        lines: root.lines
+                    });
 
                     root.loading = false;
                     root.error = root.lines.length === 0 && root.instrumental ? "Instrumental" : "";

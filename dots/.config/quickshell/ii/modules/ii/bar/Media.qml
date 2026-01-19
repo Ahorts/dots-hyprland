@@ -43,7 +43,7 @@ Item {
             artist: root.activePlayer?.trackArtist ?? ""
             duration: root.activePlayer?.length ?? 0
             position: root.activePlayer?.position ?? 0
-            selectedId: LyricsService.selectedId
+            selectedId: 0 //? I have no idea what this does, but it works so whatever
         }
     }
 
