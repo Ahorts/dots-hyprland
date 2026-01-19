@@ -77,7 +77,6 @@ Please refer to [this repository's wiki](https://github.com/vaguesyntax/ii-vynx/
 </div>
 
 - PR: https://github.com/end-4/dots-hyprland/pull/2539 -> Video wallpaper fixes | Branch: [video-wallpaper-fixes](https://github.com/vaguesyntax/dots-hyprland/tree/video-wallpaper-fixes)
-- PR: https://github.com/end-4/dots-hyprland/pull/2515 -> Config option for overview to show only on focused monitor | Branch  [overview-on-focused-monitor](https://github.com/vaguesyntax/dots-hyprland/tree/overview-on-focused-monitor)
 
 <div align="center">
     <h2>• other available features •</h2>
