@@ -24,6 +24,15 @@ Item {
         animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
     }
 
+    // We have to reset the active player when player changes to fix lyric sync issues, i am not sure if this is the best way tho
+    onActivePlayerChanged: togglePlayer();
+    function togglePlayer() {
+        MprisController.togglePlayer();
+        Qt.callLater(() => {
+            MprisController.togglePlayer();
+        });
+    }
+
     LrclibLyrics {
         id: lrclibLyrics
         enabled: (root.activePlayer?.trackTitle?.length > 0) && (root.activePlayer?.trackArtist?.length > 0) && root.visible
