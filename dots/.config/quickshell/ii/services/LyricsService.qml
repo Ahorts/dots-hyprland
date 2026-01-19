@@ -445,13 +445,5 @@ Singleton {
         }
     }
 
-    Connections {
-        target: GlobalStates
-        function onLyricsSelectorOpenChanged() {
-            if (GlobalStates.lyricsSelectorOpen)
-                fetchDebounce.restart();
-        }
-    }
-
     Component.onCompleted: root.reloadSelection()
 }
