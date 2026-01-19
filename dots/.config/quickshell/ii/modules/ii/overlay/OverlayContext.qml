@@ -10,6 +10,7 @@ Singleton {
         { identifier: "fpsLimiter", materialSymbol: "animation" },
         { identifier: "floatingImage", materialSymbol: "imagesmode" },
         { identifier: "recorder", materialSymbol: "screen_record" },
+        { identifier: "media", materialSymbol: "music_note" },
         { identifier: "resources", materialSymbol: "browse_activity" },
         { identifier: "notes", materialSymbol: "note_stack" },
         { identifier: "volumeMixer", materialSymbol: "volume_up" },
