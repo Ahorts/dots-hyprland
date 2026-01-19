@@ -23,11 +23,14 @@ Item {
     readonly property bool showLoadingIndicator: Config.options.bar.mediaPlayer.lyrics.showLoadingIndicator
     readonly property bool lyricsEnabled: Config.options.bar.mediaPlayer.lyrics.enable
     readonly property bool useGradientMask: Config.options.bar.mediaPlayer.lyrics.useGradientMask
-    readonly property int lyricsWidth: Config.options.bar.mediaPlayer.lyrics.width 
 
     Layout.fillHeight: true
     implicitWidth: useCustomSize ? customSize : Math.min(rowLayout.implicitWidth + rowLayout.spacing, maxWidth)
     implicitHeight: Appearance.sizes.barHeight
+
+    Behavior on implicitWidth {
+        animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(root)
+    }
 
     Loader {
         id: lyricsLoader
@@ -110,7 +113,7 @@ Item {
 
         Loader {
             id: loadingIndLoader
-            active: root.showLoadingIndicator && !lyricScroller.hasSyncedLines
+            active: root.showLoadingIndicator && !lyricScroller.hasSyncedLines && root.lyricsEnabled
             visible: active
             
             Layout.preferredWidth: active ? item.implicitWidth : 0
@@ -126,7 +129,6 @@ Item {
                 id: lyricsLoadingIndicator
                 property bool couldntFetch: lyricsLoader.item?.error === "No synced lyrics" 
                 
-                //visible: root.lyricsEnabled && !lyricScroller.hasSyncedLines
                 loading: !couldntFetch
                 color: couldntFetch ? Appearance.colors.colErrorContainer : Appearance.colors.colPrimaryContainer
                 shapeColor: couldntFetch ? Appearance.colors.colOnErrorContainer : Appearance.colors.colOnPrimaryContainer
@@ -144,10 +146,9 @@ Item {
         Item {
             id: lyricScroller
             visible: root.lyricsEnabled
-            Layout.preferredWidth: hasSyncedLines ? root.lyricsWidth : 0
+            Layout.preferredWidth: hasSyncedLines ? root.implicitWidth - (mediaCircProg.implicitSize + rowLayout.spacing * 2) : 0
             Layout.preferredHeight: parent.height
             Layout.alignment: Qt.AlignCenter
-            Layout.fillWidth: true
             clip: true
 
             readonly property bool hasSyncedLines: visible ? lyricsLoader.item?.lines.length > 0 : false

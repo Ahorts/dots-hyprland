@@ -16,8 +16,7 @@ ContentPage {
         "utility_buttons": utilityButtons,
         "system_tray": systemTray,
         "workspaces": workspaces,
-        "timer": timerAndPomodoro,
-        "lyrics": lyrics
+        "timer": timerAndPomodoro
     })
 
     function scrollTo(stringId) {
@@ -300,17 +299,7 @@ ContentPage {
             }
         }
 
-        ConfigSwitch {
-            buttonIcon: "close_fullscreen"
-            text: Translation.tr("Shrink when lyrics are used")
-            checked: Config.options.bar.mediaPlayer.shrinkWhenLyricsVisible
-            onCheckedChanged: {
-                Config.options.bar.mediaPlayer.shrinkWhenLyricsVisible = checked;
-            }
-        }
-
         ContentSubsection {
-            id: lyrics
             title: Translation.tr("Lyrics")
 
             ConfigRow {
@@ -344,18 +333,6 @@ ContentPage {
                 checked: Config.options.bar.mediaPlayer.lyrics.showLoadingIndicator
                 onCheckedChanged: {
                     Config.options.bar.mediaPlayer.lyrics.showLoadingIndicator = checked;
-                }
-            }
-
-            ConfigSpinBox {
-                icon: "width_full"
-                text: Translation.tr("Width")
-                value: Config.options.bar.mediaPlayer.lyrics.width
-                from: 50
-                to: 500
-                stepSize: 25
-                onValueChanged: {
-                    Config.options.bar.mediaPlayer.lyrics.width = value;
                 }
             }
         }
