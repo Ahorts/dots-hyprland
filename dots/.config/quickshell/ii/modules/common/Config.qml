@@ -314,7 +314,7 @@ Singleton {
                     property bool alwaysShowNumbers: false
                     property int showNumberDelay: 300 // milliseconds
                     property list<string> numberMap: ["1", "2"] // Characters to show instead of numbers on workspace indicator
-                    property bool useWorkspaceMap: false
+                    property bool useWorkspaceMap: true
                     property list<var> workspaceMap: [0, 10] 
                     property int maxWindowCount: 5 // Maximum windows to show in one workspace
                     property bool useNerdFont: false
@@ -518,7 +518,7 @@ Singleton {
                 property bool orderBottomUp: false
                 property bool showIcons: true
                 property bool centerIcons: true
-                property bool useWorkspaceMap: false
+                property bool useWorkspaceMap: true
                 property list<var> workspaceMap: [0,10]
                 property bool showOpeningAnimation: true
 
@@ -639,8 +639,8 @@ Singleton {
                         property int columns: 5
                         property list<var> toggles: [
                             { "size": 2, "type": "network" },
-                            { "size": 2, "type": "bluetooth"  },
-                            { "size": 1, "type": "idleInhibitor" },
+                            { "size": 1, "type": "idleInhibitor"  },
+                            { "size": 2, "type": "darkMode" },
                             { "size": 1, "type": "mic" },
                             { "size": 2, "type": "audio" },
                             { "size": 2, "type": "nightLight" }
@@ -649,8 +649,8 @@ Singleton {
                 }
 
                 property JsonObject quickSliders: JsonObject {
-                    property bool enable: false
-                    property bool showMic: false
+                    property bool enable: true
+                    property bool showMic: true
                     property bool showVolume: true
                     property bool showBrightness: true
                 }
