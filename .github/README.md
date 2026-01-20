@@ -120,7 +120,7 @@ Follow the documentation on [my hyprscrolling plugin](https://github.com/vaguesy
     <h2>• credits •</h2>
 </div>
 
-**[end-4](https://github.com/end-4):** Creator of illogical-impulse, alien
+### **[end-4](https://github.com/end-4):** Creator of illogical-impulse, alien
 
 **[ii](https://github.com/end-4/dots-hyprland):** A perfect hyprland dots in material-3 style
 
