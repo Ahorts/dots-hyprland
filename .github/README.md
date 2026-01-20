@@ -73,6 +73,13 @@ cp -r ii-vynx/dots/.config/quickshell/ii ~/.config/quickshell/
 Please refer to [this repository's wiki](https://github.com/vaguesyntax/ii-vynx/wiki) for detailed component descriptions and further information.
 
 <div align="center">
+    <h2>• known issues and current bugs •</h2>
+</div>
+
+Please refer to [this wiki page](https://github.com/vaguesyntax/ii-vynx/wiki/Known-Issues-and-Limitations) to see current bugs, the details of known issues about this repo and limitations of hyprscrolling plugin implementation.
+
+
+<div align="center">
     <h2>• PRs •</h2>
 </div>
 
