@@ -52,7 +52,7 @@ cp -r ii-vynx/dots/.config/quickshell/ii ~/.config/quickshell/
 If something breaks, you can always restore your backup (original dots):
 
 ```
-mv ~/.config/quickshell/ii.backup ~/.config/quickshell/ii
+cp -r ~/.config/quickshell/ii.backup ~/.config/quickshell/ii
 ```
 
 <div align="center">
