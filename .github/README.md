@@ -52,7 +52,7 @@ cp -r ii-vynx/dots/.config/quickshell/ii ~/.config/quickshell/
 If something breaks, you can always restore your backup (original dots):
 
 ```
-mv ~/.config/quickshell/ii.backup ~/.config/quickshell/ii
+cp -r ~/.config/quickshell/ii.backup ~/.config/quickshell/ii
 ```
 
 <div align="center">
@@ -71,6 +71,13 @@ cp -r ii-vynx/dots/.config/quickshell/ii ~/.config/quickshell/
 </div>
 
 Please refer to [this repository's wiki](https://github.com/vaguesyntax/ii-vynx/wiki) for detailed component descriptions and further information.
+
+<div align="center">
+    <h2>• known issues and current bugs •</h2>
+</div>
+
+Please refer to [this wiki page](https://github.com/vaguesyntax/ii-vynx/wiki/Known-Issues-and-Limitations) to see current bugs, the details of known issues about this repo and limitations of hyprscrolling plugin implementation.
+
 
 <div align="center">
     <h2>• PRs •</h2>
@@ -113,7 +120,7 @@ Follow the documentation on [my hyprscrolling plugin](https://github.com/vaguesy
     <h2>• credits •</h2>
 </div>
 
-**[end-4](https://github.com/end-4):** Creator of illogical-impulse, alien
+### **[end-4](https://github.com/end-4):** Creator of illogical-impulse, alien
 
 **[ii](https://github.com/end-4/dots-hyprland):** A perfect hyprland dots in material-3 style
 
