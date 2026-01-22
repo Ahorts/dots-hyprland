@@ -21,6 +21,7 @@ Item { // Wrapper
 
     property string searchingText: LauncherSearch.query
     property bool showResults: searchingText != ""
+    property string overviewPosition: Config.options.overview.position
     implicitWidth: searchWidgetContent.implicitWidth + Appearance.sizes.elevationMargin * 2
     implicitHeight: searchWidgetContent.implicitHeight + searchBar.verticalPadding * 2 + Appearance.sizes.elevationMargin * 2
 
@@ -102,14 +103,9 @@ Item { // Wrapper
     }
     Rectangle { // Background
         id: searchWidgetContent
-        anchors {
-            top: parent.top
-            horizontalCenter: parent.horizontalCenter
-            topMargin: Appearance.sizes.elevationMargin
-        }
         clip: true
-        implicitWidth: columnLayout.implicitWidth
-        implicitHeight: columnLayout.implicitHeight
+        implicitWidth: gridLayout.implicitWidth
+        implicitHeight: gridLayout.implicitHeight
         radius: searchBar.height / 2 + searchBar.verticalPadding
         color: Appearance.colors.colBackgroundSurfaceContainer
 
@@ -119,13 +115,10 @@ Item { // Wrapper
             animation: Appearance.animation.elementMove.numberAnimation.createObject(this)
         }
 
-        ColumnLayout {
-            id: columnLayout
-            anchors {
-                top: parent.top
-                horizontalCenter: parent.horizontalCenter
-            }
-            spacing: 0
+        GridLayout {
+            id: gridLayout
+            anchors.horizontalCenter: parent.horizontalCenter
+            columns: 1
 
             // clip: true
             layer.enabled: true
@@ -145,6 +138,7 @@ Item { // Wrapper
                 Layout.rightMargin: 4
                 Layout.topMargin: verticalPadding
                 Layout.bottomMargin: verticalPadding
+                Layout.row: root.overviewPosition == "bottom" ? 2 : 0
                 Synchronizer on searchingText {
                     property alias source: root.searchingText
                 }
@@ -156,6 +150,7 @@ Item { // Wrapper
                 Layout.fillWidth: true
                 height: 1
                 color: Appearance.colors.colOutlineVariant
+                Layout.row: 1
             }
 
             ListView { // App results
@@ -169,6 +164,7 @@ Item { // Wrapper
                 spacing: 2
                 KeyNavigation.up: searchBar
                 highlightMoveDuration: 100
+                Layout.row: root.overviewPosition == "bottom" ? 0 : 2
 
                 onFocusChanged: {
                     if (focus)

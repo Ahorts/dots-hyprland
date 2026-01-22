@@ -19,6 +19,7 @@ ToolTip {
         pixelSize: Appearance?.font.pixelSize.smaller ?? 14
         hintingPreference: Font.PreferNoHinting // Prevent shaky text
     }
+    
 
     delay: 0
     visible: internalVisibleCondition

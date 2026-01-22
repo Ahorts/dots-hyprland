@@ -9,19 +9,30 @@ import qs.modules.common.widgets
 
 Item {
     id: root
-    implicitWidth: gridLayout.implicitWidth
-    implicitHeight: gridLayout.implicitHeight
+    property real visualWidth: showOverflowMenu ? gridLayout.implicitWidth / 1.5 : gridLayout.implicitWidth
+    property real visualHeight: showOverflowMenu ? gridLayout.implicitHeight / 1.5 : gridLayout.implicitHeight
+    implicitWidth: visualWidth
+    implicitHeight: visualHeight
     property bool vertical: false
-    property bool invertSide: false
+    property bool invertSide: Config?.options.bar.bottom
     property bool trayOverflowOpen: false
     property bool showSeparator: true
-    property bool showOverflowMenu: true
+    property bool showOverflowMenu: !Config.options.tray.invertPinnedItems
     property var activeMenu: null
 
     property list<var> pinnedItems: TrayService.pinnedItems
     property list<var> unpinnedItems: TrayService.unpinnedItems
+
     onUnpinnedItemsChanged: {
         if (unpinnedItems.length == 0) root.closeOverflowMenu();
+        if (showOverflowMenu) {
+            rootItem.toggleVisible(unpinnedItems.length > 0);
+        }
+    }
+    onPinnedItemsChanged: {
+        if (!showOverflowMenu) {
+            rootItem.toggleVisible(pinnedItems.length > 0);
+        }
     }
 
     function grabFocus() {
@@ -60,10 +71,12 @@ Item {
         }
     }
 
+    
+
     GridLayout {
         id: gridLayout
         columns: root.vertical ? 1 : -1
-        anchors.fill: parent
+        anchors.centerIn: parent
         rowSpacing: 8
         columnSpacing: 15
 
@@ -141,12 +154,12 @@ Item {
             }
         }
 
-        StyledText {
+        /* StyledText { //? its a bit useless for me
             Layout.alignment: Qt.AlignVCenter | Qt.AlignHCenter
             font.pixelSize: Appearance.font.pixelSize.larger
             color: Appearance.colors.colSubtext
             text: "•"
             visible: root.showSeparator && SystemTray.items.values.length > 0
-        }
+        } */
     }
 }

@@ -13,11 +13,13 @@ Flow {
         {
             "displayName": "Option 1",
             "icon": "check",
+            "shape": "Arch", // Optional (for material shape)
             "value": 1
         },
         {
             "displayName": "Option 2",
             "icon": "close",
+            "shape": "Circle", // Optional (for material shape)
             "value": 2
         },
     ]
@@ -44,8 +46,10 @@ Flow {
             leftmost: index === 0
             rightmost: index === root.options.length - 1
             buttonIcon: modelData.icon || ""
+            buttonShape: modelData.shape || ""
             buttonText: modelData.displayName
             toggled: root.currentValue == modelData.value
+            releaseAction: modelData.releaseAction || ""
             onClicked: {
                 root.selected(modelData.value);
             }

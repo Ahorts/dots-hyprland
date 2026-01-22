@@ -14,21 +14,51 @@ import Quickshell.Hyprland
 Scope {
     id: overviewScope
     property bool dontAutoCancelSearch: false
-
     PanelWindow {
-        id: panelWindow
+        id: root
         property string searchingText: ""
-        readonly property HyprlandMonitor monitor: Hyprland.monitorFor(panelWindow.screen)
+        readonly property HyprlandMonitor monitor: Hyprland.monitorFor(root.screen)
         property bool monitorIsFocused: (Hyprland.focusedMonitor?.id == monitor?.id)
-        visible: GlobalStates.overviewOpen
+        property int monitorIndex: monitor.id
+        property string overviewStyle: Config.options.overview.style
 
         WlrLayershell.namespace: "quickshell:overview"
-        WlrLayershell.layer: WlrLayer.Top
+        WlrLayershell.layer: WlrLayer.Overlay
         // WlrLayershell.keyboardFocus: GlobalStates.overviewOpen ? WlrKeyboardFocus.OnDemand : WlrKeyboardFocus.None
         color: "transparent"
 
-        mask: Region {
-            item: GlobalStates.overviewOpen ? columnLayout : null
+        property var zoomLevels: {  // has to be reverted compared to background
+            "in": { default: 1, zoomed: 1.04 },
+            "out": { default: 1.04, zoomed: 1 }
+        }
+
+        readonly property bool isZoomInStyle: Config.options.overview.scrollingStyle.zoomStyle === "in"
+        readonly property bool showOpeningAnimation: Config.options.overview.showOpeningAnimation
+
+        property real defaultRatio: isZoomInStyle ? zoomLevels.in.default : zoomLevels.out.default
+        property real zoomedRatio: isZoomInStyle ? zoomLevels.in.zoomed : zoomLevels.out.zoomed
+
+        property bool isResettingZoom: false 
+        property real scaleAnimated: showOpeningAnimation ? GlobalStates.overviewOpen ? zoomedRatio : defaultRatio : 1
+
+        property real effectiveScale: showOpeningAnimation ? zoomedRatio - scaleAnimated + 1 : 1 
+
+        onIsZoomInStyleChanged: isResettingZoom = true
+        onScaleAnimatedChanged: {
+            if (scaleAnimated === defaultRatio) {
+                isResettingZoom = false
+            }
+        }
+
+        visible: {
+            if (isResettingZoom) return false // not showing when we are resetting 
+            if (!showOpeningAnimation) return GlobalStates.overviewOpen // no anim
+            
+            return isZoomInStyle ? scaleAnimated > defaultRatio : scaleAnimated < defaultRatio
+        }
+
+        Behavior on scaleAnimated {
+            animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(root)
         }
 
         anchors {
@@ -37,6 +67,25 @@ Scope {
             left: true
             right: true
         }
+        property int barSize: Config.options.bar.vertical ? Appearance.sizes.verticalBarWidth : Appearance.sizes.barHeight
+        property int margin: isZoomInStyle ? barSize : barSize * 2
+        margins { 
+            top: -margin
+            bottom: -margin
+            left: -margin
+            right: -margin
+        }
+
+        HyprlandFocusGrab {
+            id: grab
+            windows: [root]
+            property bool canBeActive: root.monitorIsFocused
+            active: false
+            onCleared: () => {
+                if (!active)
+                    GlobalStates.overviewOpen = false;
+            }
+        }
 
         Connections {
             target: GlobalStates
@@ -44,70 +93,106 @@ Scope {
                 if (!GlobalStates.overviewOpen) {
                     searchWidget.disableExpandAnimation();
                     overviewScope.dontAutoCancelSearch = false;
-                    GlobalFocusGrab.dismiss();
                 } else {
                     if (!overviewScope.dontAutoCancelSearch) {
                         searchWidget.cancelSearch();
                     }
-                    GlobalFocusGrab.addDismissable(panelWindow);
+                    delayedGrabTimer.start();
                 }
             }
         }
 
-        Connections {
-            target: GlobalFocusGrab
-            function onDismissed() {
+        Keys.onPressed: event => {
+            if (event.key === Qt.Key_Escape) {
                 GlobalStates.overviewOpen = false;
             }
         }
-        implicitWidth: columnLayout.implicitWidth
-        implicitHeight: columnLayout.implicitHeight
+
+        
+
+        Timer {
+            id: delayedGrabTimer
+            interval: Config.options.hacks.arbitraryRaceConditionDelay
+            repeat: false
+            onTriggered: {
+                if (!grab.canBeActive)
+                    return;
+                grab.active = GlobalStates.overviewOpen;
+            }
+        }
 
         function setSearchingText(text) {
             searchWidget.setSearchingText(text);
             searchWidget.focusFirstItem();
         }
 
-        Column {
-            id: columnLayout
-            visible: GlobalStates.overviewOpen
-            anchors {
-                horizontalCenter: parent.horizontalCenter
-                top: parent.top
-            }
-            spacing: -8
+        Item {
+            id: contentItem
+            anchors.fill: parent
 
-            Keys.onPressed: event => {
-                if (event.key === Qt.Key_Escape) {
-                    GlobalStates.overviewOpen = false;
-                } else if (event.key === Qt.Key_Left) {
-                    if (!panelWindow.searchingText)
-                        Hyprland.dispatch("workspace r-1");
-                } else if (event.key === Qt.Key_Right) {
-                    if (!panelWindow.searchingText)
-                        Hyprland.dispatch("workspace r+1");
+            MouseArea { // We could have used PanelWindow.mask to detect this, but this is more stable
+                anchors.fill: parent
+                onClicked: GlobalStates.overviewOpen = false;
+            }
+
+            Item { // Wrapper for animation 
+                id: searchWidgetWrapper
+                implicitHeight: searchWidget.implicitHeight
+                implicitWidth: searchWidget.implicitWidth
+                z: 999
+
+                Keys.onPressed: event => {
+                    if (event.key === Qt.Key_Escape) {
+                        GlobalStates.overviewOpen = false;
+                    }
+                }
+
+                anchors {
+                    horizontalCenter: parent.horizontalCenter
+                    top: parent.top
+                    topMargin: root.margin + Appearance.sizes.elevationMargin
+                }
+                SearchWidget {
+                    id: searchWidget
+                    scale: root.effectiveScale
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    Synchronizer on searchingText {
+                        property alias source: root.searchingText
+                    }
                 }
             }
+            
 
-            SearchWidget {
-                id: searchWidget
-                anchors.horizontalCenter: parent.horizontalCenter
-                Synchronizer on searchingText {
-                    property alias source: panelWindow.searchingText
-                }
-            }
-
-            Loader {
+            Loader { // Classic overview
                 id: overviewLoader
+                scale: root.effectiveScale
+                anchors.top: searchWidgetWrapper.bottom
                 anchors.horizontalCenter: parent.horizontalCenter
-                active: GlobalStates.overviewOpen && (Config?.options.overview.enable ?? true)
+                active: root.visible && (Config?.options.overview.enable ?? true) && root.overviewStyle == "classic"
                 sourceComponent: OverviewWidget {
-                    screen: panelWindow.screen
-                    visible: (panelWindow.searchingText == "")
+                    panelWindow: root
+                    visible: (root.searchingText == "")
+                    monitorIndex: root.monitorIndex
+                }
+            }
+
+            Loader { // Scrolling overview
+                id: scrollingOverviewLoader
+                scale: root.effectiveScale
+                anchors.fill: parent
+                active: root.visible && (Config?.options.overview.enable ?? true) && root.overviewStyle == "scrolling"
+                sourceComponent: ScrollingOverviewWidget {
+                    anchors.fill: parent
+                    panelWindow: root
+                    visible: (root.searchingText == "")
+                    monitorIndex: root.monitorIndex
                 }
             }
         }
+
+        
     }
+    
 
     function toggleClipboard() {
         if (GlobalStates.overviewOpen && overviewScope.dontAutoCancelSearch) {
@@ -115,7 +200,7 @@ Scope {
             return;
         }
         overviewScope.dontAutoCancelSearch = true;
-        panelWindow.setSearchingText(Config.options.search.prefix.clipboard);
+        root.setSearchingText(Config.options.search.prefix.clipboard);
         GlobalStates.overviewOpen = true;
     }
 
@@ -125,7 +210,7 @@ Scope {
             return;
         }
         overviewScope.dontAutoCancelSearch = true;
-        panelWindow.setSearchingText(Config.options.search.prefix.emojis);
+        root.setSearchingText(Config.options.search.prefix.emojis);
         GlobalStates.overviewOpen = true;
     }
 

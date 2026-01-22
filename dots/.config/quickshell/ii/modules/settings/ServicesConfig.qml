@@ -187,6 +187,15 @@ ContentPage {
                         Config.options.search.prefix.webSearch = text;
                     }
                 }
+                MaterialTextArea {
+                    Layout.fillWidth: true
+                    placeholderText: Translation.tr("File search")
+                    text: Config.options.search.prefix.fileSearch
+                    wrapMode: TextEdit.Wrap
+                    onTextChanged: {
+                        Config.options.search.prefix.fileSearch = text;
+                    }
+                }
             }
         }
         ContentSubsection {
@@ -199,6 +208,44 @@ ContentPage {
                 onTextChanged: {
                     Config.options.search.engineBaseUrl = text;
                 }
+            }
+        }
+        ContentSubsection {
+            title: Translation.tr("File search")
+
+            MaterialTextArea {
+                Layout.fillWidth: true
+                placeholderText: Translation.tr("Search directory")
+                text: Config.options.search.fileSearchDirectory
+                wrapMode: TextEdit.Wrap
+                onTextChanged: {
+                    Config.options.search.fileSearchDirectory = text;
+                }
+            }
+
+            ConfigSwitch {
+                buttonIcon: "hide_image"
+                text: Translation.tr("Blur file search result previews")
+                checked: Config.options.search.blurFileSearchResultPreviews
+                onCheckedChanged: {
+                    Config.options.search.blurFileSearchResultPreviews = checked;
+                }
+            }
+
+        }
+    }
+
+    ContentSection {
+        icon: "file_open"
+        title: Translation.tr("Wallpaper Browser")
+
+        MaterialTextArea {
+            Layout.fillWidth: true
+            placeholderText: Translation.tr("Download path")
+            text: Config.options.wallpapers.paths.download
+            wrapMode: TextEdit.Wrap
+            onTextChanged: {
+                Config.options.wallpapers.paths.download = text;
             }
         }
     }

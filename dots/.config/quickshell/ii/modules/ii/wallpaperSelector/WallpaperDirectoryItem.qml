@@ -19,6 +19,7 @@ MouseArea {
                 path.endsWith('.ogv');
     }
     property bool useThumbnail: Images.isValidImageByName(fileModelData.fileName) || root.isVideo
+    property bool showLoadingIndicator: false
 
     property alias colBackground: background.color
     property alias colText: wallpaperItemName.color

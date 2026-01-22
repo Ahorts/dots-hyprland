@@ -371,7 +371,7 @@ Singleton {
     }
 
     sizes: QtObject {
-        property real baseBarHeight: 40
+        property real baseBarHeight: Config.options.bar.sizes.height
         property real barHeight: Config.options.bar.cornerStyle === 1 ? 
             (baseBarHeight + root.sizes.hyprlandGapsOut * 2) : baseBarHeight
         property real barCenterSideModuleWidth: Config.options?.bar.verbose ? 360 : 140
@@ -386,12 +386,13 @@ Singleton {
         property real mediaControlsWidth: 440
         property real mediaControlsHeight: 160
         property real notificationPopupWidth: 410
-        property real osdWidth: 180
+        property real osdWidth: 200
         property real searchWidthCollapsed: 210
         property real searchWidth: 360
         property real sidebarWidth: 460
+        property real sidebarWidthExpanded: 570 // when all 4 policies are enabled
         property real sidebarWidthExtended: 750
-        property real baseVerticalBarWidth: 46
+        property real baseVerticalBarWidth: Config.options.bar.sizes.width
         property real verticalBarWidth: Config.options.bar.cornerStyle === 1 ? 
             (baseVerticalBarWidth + root.sizes.hyprlandGapsOut * 2) : baseVerticalBarWidth
         property real wallpaperSelectorWidth: 1200

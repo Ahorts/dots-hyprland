@@ -33,6 +33,7 @@ RippleButton {
     property string bigText: entry?.iconType === LauncherSearchResult.IconType.Text ? entry?.iconName ?? "" : ""
     property string materialSymbol: entry.iconType === LauncherSearchResult.IconType.Material ? entry?.iconName ?? "" : ""
     property string cliphistRawString: entry?.rawValue ?? ""
+    property string filePath: Images.isValidImageByName(entry?.name) ? entry?.name : ""
     property bool blurImage: entry?.blurImage ?? false
     
     visible: root.entryShown
@@ -233,6 +234,17 @@ RippleButton {
                     maxWidth: contentColumn.width
                     maxHeight: 140
                     blur: root.blurImage
+                }
+            }
+
+            Loader { // File search image preview
+                active: root.filePath != ""
+                sourceComponent: FileSearchImage {
+                    Layout.fillWidth: true
+                    imagePath: root.filePath
+                    maxWidth: contentColumn.width
+                    maxHeight: 140
+                    blur: Config.options.search.blurFileSearchResultPreviews
                 }
             }
         }

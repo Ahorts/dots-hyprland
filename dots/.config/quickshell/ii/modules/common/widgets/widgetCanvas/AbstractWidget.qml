@@ -8,11 +8,13 @@ import qs.modules.common
 MouseArea {
     id: root
 
+    property bool allowMiddleClick: false
     property alias animateXPos: xBehavior.enabled
     property alias animateYPos: yBehavior.enabled
     property bool draggable: true
     drag.target: draggable ? root : undefined
     cursorShape: (draggable && containsPress) ? Qt.ClosedHandCursor : draggable ? Qt.OpenHandCursor : Qt.ArrowCursor
+    acceptedButtons: allowMiddleClick ? Qt.MiddleButton | Qt.LeftButton : Qt.LeftButton
 
     function center() {
         root.x = (root.parent.width - root.width) / 2

@@ -13,26 +13,44 @@ import qs.modules.common.functions
 
 Scope {
     id: bar
-    property bool showBarBackground: Config.options.bar.showBackground
 
     Variants {
+        id: barVariant
         // For each monitor
-        model: {
+        property var variantModel: {
             const screens = Quickshell.screens;
             const list = Config.options.bar.screenList;
             if (!list || list.length === 0)
                 return screens;
             return screens.filter(screen => list.includes(screen.name));
         }
+        model: variantModel
         LazyLoader {
             id: barLoader
             active: GlobalStates.barOpen && !GlobalStates.screenLocked
             required property ShellScreen modelData
+            property var monitorIndex: barVariant.variantModel.indexOf(barLoader.modelData)
             component: PanelWindow { // Bar window
                 id: barRoot
                 screen: barLoader.modelData
-
                 property var brightnessMonitor: Brightness.getMonitorForScreen(barLoader.modelData)
+
+                property int monitorIndex: barLoader.monitorIndex
+                property bool hasActiveWindows: false
+                property bool showBarBackground: barRoot.hasActiveWindows && Config.options.bar.barBackgroundStyle === 2 || Config.options.bar.barBackgroundStyle === 1
+
+                Connections {
+                    enabled: Config.options.bar.barBackgroundStyle === 2
+                    target: HyprlandData
+                    function onWindowListChanged() {
+                        const monitor = HyprlandData.monitors.find(m => m.id === monitorIndex);
+                        const wsId = monitor?.activeWorkspace?.id;
+
+                        const hasWindow = wsId ? HyprlandData.windowList.some(w => w.workspace.id === wsId && !w.floating) : false;
+
+                        barRoot.hasActiveWindows = hasWindow
+                    }
+                }
                 
                 Timer {
                     id: showBarTimer
@@ -98,7 +116,6 @@ Scope {
 
                     VerticalBarContent {
                         id: barContent
-                        
                         implicitWidth: Appearance.sizes.verticalBarWidth
                         anchors {
                             top: parent.top

@@ -34,15 +34,18 @@ Singleton {
     property string shellConfigName: "config.json"
     property string shellConfigPath: `${Directories.shellConfig}/${Directories.shellConfigName}`
 	property string todoPath: FileUtils.trimFileProtocol(`${Directories.state}/user/todo.json`)
-	property string notesPath: FileUtils.trimFileProtocol(`${Directories.state}/user/notes.txt`)
+	property string notesPath: FileUtils.trimFileProtocol(`${Directories.state}/user/notes.json`)
 	property string conflictCachePath: FileUtils.trimFileProtocol(`${Directories.cache}/conflict-killer`)
     property string notificationsPath: FileUtils.trimFileProtocol(`${Directories.cache}/notifications/notifications.json`)
+    property string lyricsPath: FileUtils.trimFileProtocol(`${Directories.cache}/lyrics/lyrics.json`)
     property string generatedMaterialThemePath: FileUtils.trimFileProtocol(`${Directories.state}/user/generated/colors.json`)
     property string generatedWallpaperCategoryPath: FileUtils.trimFileProtocol(`${Directories.state}/user/generated/wallpaper/category.txt`)
     property string cliphistDecode: FileUtils.trimFileProtocol(`/tmp/quickshell/media/cliphist`)
     property string screenshotTemp: "/tmp/quickshell/media/screenshot"
     property string wallpaperSwitchScriptPath: FileUtils.trimFileProtocol(`${Directories.scriptPath}/colors/switchwall.sh`)
     property string defaultAiPrompts: Quickshell.shellPath("defaults/ai/prompts")
+    property string defaultThemes: Quickshell.shellPath("defaults/themes")
+    property string customThemes: `${Directories.shellConfig}/themes`
     property string userAiPrompts: FileUtils.trimFileProtocol(`${Directories.shellConfig}/ai/prompts`)
     property string userActions: FileUtils.trimFileProtocol(`${Directories.shellConfig}/actions`)
     property string aiChats: FileUtils.trimFileProtocol(`${Directories.state}/user/ai/chats`)
@@ -51,6 +54,8 @@ Singleton {
     property string userAvatarPathAccountsService: FileUtils.trimFileProtocol(`/var/lib/AccountsService/icons/${SystemInfo.username}`)
     property string userAvatarPathRicersAndWeirdSystems: FileUtils.trimFileProtocol(`${Directories.home}.face`)
     property string userAvatarPathRicersAndWeirdSystems2: FileUtils.trimFileProtocol(`${Directories.home}.face.icon`)
+    property string screenshareStateScript: FileUtils.trimFileProtocol(`${Directories.scriptPath}/screenShare/screensharestate.sh`)
+    property string screenshareStatePath: FileUtils.trimFileProtocol(`${Directories.state}/user/generated/screenshare/apps.txt`)
     // Cleanup on init
     Component.onCompleted: {
         Quickshell.execDetached(["mkdir", "-p", `${shellConfig}`])

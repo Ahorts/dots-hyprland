@@ -29,8 +29,11 @@ Scope { // Scope
 
             property bool reveal: root.pinned || (Config.options?.dock.hoverToReveal && dockMouseArea.containsMouse) || dockApps.requestDockShow || (!ToplevelManager.activeToplevel?.activated)
 
+            property bool isBarBottom: !Config.options.bar.vertical && Config.options.bar.bottom
+
             anchors {
-                bottom: true
+                bottom: !isBarBottom
+                top: isBarBottom
                 left: true
                 right: true
             }
@@ -39,6 +42,7 @@ Scope { // Scope
 
             implicitWidth: dockBackground.implicitWidth
             WlrLayershell.namespace: "quickshell:dock"
+            WlrLayershell.layer: WlrLayer.Overlay
             color: "transparent"
 
             implicitHeight: (Config.options?.dock.height ?? 70) + Appearance.sizes.elevationMargin + Appearance.sizes.hyprlandGapsOut
@@ -51,14 +55,38 @@ Scope { // Scope
                 id: dockMouseArea
                 height: parent.height
                 anchors {
-                    top: parent.top
-                    topMargin: dockRoot.reveal ? 0 : Config.options?.dock.hoverToReveal ? (dockRoot.implicitHeight - Config.options.dock.hoverRegionHeight) : (dockRoot.implicitHeight + 1)
+                    topMargin: isBarBottom ? 0 : dockRoot.reveal ? 0 : Config.options?.dock.hoverToReveal ? (dockRoot.implicitHeight - Config.options.dock.hoverRegionHeight) : (dockRoot.implicitHeight + 1)
+                    bottomMargin: isBarBottom ? dockRoot.reveal ? 0 : Config.options?.dock.hoverToReveal ? (dockRoot.implicitHeight - Config.options.dock.hoverRegionHeight) : (dockRoot.implicitHeight + 1) : 0
                     horizontalCenter: parent.horizontalCenter
                 }
                 implicitWidth: dockHoverRegion.implicitWidth + Appearance.sizes.elevationMargin * 2
                 hoverEnabled: true
 
+                state: isBarBottom ? "bottomAnchored" : "topAnchored"
+                states: [
+                    State {
+                        name: "topAnchored"
+                        AnchorChanges {
+                            target: dockMouseArea
+                            anchors.top: parent.top
+                            anchors.bottom: undefined
+                        }
+                    },
+                    State {
+                        name: "bottomAnchored"
+                        AnchorChanges {
+                            target: dockMouseArea
+                            anchors.top: undefined
+                            anchors.bottom: parent.bottom
+                        }
+                    }
+                ]
+
                 Behavior on anchors.topMargin {
+                    animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+                }
+
+                Behavior on anchors.bottomMargin {
                     animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
                 }
 

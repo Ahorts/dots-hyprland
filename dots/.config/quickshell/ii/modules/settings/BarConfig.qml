@@ -4,25 +4,108 @@ import qs.services
 import qs.modules.common
 import qs.modules.common.widgets
 
+import QtQml.Models
+
 ContentPage {
+    id: page
     forceWidth: true
 
+    property var componentMap: ({
+        "active_window": activeWindow,
+        "music_player": musicPlayer,
+        "utility_buttons": utilityButtons,
+        "system_tray": systemTray,
+        "workspaces": workspaces,
+        "timer": timerAndPomodoro
+    })
+
+    function scrollTo(stringId) {
+        const item = componentMap[stringId]
+        page.contentY = item.y
+    }
+
+
     ContentSection {
-        icon: "notifications"
-        title: Translation.tr("Notifications")
-        ConfigSwitch {
-            buttonIcon: "counter_2"
-            text: Translation.tr("Unread indicator: show count")
-            checked: Config.options.bar.indicators.notifications.showUnreadCount
-            onCheckedChanged: {
-                Config.options.bar.indicators.notifications.showUnreadCount = checked;
+        icon: "mobile_layout"
+        title: Translation.tr("Bar layout")
+        ContentSubsection {
+            title: Translation.tr("Left layout")
+            tooltip: Translation.tr("Top layout in vertical mode")
+            ConfigListView {
+                barSection: 0
+                listModel: Config.options.bar.layouts.left
+                sourceListModel: Config.options.bar.layouts.availableComps
+                onUpdated: (newList) => {
+                    Config.options.bar.layouts.left = newList
+                } 
+                onSourceUpdated: (newList) => {
+                    Config.options.bar.layouts.availableComps = newList
+                }
+            }
+        }
+        ContentSubsection {
+            title: Translation.tr("Center layout")
+            tooltip: Translation.tr("Center the component with the button")
+            ConfigListView {
+                barSection: 1
+                listModel: Config.options.bar.layouts.center
+                sourceListModel: Config.options.bar.layouts.availableComps
+                onUpdated: (newList) => {
+                    Config.options.bar.layouts.center = newList
+                } 
+                onSourceUpdated: (newList) => {
+                    Config.options.bar.layouts.availableComps = newList
+                }
+            }
+        }
+        ContentSubsection {
+            title: Translation.tr("Right layout")
+            tooltip: Translation.tr("Bottom layout in vertical mode")
+            ConfigListView {
+                barSection: 2
+                listModel: Config.options.bar.layouts.right
+                sourceListModel: Config.options.bar.layouts.availableComps
+                onUpdated: (newList) => {
+                    Config.options.bar.layouts.right = newList
+                }
+                onSourceUpdated: (newList) => {
+                    Config.options.bar.layouts.availableComps = newList
+                } 
             }
         }
     }
-    
+
+    ContentSection {
+        icon: "open_in_full"
+        title: Translation.tr("Bar sizes")
+
+        ConfigSpinBox {
+            icon: "height"
+            text: Translation.tr("Bar height")
+            value: Config.options.bar.sizes.height
+            from: 30
+            to: 50
+            stepSize: 1
+            onValueChanged: {
+                Config.options.bar.sizes.height = value;
+            }
+        }
+        ConfigSpinBox {
+            icon: "width"
+            text: Translation.tr("Bar width")
+            value: Config.options.bar.sizes.width
+            from: 30
+            to: 50
+            stepSize: 1
+            onValueChanged: {
+                Config.options.bar.sizes.width = value;
+            }
+        }
+    }
+
     ContentSection {
         icon: "spoke"
-        title: Translation.tr("Positioning")
+        title: Translation.tr("Positioning & appearance")
 
         ConfigRow {
             ContentSubsection {
@@ -85,7 +168,7 @@ ContentPage {
         }
 
         ConfigRow {
-            
+            Layout.fillHeight: false
             ContentSubsection {
                 title: Translation.tr("Corner style")
                 Layout.fillWidth: true
@@ -139,9 +222,173 @@ ContentPage {
                 }
             }
         }
+
+        ContentSubsection {
+            title: Translation.tr("Bar background style")
+            tooltip: Translation.tr("Adaptive style makes the bar background transparent when there are no active windows")
+            Layout.fillWidth: false
+
+            ConfigSelectionArray {
+                currentValue: Config.options.bar.barBackgroundStyle
+                onSelected: newValue => {
+                    Config.options.bar.barBackgroundStyle = newValue;
+                }
+                options: [ 
+                    {
+                        displayName: Translation.tr("Visible"),
+                        icon: "visibility",
+                        value: 1
+                    }, 
+                    {
+                        displayName: Translation.tr("Adaptive"),
+                        icon: "masked_transitions",
+                        value: 2
+                    },        
+                    {
+                        displayName: Translation.tr("Transparent"),
+                        icon: "opacity",
+                        value: 0
+                    }
+                ]
+            }
+        }
+    }
+    
+    ContentSection {
+        id: activeWindow
+        icon: "ad"
+        title: Translation.tr("Active window")
+        ConfigSwitch {
+            buttonIcon: "crop_free"
+            text: Translation.tr("Use fixed size")
+            checked: Config.options.bar.activeWindow.fixedSize
+            onCheckedChanged: {
+                Config.options.bar.activeWindow.fixedSize = checked;
+            }
+        }
     }
 
     ContentSection {
+        id: musicPlayer
+        icon: "music_cast"
+        title: Translation.tr("Media player")
+
+        ConfigSwitch {
+            enabled: !Config.options.bar.vertical
+            buttonIcon: "crop_free"
+            text: Translation.tr("Use custom size")
+            checked: Config.options.bar.mediaPlayer.useCustomSize
+            onCheckedChanged: {
+                Config.options.bar.mediaPlayer.useCustomSize = checked;
+            }
+            StyledToolTip {
+                text: Translation.tr("Only available in horizontal mode")
+            }
+        }
+
+        ConfigSpinBox {
+            enabled: !Config.options.bar.vertical
+            icon: "width_full"
+            text: Translation.tr("Custom size")
+            value: Config.options.bar.mediaPlayer.customSize
+            from: 100
+            to: 500
+            stepSize: 25
+            onValueChanged: {
+                Config.options.bar.mediaPlayer.customSize = value;
+            }
+        }
+
+        ContentSubsection {
+            title: Translation.tr("Lyrics")
+
+            ConfigRow {
+                ConfigSwitch {
+                    buttonIcon: "check"
+                    text: Translation.tr("Enable")
+                    Layout.fillWidth: false
+                    checked: Config.options.bar.mediaPlayer.lyrics.enable
+                    onCheckedChanged: {
+                        Config.options.bar.mediaPlayer.lyrics.enable = checked;
+                    }
+                    StyledToolTip {
+                        text: Translation.tr("Lyrics will be visible when they are fetched with API")
+                    }
+                }
+
+                Item {
+                    Layout.fillWidth: true
+                }
+
+                ConfigSelectionArray {
+                    Layout.fillWidth: false
+                    currentValue: Config.options.bar.mediaPlayer.lyrics.style
+                    onSelected: newValue => {
+                        Config.options.bar.mediaPlayer.lyrics.style = newValue
+                    }
+                    options: [
+                        {
+                            displayName: Translation.tr("Static"),
+                            icon: "text_fields",
+                            value: "static"
+                        },
+                        {
+                            displayName: Translation.tr("Scrolling"),
+                            icon: "swap_vert",
+                            value: "scrolling"
+                        }
+                    ]
+                }
+            }
+
+            ConfigRow {
+                uniform: true
+                ConfigSwitch {
+                    enabled: Config.options.bar.mediaPlayer.lyrics.enable && Config.options.bar.mediaPlayer.lyrics.style === "scrolling"
+                    buttonIcon: "gradient"
+                    text: Translation.tr("Use gradient mask")
+                    checked: Config.options.bar.mediaPlayer.lyrics.useGradientMask
+                    onCheckedChanged: {
+                        Config.options.bar.mediaPlayer.lyrics.useGradientMask = checked;
+                    }
+                }
+                ConfigSwitch {
+                    enabled: Config.options.bar.mediaPlayer.lyrics.enable
+                    buttonIcon: "clock_loader_60"
+                    text: Translation.tr("Show loading indicator")
+                    checked: Config.options.bar.mediaPlayer.lyrics.showLoadingIndicator
+                    onCheckedChanged: {
+                        Config.options.bar.mediaPlayer.lyrics.showLoadingIndicator = checked;
+                    }
+                    StyledToolTip {
+                        text: Translation.tr("Show an indicator while lyrics are being fetched")
+                    }
+                }
+            }
+
+            
+
+            
+        }
+
+    }
+    
+
+    ContentSection {
+        icon: "notifications"
+        title: Translation.tr("Notifications")
+        ConfigSwitch {
+            buttonIcon: "counter_2"
+            text: Translation.tr("Unread indicator: show count")
+            checked: Config.options.bar.indicators.notifications.showUnreadCount
+            onCheckedChanged: {
+                Config.options.bar.indicators.notifications.showUnreadCount = checked;
+            }
+        }
+    }
+
+    ContentSection {
+        id: systemTray
         icon: "shelf_auto_hide"
         title: Translation.tr("Tray")
 
@@ -165,6 +412,34 @@ ContentPage {
     }
 
     ContentSection {
+        id: timerAndPomodoro
+        icon: "timer_play"
+        title: Translation.tr("Timer & Pomodoro")
+
+        ConfigRow {
+            uniform: true
+            ConfigSwitch {
+                buttonIcon: "timer"
+                text: Translation.tr("Show stopwatch")
+                checked: Config.options.bar.timers.showStopwatch
+                onCheckedChanged: {
+                    Config.options.bar.timers.showStopwatch = checked;
+                }
+            }
+            ConfigSwitch {
+                buttonIcon: "search_activity"
+                text: Translation.tr("Show pomodoro")
+                checked: Config.options.bar.timers.showPomodoro
+                onCheckedChanged: {
+                    Config.options.bar.timers.showPomodoro = checked;
+                }
+            }
+        }
+
+    }
+
+    ContentSection {
+        id: utilityButtons
         icon: "widgets"
         title: Translation.tr("Utility buttons")
 
@@ -239,19 +514,7 @@ ContentPage {
     }
 
     ContentSection {
-        icon: "cloud"
-        title: Translation.tr("Weather")
-        ConfigSwitch {
-            buttonIcon: "check"
-            text: Translation.tr("Enable")
-            checked: Config.options.bar.weather.enable
-            onCheckedChanged: {
-                Config.options.bar.weather.enable = checked;
-            }
-        }
-    }
-
-    ContentSection {
+        id: workspaces
         icon: "workspaces"
         title: Translation.tr("Workspaces")
 
@@ -275,10 +538,23 @@ ContentPage {
 
         ConfigSwitch {
             buttonIcon: "colors"
+            enabled: Config.options.bar.workspaces.showAppIcons
             text: Translation.tr('Tint app icons')
             checked: Config.options.bar.workspaces.monochromeIcons
             onCheckedChanged: {
                 Config.options.bar.workspaces.monochromeIcons = checked;
+            }
+        }
+        
+        ConfigSwitch {
+            buttonIcon: "grid_3x3"
+            text: Translation.tr('Use workspace map')
+            checked: Config.options.bar.workspaces.useWorkspaceMap
+            onCheckedChanged: {
+                Config.options.bar.workspaces.useWorkspaceMap = checked;
+            }
+            StyledToolTip {
+                text: Translation.tr("Only for multi-monitor setups, you must edit the workspace map manually in config.json\n Refer to the repo wiki for more information")
             }
         }
 
@@ -291,6 +567,18 @@ ContentPage {
             stepSize: 1
             onValueChanged: {
                 Config.options.bar.workspaces.shown = value;
+            }
+        }
+
+        ConfigSpinBox {
+            icon: "select_window"
+            text: Translation.tr("Maximum window count per workspace")
+            value: Config.options.bar.workspaces.maxWindowCount
+            from: 1
+            to: 20
+            stepSize: 1
+            onValueChanged: {
+                Config.options.bar.workspaces.maxWindowCount = value;
             }
         }
 

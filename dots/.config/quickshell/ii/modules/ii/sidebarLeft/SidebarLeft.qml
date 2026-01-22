@@ -88,7 +88,20 @@ Scope { // Scope
             visible: GlobalStates.sidebarLeftOpen
             
             property bool extend: false
-            property real sidebarWidth: panelWindow.extend ? Appearance.sizes.sidebarWidthExtended : Appearance.sizes.sidebarWidth
+            property real sidebarWidth: {
+                const aiEnabled = Config.options.policies.ai !== 0
+                const weebEnabled = Config.options.policies.weeb == 1
+                const wallpapersEnabled = Config.options.policies.wallpapers !== 0
+                const translatorEnabled = Config.options.policies.translator !== 0
+
+
+                if (aiEnabled && weebEnabled && wallpapersEnabled && translatorEnabled) {
+                    return panelWindow.extend ? Appearance.sizes.sidebarWidthExtended : Appearance.sizes.sidebarWidthExpanded
+                } else {
+                    return panelWindow.extend ? Appearance.sizes.sidebarWidthExtended : Appearance.sizes.sidebarWidth
+                }
+
+            }
             property var contentParent: sidebarLeftBackground
 
             function hide() {

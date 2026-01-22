@@ -17,6 +17,7 @@ import Quickshell.Hyprland
 import qs.modules.ii.background.widgets
 import qs.modules.ii.background.widgets.clock
 import qs.modules.ii.background.widgets.weather
+import qs.modules.ii.background.widgets.media
 
 Variants {
     id: root
@@ -67,10 +68,28 @@ Variants {
             animation: Appearance.animation.elementMoveFast.colorAnimation.createObject(this)
         }
 
+        property var zoomLevels: {  // has to be reverted compared to background
+            "in": { default: 1.04, zoomed: 1 },
+            "out": { default: 1, zoomed: 1.04 }
+        }
+
+        property real defaultRatio: zoomInStyle ? zoomLevels.in.default : zoomLevels.out.default
+        property real zoomedRatio: zoomInStyle ? zoomLevels.in.zoomed : zoomLevels.out.zoomed
+        
+        readonly property bool zoomInStyle: Config.options.overview.scrollingStyle.zoomStyle === "in"
+        readonly property bool showOpeningAnimation: Config.options.overview.showOpeningAnimation
+
+        property bool overviewOpen: GlobalStates.overviewOpen
+
+        property real scaleAnimated: GlobalStates.overviewOpen && showOpeningAnimation ? zoomedRatio : defaultRatio
+        Behavior on scaleAnimated {
+            animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+        }
+
         // Layer props
         screen: modelData
         exclusionMode: ExclusionMode.Ignore
-        WlrLayershell.layer: (GlobalStates.screenLocked && !scaleAnim.running) ? WlrLayer.Overlay : WlrLayer.Bottom
+        WlrLayershell.layer: (GlobalStates.screenLocked && !scaleAnim.running) ? WlrLayer.Top : WlrLayer.Bottom
         // WlrLayershell.layer: WlrLayer.Bottom
         WlrLayershell.namespace: "quickshell:background"
         anchors {
@@ -123,8 +142,14 @@ Variants {
         }
 
         Item {
+            id: wallpaperItem
             anchors.fill: parent
             clip: true
+            scale: showOpeningAnimation && overviewOpen && Config.options.overview.style === "scrolling" ? zoomedRatio : defaultRatio
+
+            Behavior on scale {
+                animation: Appearance.animation.elementMoveEnter.numberAnimation.createObject(this)
+            }
 
             // Wallpaper
             StyledImage {
@@ -209,6 +234,10 @@ Variants {
 
             WidgetCanvas {
                 id: widgetCanvas
+                scale: 1 - (defaultRatio - 1)
+                Behavior on scale {
+                    animation: Appearance.animation.elementMove.numberAnimation.createObject(this)
+                }
                 anchors {
                     left: wallpaper.left
                     right: wallpaper.right
@@ -290,6 +319,33 @@ Variants {
                         scaledScreenHeight: bgRoot.screen.height / bgRoot.effectiveWallpaperScale
                         wallpaperScale: bgRoot.effectiveWallpaperScale
                         wallpaperSafetyTriggered: bgRoot.wallpaperSafetyTriggered
+                    }
+                }
+
+                Timer {
+                    id: mediaTimer
+                    interval: 200
+                    onTriggered: mediaLoader.enableLoading = true
+                }
+
+                FadeLoader {
+                    id: mediaLoader
+                    property bool enableLoading: true
+                    shown: Config.options.background.widgets.media.enable && enableLoading
+                    sourceComponent: MediaWidget {
+                        screenWidth: bgRoot.screen.width
+                        screenHeight: bgRoot.screen.height
+                        scaledScreenWidth: bgRoot.screen.width / bgRoot.effectiveWallpaperScale
+                        scaledScreenHeight: bgRoot.screen.height / bgRoot.effectiveWallpaperScale
+                        wallpaperScale: bgRoot.effectiveWallpaperScale
+                    }
+                    onLoaded: {
+                        if (item && item.requestReset) {
+                            item.requestReset.connect(() => { // hard reset
+                                mediaLoader.enableLoading = false
+                                mediaTimer.running = true
+                            })
+                        }
                     }
                 }
             }

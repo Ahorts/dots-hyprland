@@ -5,7 +5,11 @@ import qs.modules.common
 import qs.modules.common.widgets
 
 ContentPage {
+    id: page
     forceWidth: true
+    
+    property bool allowHeavyLoads: false
+    Component.onCompleted: Qt.callLater(() => page.allowHeavyLoads = true)
 
     ContentSection {
         icon: "sync_alt"
@@ -295,19 +299,8 @@ ContentPage {
                 }
             }
 
-            ConfigSwitch {
-                buttonIcon: "airwave"
-                text: Translation.tr("Use old sine wave cookie implementation")
-                checked: Config.options.background.widgets.clock.cookie.useSineCookie
-                onCheckedChanged: {
-                    Config.options.background.widgets.clock.cookie.useSineCookie = checked;
-                }
-                StyledToolTip {
-                    text: "Looks a bit softer and more consistent with different number of sides,\nbut has less impressive morphing"
-                }
-            }
-
             ConfigSpinBox {
+                enabled: Config.options.background.widgets.clock.cookie.backgroundStyle !== "shape"
                 icon: "add_triangle"
                 text: Translation.tr("Sides")
                 value: Config.options.background.widgets.clock.cookie.sides
@@ -547,6 +540,71 @@ ContentPage {
         }
 
         ContentSubsection {
+            visible: settingsClock.cookiePresent
+            title: Translation.tr("Background style")
+
+            ConfigSelectionArray {
+                currentValue: Config.options.background.widgets.clock.cookie.backgroundStyle
+                onSelected: newValue => {
+                    Config.options.background.widgets.clock.cookie.backgroundStyle = newValue;
+                }
+                options: [
+                    {
+                        displayName: "",
+                        icon: "block",
+                        value: "hide"
+                    },
+                    {
+                        displayName: Translation.tr("Sine"),
+                        icon: "waves",
+                        value: "sine"
+                    },
+                    {
+                        displayName: Translation.tr("Cookie"),
+                        icon: "cookie",
+                        value: "cookie"
+                    },
+                    {
+                        displayName: Translation.tr("Shape"),
+                        icon: "shape_line",
+                        value: "shape"
+                    },
+                ]
+            }
+        }
+
+        
+        Loader { 
+            id: backgroundShapeLoader
+            active: page.allowHeavyLoads && settingsClock.cookiePresent && Config.options.background.widgets.clock.cookie.backgroundStyle === "shape"
+            visible: active
+            Layout.fillWidth: true
+            sourceComponent: ContentSubsection {
+                title: Translation.tr("Background shape")
+                
+                ConfigSelectionArray {
+                    currentValue: Config.options.background.widgets.clock.cookie.backgroundShape
+                    onSelected: newValue => {
+                        Config.options.background.widgets.clock.cookie.backgroundShape = newValue;
+                    }
+                    options: ([ 
+                        "Circle", "Square", "Slanted", "Arch", "Arrow", "SemiCircle", "Oval", "Pill", "Triangle",
+                        "Diamond", "ClamShell", "Pentagon", "Gem", "Sunny", "VerySunny", "Cookie4Sided", "Cookie6Sided", 
+                        "Cookie7Sided", "Cookie9Sided", "Cookie12Sided", "Ghostish", "Clover4Leaf", "Clover8Leaf", "Burst", 
+                        "SoftBurst", "Flower", "Puffy", "PuffyDiamond", "PixelCircle", "Bun", "Heart" 
+                    ]).map(icon => { 
+                        return { 
+                            displayName: "", 
+                            shape: icon, 
+                            value: icon 
+                        } 
+                    })
+                }
+            }
+        }
+        
+
+        ContentSubsection {
             title: Translation.tr("Quote")
 
             ConfigSwitch {
@@ -612,6 +670,163 @@ ContentPage {
                     },
                 ]
             }
+        }
+    }
+
+    ContentSection {
+        icon: "music_cast"
+        title: Translation.tr("Widget: Media")
+
+        ConfigRow {
+            Layout.fillWidth: true
+
+            ConfigSwitch {
+                Layout.fillWidth: false
+                buttonIcon: "check"
+                text: Translation.tr("Enable")
+                checked: Config.options.background.widgets.media.enable
+                onCheckedChanged: {
+                    Config.options.background.widgets.media.enable = checked;
+                }
+            }
+            Item {
+                Layout.fillWidth: true
+            }
+            ConfigSelectionArray {
+                Layout.fillWidth: false
+                currentValue: Config.options.background.widgets.media.placementStrategy
+                onSelected: newValue => {
+                    Config.options.background.widgets.media.placementStrategy = newValue;
+                }
+                options: [
+                    {
+                        displayName: Translation.tr("Draggable"),
+                        icon: "drag_pan",
+                        value: "free"
+                    },
+                    {
+                        displayName: Translation.tr("Least busy"),
+                        icon: "category",
+                        value: "leastBusy"
+                    },
+                    {
+                        displayName: Translation.tr("Most busy"),
+                        icon: "shapes",
+                        value: "mostBusy"
+                    },
+                ]
+            }
+        }
+
+        ConfigSwitch {
+            buttonIcon: "colors"
+            text: Translation.tr("Tint art cover")
+            checked: Config.options.background.widgets.media.tintArtCover
+            onCheckedChanged: {
+                Config.options.background.widgets.media.tintArtCover = checked;
+            }
+        }
+
+        ConfigRow {
+            uniform: true
+            ConfigSwitch {
+                buttonIcon: "opacity"
+                text: Translation.tr("Use album colors")
+                checked: Config.options.background.widgets.media.useAlbumColors
+                onCheckedChanged: {
+                    Config.options.background.widgets.media.useAlbumColors = checked;
+                }
+            }
+            ConfigSwitch {
+                buttonIcon: "skip_previous"
+                text: Translation.tr("Show previous toggle")
+                checked: Config.options.background.widgets.media.showPreviousToggle
+                onCheckedChanged: {
+                    Config.options.background.widgets.media.showPreviousToggle = checked;
+                }
+            }
+        }
+        ContentSubsection {
+            title: Translation.tr("Glow effect")
+            ConfigRow {
+                uniform: true
+                ConfigSwitch {
+                    buttonIcon: "backlight_high"
+                    text: Translation.tr("Enable")
+                    checked: Config.options.background.widgets.media.glow.enable
+                    onCheckedChanged: {
+                        Config.options.background.widgets.media.glow.enable = checked;
+                    }
+                }
+                ConfigSpinBox {
+                    from: 5
+                    to: 100
+                    stepSize: 5
+                    icon: "brightness_5"
+                    text: Translation.tr("Brightness (%)")
+                    value: Config.options.background.widgets.media.glow.brightness
+                    onValueChanged: {
+                        Config.options.background.widgets.media.glow.brightness = value;
+                    }
+                }
+            }
+        }
+        ContentSubsection {
+            title: Translation.tr("Visualizer")
+
+            ConfigRow {
+                uniform: true
+
+                ConfigSwitch {
+                    buttonIcon: "bar_chart"
+                    text: Translation.tr("Enable")
+                    checked: Config.options.background.widgets.media.visualizer.enable
+                    onCheckedChanged: {
+                        Config.options.background.widgets.media.visualizer.enable = checked;
+                    }
+                }
+                
+                ConfigSpinBox {
+                    from: 0
+                    to: 100
+                    stepSize: 5
+                    icon: "opacity"
+                    text: Translation.tr("Opacity (%)")
+                    value: Config.options.background.widgets.media.visualizer.opacity * 100
+                    onValueChanged: {
+                        Config.options.background.widgets.media.visualizer.opacity = value / 100;
+                    }
+                }
+            }
+            
+            ConfigRow {
+                uniform: true
+                
+                ConfigSpinBox {
+                    from: 0
+                    to: 5
+                    stepSize: 1
+                    icon: "rounded_corner"
+                    text: Translation.tr("Smoothing")
+                    value: Config.options.background.widgets.media.visualizer.smoothing
+                    onValueChanged: {
+                        Config.options.background.widgets.media.visualizer.smoothing = value;
+                    }
+                }
+
+                ConfigSpinBox {
+                    from: 0
+                    to: 10
+                    stepSize: 1
+                    icon: "blur_on"
+                    text: Translation.tr("Blur")
+                    value: Config.options.background.widgets.media.visualizer.blur
+                    onValueChanged: {
+                        Config.options.background.widgets.media.visualizer.blur = value;
+                    }
+                }
+            }
+
         }
     }
 }
