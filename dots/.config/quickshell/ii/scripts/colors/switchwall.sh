@@ -301,7 +301,11 @@ switch() {
     >"$STATE_DIR"/user/generated/material_colors.scss
   "$SCRIPT_DIR"/applycolor.sh
 
-  wal -i "$imgpath" -s -t
+  if is_video "$imgpath" && [[ -n "$thumbnail" && -f "$thumbnail" ]]; then
+    wal -i "$thumbnail" -s -t
+  else
+    wal -i "$imgpath" -s -t
+  fi
   deactivate
 
   # Pass screen width, height, and wallpaper path to post_process
