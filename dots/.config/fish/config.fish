@@ -20,6 +20,19 @@ if status is-interactive # Commands to run in interactive sessions can go here
     alias q 'qs -c ii'
     alias vim nvim
     alias pn=pnpm
+    alias nv=nvim
+    alias cd=z
+
+    function nvim
+        kitten @ set-spacing margin=0
+
+        command nvim $argv
+
+        kitten @ set-spacing margin=21.75
+    end
+
+    zoxide init fish | source
+    fzf --fish | source
 
 end
 
